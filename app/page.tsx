@@ -154,7 +154,6 @@ export default function Home() {
                 <span>{item.desc}</span>
               </span>
             ))}
-            {/*本页面收录了字母解释法的速查表，包括 ICAO 标准、DX 通联常用、非标准等。*/}
           </p>
         </div>
         <div
