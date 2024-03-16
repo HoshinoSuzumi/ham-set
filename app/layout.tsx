@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   const nav: NavListItem[] = [
     {
-      label: '速查表',
+      label: '字母解释法',
       pathname: '/',
       icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
         <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
@@ -26,6 +26,18 @@ export default function RootLayout({
           <path d="M19 16H7a2 2 0 0 0-2 2M9 8h6"/>
         </g>
       </svg>,
+      submenu: [
+        {
+          label: '速查表',
+          pathname: '/',
+          icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+            <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+              <path d="M19 4v16H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h12z"/>
+              <path d="M19 16H7a2 2 0 0 0-2 2M9 8h6"/>
+            </g>
+          </svg>,
+        },
+      ],
     },
     {
       label: '呼号听写',
