@@ -1,7 +1,7 @@
 'use client'
 
-import {Button} from '@douyinfe/semi-ui';
 import LetterCard, {Phonetic} from '@/app/callsign-dictation/LetterCard';
+import {Tag} from '@douyinfe/semi-ui';
 
 export default function Home() {
   const TAG = Object.freeze({
@@ -141,14 +141,20 @@ export default function Home() {
 
       <div className={'p-4 space-y-2 md:space-y-4'}>
         <div
-          className={'w-full p-2 gap-2 text-xs rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 border-b-4'}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="inline -mt-1.5 text-accent" width="1.5em" height="1.5em"
+          className={'w-full flex items-center gap-1 p-2 text-xs rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 border-b-4'}>
+          <svg xmlns="http://www.w3.org/2000/svg" className="text-accent" width="1.5em" height="1.5em"
                viewBox="0 0 24 24">
             <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                   d="M3 12h1m8-9v1m8 8h1M5.6 5.6l.7.7m12.1-.7l-.7.7M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0-1 3a2 2 0 0 1-4 0a3.5 3.5 0 0 0-1-3m.7 1h4.6"/>
           </svg>
-          <p className={'inline ml-1 text-neutral-500'}>
-            本页面收录了字母解释法的速查表，包括 ICAO 标准、DX 通联常用、非标准等。
+          <p className={'text-neutral-500 flex items-center gap-2'}>
+            {Object.values(TAG).map(item => (
+              <span className={'inline-flex items-center gap-0.5'}>
+                <span className={'bg-accent/20 px-1 py-0 rounded-sm'}>{item.label}</span>
+                <span>{item.desc}</span>
+              </span>
+            ))}
+            {/*本页面收录了字母解释法的速查表，包括 ICAO 标准、DX 通联常用、非标准等。*/}
           </p>
         </div>
         <div

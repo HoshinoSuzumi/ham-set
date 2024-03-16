@@ -1,11 +1,8 @@
-import type {Metadata} from 'next';
-import {Inter} from 'next/font/google';
 import './globals.css';
 import {ReactNode} from 'react';
 import MainDrawer, {NavListItem} from '@/components/MainDrawer';
 import {SpeechSynthesisProvider} from '@/contexts/SpeechSynthesisContext';
-
-const inter = Inter({subsets: ['latin']});
+import {noto_sc, rubik} from '@/app/fonts';
 
 export default function RootLayout({
   children,
@@ -45,7 +42,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-    <body className={`${inter.className}`}>
+    <body className={`${rubik.className}`}>
     <SpeechSynthesisProvider>
       <MainDrawer nav={nav}>
         {children}

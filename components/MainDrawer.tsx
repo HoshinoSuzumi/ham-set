@@ -1,14 +1,12 @@
 'use client'
 
-import {ReactNode, useState} from 'react';
+import {ReactNode} from 'react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {Icon} from '@iconify-icon/react';
-import {Saira} from 'next/font/google';
-import {Avatar, Dropdown, Nav} from '@douyinfe/semi-ui';
-import {IconSemiLogo} from '@douyinfe/semi-icons';
+import {saira} from '@/app/fonts';
 
-const saira = Saira({subsets: ['latin']})
+
 
 export interface NavListItem {
   label: string;
