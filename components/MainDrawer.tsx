@@ -1,10 +1,12 @@
 'use client'
 
-import {ReactNode} from 'react';
+import {ReactNode, useState} from 'react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {Icon} from '@iconify-icon/react';
-import {Fredoka, Saira} from 'next/font/google';
+import {Saira} from 'next/font/google';
+import {Avatar, Dropdown, Nav} from '@douyinfe/semi-ui';
+import {IconSemiLogo} from '@douyinfe/semi-icons';
 
 const saira = Saira({subsets: ['latin']})
 
@@ -19,12 +21,12 @@ export default function MainDrawer({children, nav}: {
   children: ReactNode;
   nav: NavListItem[];
 }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
+
   return (
     <div className={`drawer`}>
       <input id={'main-drawer'} type={'checkbox'} className={'drawer-toggle'}/>
       <div className={'drawer-content'}>
-        {/* page content */}
         <header
           className={'sticky top-0 inset-x-0 h-16 bg-base-100 border-b flex flex-row justify-between items-center px-2 z-50'}>
           <div className={'flex space-x-2'}>
@@ -37,12 +39,12 @@ export default function MainDrawer({children, nav}: {
                 </svg>
               </label>
             </div>
-            <div className="cursor-pointer select-none">
-              <h1 className="text-lg font-bold flex items-center">
+            <div className={`cursor-pointer select-none ${saira.className}`}>
+              <h1 className="text-lg font-bold flex items-center gap-1">
                 <Icon icon={'mdi:hamburger'}/>
-                火腿套餐
+                HAM SET
               </h1>
-              <h2 className={`text-xs uppercase ${saira.className}`}>
+              <h2 className={`text-xs uppercase`}>
                 Toolkit for Amateur Radio
               </h2>
             </div>
@@ -51,31 +53,10 @@ export default function MainDrawer({children, nav}: {
             <ul className="menu menu-horizontal space-x-2">
               {nav.map((item, index) => (
                 <li key={index}>
-                  {item.submenu && (
-                    <details>
-                      <summary>
-                        {item.icon && item.icon}
-                        {item.label}
-                      </summary>
-                      <ul>
-                        {item.submenu.map((subitem, subindex) => (
-                          <li key={subindex}>
-                            <Link href={subitem.pathname || '#'}
-                                  className={`whitespace-nowrap ${subitem.pathname === pathname ? 'active' : ''}`}>
-                              {subitem.icon && subitem.icon}
-                              {subitem.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </details>
-                  )}
-                  {!item.submenu && (
-                    <Link href={item.pathname || '#'} className={`${item.pathname === pathname ? 'active' : ''}`}>
-                      {item.icon && item.icon}
-                      {item.label}
-                    </Link>
-                  )}
+                  <Link href={item.pathname || '#'} className={`${item.pathname === pathname ? 'active' : ''}`}>
+                    {item.icon && item.icon}
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
