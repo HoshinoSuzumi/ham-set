@@ -1,8 +1,9 @@
 'use client'
 
+import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext';
+import {useContext, useRef, useState} from 'react';
+import {CSSTransition, SwitchTransition, Transition, TransitionGroup} from 'react-transition-group';
 import IconTablerVolume from '@/components/Icon/IconTablerVolume';
-import {useRef, useState} from 'react';
-import {CSSTransition, SwitchTransition, Transition} from 'react-transition-group';
 
 export interface Phonetic {
   word: string
@@ -20,8 +21,11 @@ export default function LetterCard({
   letter: string,
   phonetics: Phonetic[]
 }) {
+  const {speech} = useContext(SpeechSynthesisContext)!
   const [index, setIndex] = useState(0)
+  const [speaking, setSpeaking] = useState(false)
   const nodeRef = useRef(null)
+  const speakIconRef = useRef(null)
   const isNumber = letter.match(/\d/)
 
   function handleSwap() {
@@ -35,14 +39,29 @@ export default function LetterCard({
         <SwitchTransition>
           <CSSTransition nodeRef={nodeRef} classNames={'swap-phonetic'} timeout={150} key={index}>
             <div className={`w-full flex flex-col p-2 pt-1 ${phonetics.length > 1 && 'pr-3'}`} ref={nodeRef}>
-              <h1 className={'w-fit cursor-pointer hover:drop-shadow group flex flex-row items-end'}>
+              <h1 className={'w-fit cursor-pointer hover:drop-shadow group flex flex-row items-end'} onClick={() => {
+                speech(phonetics[index].word, {
+                  interrupt: true,
+                  onstart: () => setSpeaking(true),
+                  onend: () => setSpeaking(false),
+                  onerror: () => setSpeaking(false),
+                })
+              }}>
                 <span className={'text-2xl text-accent font-bold'}>
                   {letter.toUpperCase()}
                 </span>
-                <span className={`text-lg text-accent-content font-normal ${isNumber && 'pl-1'}`}>
+                <span className={`text-lg font-normal ${isNumber && 'pl-1'} ${speaking ? 'text-accent' : 'text-accent-content'}`}>
                   {phonetics[index].word.slice(isNumber ? 0 : 1)}
                 </span>
-                {/*<IconTablerVolume className={'inline-block self-center text-lg text-accent ml-0.5 transition'} />*/}
+                <CSSTransition
+                  in={speaking}
+                  nodeRef={speakIconRef}
+                  classNames={'fade-in'}
+                  timeout={300} unmountOnExit
+                >
+                  <IconTablerVolume ref={speakIconRef}
+                                    className={'inline-block self-center text-lg text-accent ml-0.5'}/>
+                </CSSTransition>
               </h1>
               <div className={'inline-flex justify-between items-center'}>
                 <span className="text-xs text-neutral-400 font-ipa font-bold">
