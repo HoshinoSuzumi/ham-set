@@ -1,7 +1,6 @@
 'use client'
 
 import LetterCard, {Phonetic} from '@/app/callsign-dictation/LetterCard';
-import {Tag} from '@douyinfe/semi-ui';
 
 export default function Home() {
   const TAG = Object.freeze({
