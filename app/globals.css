@@ -13,6 +13,46 @@
 }
 
 body {
-  @apply min-h-screen;
-  /*background-image: var(--background-pattern);*/
+  background-image: var(--background-pattern);
+}
+
+/**
+ * Transition
+ */
+.swap-phonetic-enter-active,
+.swap-phonetic-exit-active {
+  @apply transition duration-150;
+}
+
+.swap-phonetic-enter {
+  @apply opacity-0 translate-y-4 scale-95;
+}
+
+.swap-phonetic-enter-active {
+  @apply opacity-100 translate-y-0 scale-100;
+}
+
+.swap-phonetic-exit {
+  @apply opacity-100 translate-y-0 scale-100;
+}
+
+.swap-phonetic-exit-active {
+  @apply opacity-0 -translate-y-4;
+}
+
+.swap-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.swap-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.swap-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
 }

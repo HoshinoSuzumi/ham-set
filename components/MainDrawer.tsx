@@ -70,9 +70,13 @@ export default function MainDrawer({children, nav}: {
           </a>
         </header>
 
-        <main>{children}</main>
+        <main style={{minHeight: 'calc(100vh - 4rem)'}}>
+          {children}
+        </main>
 
-        <footer></footer>
+        <footer className={'footer p-10 bg-base-300 text-base-content justify-between'}>
+          footer
+        </footer>
       </div>
       <div className={'drawer-side'}>
         <label htmlFor={'main-drawer'} aria-label={'close sidebar'} className={'drawer-overlay'}/>

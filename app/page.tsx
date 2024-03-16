@@ -1,7 +1,7 @@
 'use client'
 
 import {Button} from '@douyinfe/semi-ui';
-import LetterCard from '@/app/callsign-dictation/LetterCard';
+import LetterCard, {Phonetic} from '@/app/callsign-dictation/LetterCard';
 
 export default function Home() {
   const TAG = Object.freeze({
@@ -9,8 +9,9 @@ export default function Home() {
     dx: {label: 'DX', desc: 'DX 通联常用'},
     non_standard: {label: 'N-STD', desc: '非标准'},
   })
-
-  const letter_dict = {
+  const letter_dict: {
+    [key: string]: Phonetic[]
+  } = {
     'A': [
       {word: 'alpha', ipa: '/ˈælfə/', tag: TAG.standard},
       {word: 'america', ipa: '/əˈmerɪkə/', tag: TAG.dx},
@@ -118,6 +119,20 @@ export default function Home() {
       {word: 'zulu', ipa: '/ˈzuːluː/', tag: TAG.standard},
     ],
   }
+  const number_dict: {
+    [key: string]: Phonetic[]
+  } = {
+    '0': [{word: 'zero', ipa: '/ˈzɪroʊ/'}],
+    '1': [{word: 'one', ipa: '/wʌn/'}],
+    '2': [{word: 'two', ipa: '/tuː/'}],
+    '3': [{word: 'three', ipa: '/θriː/'}],
+    '4': [{word: 'four', ipa: '/fɔːr/'}],
+    '5': [{word: 'five', ipa: '/faɪv/'}],
+    '6': [{word: 'six', ipa: '/sɪks/'}],
+    '7': [{word: 'seven', ipa: '/ˈsevn/'}],
+    '8': [{word: 'eight', ipa: '/eɪt/'}],
+    '9': [{word: 'nine', ipa: '/naɪn/'}],
+  }
 
   return (
     <>
@@ -126,7 +141,7 @@ export default function Home() {
 
       <div className={'p-4 space-y-2 md:space-y-4'}>
         <div
-          className={'w-full p-2 gap-2 text-xs rounded-lg bg-base-100 border shadow-sm border-neutral-content/50 border-b-4'}>
+          className={'w-full p-2 gap-2 text-xs rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 border-b-4'}>
           <svg xmlns="http://www.w3.org/2000/svg" className="inline -mt-1.5 text-accent" width="1.5em" height="1.5em"
                viewBox="0 0 24 24">
             <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -138,7 +153,12 @@ export default function Home() {
         </div>
         <div
           className={'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 md:gap-4'}>
-          <LetterCard/>
+          {Object.keys(letter_dict).map((letter) => (
+            <LetterCard key={letter} letter={letter} phonetics={letter_dict[letter]}/>
+          ))}
+          {Object.keys(number_dict).map((letter) => (
+            <LetterCard key={letter} letter={letter} phonetics={number_dict[letter]}/>
+          ))}
         </div>
       </div>
     </>

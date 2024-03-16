@@ -23,6 +23,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-transition-group": "^4.4.10",
     "autoprefixer": "^10.0.1",
     "daisyui": "^4.7.3",
     "eslint": "^8",
