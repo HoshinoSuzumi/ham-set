@@ -67,20 +67,15 @@ export default function LetterCard({
                 <span className={`text-lg font-normal ${isNumber && 'pl-1'} ${speaking ? 'text-accent' : 'text-content'}`}>
                   {phonetics[index].word.slice(isNumber ? 0 : 1)}
                 </span>
-                <CSSTransition
-                  in={pending && !speaking}
-                  nodeRef={loadingIconRef}
-                  classNames={'fade-in'}
-                  timeout={300} unmountOnExit
-                >
+                {pending && !speaking && (
                   <div ref={loadingIconRef} className={'self-center'}>
                     <IconSpinner className={'inline-block self-center text-lg ml-0.5'}/>
                   </div>
-                </CSSTransition>
+                )}
                 <CSSTransition
-                  in={speaking}
+                  in={!pending && speaking}
                   nodeRef={speakIconRef}
-                  classNames={'fade-in'}
+                  classNames={'fade-in-out'}
                   timeout={300} unmountOnExit
                 >
                   <div ref={speakIconRef} className={'self-center'}>
