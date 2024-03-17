@@ -24,12 +24,15 @@ body {
   @apply transition duration-300;
 }
 
+.fade-in-enter {
+  @apply opacity-0;
+}
+
 .fade-in-enter-active,
 .fade-in-exit {
   @apply opacity-100;
 }
 
-.fade-in-enter,
 .fade-in-exit-active {
   @apply opacity-0;
 }

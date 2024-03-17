@@ -75,7 +75,6 @@ export default function MainDrawer({children, nav}: {
   }, [])
 
   const handleVoiceChange = (value: any) => {
-    console.log(getVoices().find((voice: SpeechSynthesisVoice) => voice.name === value) || null)
     setVoice(getVoices().find((voice: SpeechSynthesisVoice) => voice.name === value) || null)
   }
 
@@ -132,7 +131,10 @@ export default function MainDrawer({children, nav}: {
             <div className={'space-y-2'}>
               <p className={'flex items-center gap-1 text-lg'}>
                 <Icon icon={'mdi:hamburger'} className={'text-2xl'}/>
-                <span className={'font-bold'}>HAM SET</span>
+                <ruby>
+                  <span className={'font-bold'}>HAM SET</span>
+                  <rt className={`font-bold text-xs text-base-content/70 italic ${noto_sc.className}`}>火腿套餐</rt>
+                </ruby>
               </p>
               <p className={`text-neutral-500 font-mono`}>
                 A part of <a href={'https://c5r.app'}

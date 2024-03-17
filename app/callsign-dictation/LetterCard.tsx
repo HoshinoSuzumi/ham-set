@@ -4,6 +4,7 @@ import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext';
 import {useContext, useRef, useState} from 'react';
 import {CSSTransition, SwitchTransition} from 'react-transition-group';
 import IconTablerVolume from '@/components/Icon/IconTablerVolume';
+import {IconSpinner} from '@/components/Icon/IconSpinner';
 
 export interface Phonetic {
   word: string
@@ -21,14 +22,17 @@ export default function LetterCard({
   letter: string,
   phonetics: Phonetic[]
 }) {
-  const {speech} = useContext(SpeechSynthesisContext)!
+  const {speech, shutUp} = useContext(SpeechSynthesisContext)!
   const [index, setIndex] = useState(0)
+  const [pending, setPending] = useState(false)
   const [speaking, setSpeaking] = useState(false)
   const nodeRef = useRef(null)
   const speakIconRef = useRef(null)
+  const loadingIconRef = useRef(null)
   const isNumber = letter.match(/\d/)
 
   function handleSwap() {
+    shutUp()
     setIndex((index + 1) % phonetics.length)
   }
 
@@ -40,11 +44,21 @@ export default function LetterCard({
           <CSSTransition nodeRef={nodeRef} classNames={'swap-phonetic'} timeout={150} key={index}>
             <div className={`w-full flex flex-col p-2 pt-1 ${phonetics.length > 1 && 'pr-3'}`} ref={nodeRef}>
               <h1 className={'w-fit cursor-pointer hover:drop-shadow group flex flex-row items-end'} onClick={() => {
+                setPending(true)
                 speech(phonetics[index].word, {
                   interrupt: true,
-                  onstart: () => setSpeaking(true),
-                  onend: () => setSpeaking(false),
-                  onerror: () => setSpeaking(false),
+                  onstart: () => {
+                    setSpeaking(true)
+                    setPending(false)
+                  },
+                  onend: () => {
+                    setSpeaking(false)
+                    setPending(false)
+                  },
+                  onerror: () => {
+                    setSpeaking(false)
+                    setPending(false)
+                  },
                 })
               }}>
                 <span className={'text-2xl text-accent font-bold'}>
@@ -54,13 +68,24 @@ export default function LetterCard({
                   {phonetics[index].word.slice(isNumber ? 0 : 1)}
                 </span>
                 <CSSTransition
+                  in={pending && !speaking}
+                  nodeRef={loadingIconRef}
+                  classNames={'fade-in'}
+                  timeout={300} unmountOnExit
+                >
+                  <div ref={loadingIconRef} className={'self-center'}>
+                    <IconSpinner className={'inline-block self-center text-lg ml-0.5'}/>
+                  </div>
+                </CSSTransition>
+                <CSSTransition
                   in={speaking}
                   nodeRef={speakIconRef}
                   classNames={'fade-in'}
                   timeout={300} unmountOnExit
                 >
-                  <IconTablerVolume ref={speakIconRef}
-                                    className={'inline-block self-center text-lg text-accent ml-0.5'}/>
+                  <div ref={speakIconRef} className={'self-center'}>
+                    <IconTablerVolume className={'inline-block self-center text-lg text-accent ml-0.5'}/>
+                  </div>
                 </CSSTransition>
               </h1>
               <div className={'inline-flex justify-between items-center'}>
