@@ -35,7 +35,7 @@ export default function LetterCard({
   return (
     <>
       <div
-        className={'flex flex-row relative overflow-hidden justify-between rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 border-b-4'}>
+        className={'flex flex-row relative overflow-hidden justify-between rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4'}>
         <SwitchTransition>
           <CSSTransition nodeRef={nodeRef} classNames={'swap-phonetic'} timeout={150} key={index}>
             <div className={`w-full flex flex-col p-2 pt-1 ${phonetics.length > 1 && 'pr-3'}`} ref={nodeRef}>
@@ -50,7 +50,7 @@ export default function LetterCard({
                 <span className={'text-2xl text-accent font-bold'}>
                   {letter.toUpperCase()}
                 </span>
-                <span className={`text-lg font-normal ${isNumber && 'pl-1'} ${speaking ? 'text-accent' : 'text-accent-content'}`}>
+                <span className={`text-lg font-normal ${isNumber && 'pl-1'} ${speaking ? 'text-accent' : 'text-content'}`}>
                   {phonetics[index].word.slice(isNumber ? 0 : 1)}
                 </span>
                 <CSSTransition
@@ -85,7 +85,7 @@ export default function LetterCard({
                    ${index === i ? 'bg-accent' : 'bg-neutral-content'}`}></div>
               ))}
             </div>
-            <button className={'h-full bg-neutral-content/50 p-1 cursor-pointer'} onClick={handleSwap}>
+            <button className={'h-full bg-neutral-content/50 dark:bg-neutral-content/20 p-1 cursor-pointer'} onClick={handleSwap}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5"
                       d="M11 8L7 4m0 0L3 8m4-4v16m6-4l4 4m0 0l4-4m-4 4V4"/>

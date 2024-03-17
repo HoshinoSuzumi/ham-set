@@ -16,6 +16,8 @@ interface TTSApi {
   currentVoice: SpeechSynthesisVoice | null;
   currentSpeed: number;
   currentPitch: number;
+  setSpeed: (speed: number) => void;
+  setPitch: (pitch: number) => void;
   setVoice: (voice: SpeechSynthesisVoice | null) => void;
   getVoices: () => SpeechSynthesisVoice[];
   shutUp: () => void;
@@ -87,6 +89,8 @@ export const SpeechSynthesisProvider: React.FC<SpeechSynthesisProviderProps> = (
         currentVoice: selectedVoice,
         currentSpeed,
         currentPitch,
+        setSpeed: setCurrentSpeed,
+        setPitch: setCurrentPitch,
         setVoice: setSelectedVoice,
         getVoices: () => voices,
         shutUp,
