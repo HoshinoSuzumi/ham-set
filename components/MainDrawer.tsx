@@ -133,7 +133,7 @@ export default function MainDrawer({children, nav}: {
                 <Icon icon={'mdi:hamburger'} className={'text-2xl'}/>
                 <ruby>
                   <span className={'font-bold'}>HAM SET</span>
-                  <rt className={`font-bold text-xs text-base-content/70 italic ${noto_sc.className}`}>火腿套餐</rt>
+                  <rt className={`font-bold text-xs text-base-content/70 ${noto_sc.className}`}>火腿套餐</rt>
                 </ruby>
               </p>
               <p className={`text-neutral-500 font-mono`}>
