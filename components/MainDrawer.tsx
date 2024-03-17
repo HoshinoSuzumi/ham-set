@@ -48,7 +48,7 @@ export default function MainDrawer({children, nav}: {
         label: locale,
         children: voiceList.map((voice: SpeechSynthesisVoice) => ({
           value: voice,
-          label: voice.name,
+          label: `${voice.localService ? '[本地]' : ''}${voice.name}`,
         })),
       }
     })
@@ -75,7 +75,7 @@ export default function MainDrawer({children, nav}: {
   }, [])
 
   const handleVoiceChange = (value: any) => {
-    setVoice(getVoices().find((voice: SpeechSynthesisVoice) => voice.name === value) || null)
+    setVoice(getVoices().find((voice: SpeechSynthesisVoice) => voice.voiceURI === value) || null)
   }
 
   return (
@@ -126,7 +126,7 @@ export default function MainDrawer({children, nav}: {
           {children}
         </main>
 
-        <footer className={'footer p-10 bg-base-300 text-base-content justify-between'}>
+        <footer className={'footer p-6 md:p-10 bg-base-300 text-base-content justify-between'}>
           <aside className={'h-full flex flex-col justify-between'}>
             <div className={'space-y-2'}>
               <p className={'flex items-center gap-1 text-lg'}>
@@ -189,25 +189,26 @@ export default function MainDrawer({children, nav}: {
               </Popover>
             </Space>
           </aside>
-          <div className={'w-72'}>
+          <div className={'w-80'}>
             <h6 className={'footer-title'}>Speech Settings</h6>
             <div className={'w-full space-y-3'}>
               <fieldset className={'form-control w-full'}>
                 <Select
-                  className={`w-72 ${noto_sc.className}`}
-                  position={'top'}
+                  className={`w-80 ${noto_sc.className}`}
+                  position={'topRight'}
                   insetLabel={'音色'}
                   value={currentVoice?.name || 'not-selected'}
                   onChange={handleVoiceChange}
+                  dropdownClassName={'w-20 md:w-auto'}
                   filter
                 >
-                  <Select.OptGroup label="默认" className={noto_sc.className}>
-                    <Select.Option value="not-selected" className={noto_sc.className}>系统默认</Select.Option>
+                  <Select.OptGroup label="缺省" className={noto_sc.className}>
+                    <Select.Option value="not-selected" className={noto_sc.className}>系统默认(缺省)</Select.Option>
                   </Select.OptGroup>
                   {voicesOptions.map((group, index) => (
                     <Select.OptGroup label={group.label} key={`${index}-${group.label}`} className={rubik.className}>
                       {group.children.map((option, index2) => (
-                        <Select.Option value={option.label} key={`${index2}-${group.label}`}
+                        <Select.Option value={option.value?.voiceURI} key={`${index2}-${group.label}`}
                                        className={noto_sc.className}>
                           {option.label}
                         </Select.Option>

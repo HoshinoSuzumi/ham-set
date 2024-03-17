@@ -1,6 +1,6 @@
 'use client'
 
-import React, {createContext, useState, useEffect, ReactNode} from 'react';
+import React, {createContext, ReactNode, useEffect, useState} from 'react';
 
 interface SpeechOptions {
   interrupt?: boolean;
@@ -54,6 +54,7 @@ export const SpeechSynthesisProvider: React.FC<SpeechSynthesisProviderProps> = (
         }
       });
       setVoices(voices);
+      setSelectedVoice(voices.find((voice) => voice.default) || null);
     };
     initSynth();
 
