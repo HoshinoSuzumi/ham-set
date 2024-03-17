@@ -5,9 +5,8 @@ import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {Icon} from '@iconify-icon/react';
 import {noto_sc, rubik, saira} from '@/app/fonts';
-import {Button, Popover, Select, Slider, Space, Tooltip} from '@douyinfe/semi-ui';
+import {Popover, Select, Space, Tooltip} from '@douyinfe/semi-ui';
 import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext';
-import {log} from 'node:util';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 
 

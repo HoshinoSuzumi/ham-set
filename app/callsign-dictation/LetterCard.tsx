@@ -2,7 +2,7 @@
 
 import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext';
 import {useContext, useRef, useState} from 'react';
-import {CSSTransition, SwitchTransition, Transition, TransitionGroup} from 'react-transition-group';
+import {CSSTransition, SwitchTransition} from 'react-transition-group';
 import IconTablerVolume from '@/components/Icon/IconTablerVolume';
 
 export interface Phonetic {
