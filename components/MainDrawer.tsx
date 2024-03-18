@@ -234,7 +234,7 @@ export default function MainDrawer({children, nav}: {
                 <div className={'join items-center space-x-2'}>
                   <h2 className={'font-mono inline-flex flex-col items-center'}>
                     <span className={'leading-none'}>PITCH</span>
-                    <span className={'text-xs leading-none'}>1.0</span>
+                    <span className={'text-xs leading-none'}>{currentPitch}</span>
                   </h2>
                   <input type={'range'} min={0.5} max={2.0} step={0.1} value={currentPitch} className={'range range-xs'}
                          onChange={(e) => setPitch(parseFloat(e.target.value))}/>
