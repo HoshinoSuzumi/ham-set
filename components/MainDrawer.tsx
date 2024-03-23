@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {Icon} from '@iconify-icon/react';
 import {noto_sc, rubik, saira} from '@/app/fonts';
-import {Popover, Select, Space, Tooltip} from '@douyinfe/semi-ui';
+import {Button, Popover, Select, Space, Tooltip} from '@douyinfe/semi-ui';
 import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 
@@ -81,7 +81,7 @@ export default function MainDrawer({children, nav}: {
   return (
     <div className={`drawer`}>
       <input id={'main-drawer'} type={'checkbox'} className={'drawer-toggle'}/>
-      <div className={'drawer-content'}>
+      <div className={'drawer-content flex flex-col'}>
         <header
           className={'sticky top-0 inset-x-0 h-16 bg-base-100 border-b flex flex-row justify-between items-center px-2 z-50'}>
           <div className={'flex space-x-2'}>
@@ -116,13 +116,16 @@ export default function MainDrawer({children, nav}: {
               ))}
             </ul>
           </div>
-          <a className="btn btn-sm btn-ghost text-2xl" href="https://github.com/HoshinoSuzumi/PhoneticAlphabetsTraining"
-             target="_blank">
-            <Icon icon={'mdi:github'}/>
-          </a>
+          <Button
+            icon={<Icon icon={'mdi:github'} className={'text-2xl'}/>}
+            type={'tertiary'}
+            size={'large'}
+            theme={'borderless'}
+            onClick={() => window.open('https://github.com/HoshinoSuzumi/PhoneticAlphabetsTraining', '_blank')}
+          />
         </header>
 
-        <main style={{minHeight: 'calc(100vh - 4rem)'}}>
+        <main className={'min-h-[calc(100vh-4rem)]'}>
           {children}
         </main>
 
