@@ -2133,7 +2133,7 @@ const LKs = {
   ],
 }
 
-export async function getServerSideProps() {
+async function getServerSideProps() {
   const SPLIT_ITEM = '\r\n\r\n'
   try {
     const rowItems = {
