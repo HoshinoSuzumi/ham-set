@@ -2,6 +2,7 @@ import {NextRequest, NextResponse} from 'next/server';
 import * as fs from 'fs';
 import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api/schema';
 import {createHash} from 'crypto'
+import path from 'path';
 
 
 const LKs = {
@@ -2175,7 +2176,8 @@ async function getQuestionBankData(level: ExamLevel) {
   if (level !== 'A' && level !== 'B' && level !== 'C' && level !== 'FULL') {
     return void 0
   }
-  return fs.readFileSync(`/crac/questionBank/${level}.txt`, {encoding: 'utf8'}).trim()
+  // return fs.readFileSync(`/crac/questionBank/${level}.txt`, {encoding: 'utf8'}).trim()
+  return fs.readFileSync(path.join(process.cwd(), 'data', 'crac', 'questionBank', `${level}.txt`), {encoding: 'utf8'}).trim()
 }
 
 function parseItemToExamQuestion(item: string): ExamQuestion {
