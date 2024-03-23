@@ -33,11 +33,25 @@ function QuestionCard({question}: { question: ExamQuestion }) {
   )
 }
 
+function QuestionCardPlaceholder() {
+  return (
+    <div
+      className="rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4 p-4 flex flex-col gap-4 w-full">
+      <div className="skeleton h-8 w-full"></div>
+      <div className="skeleton h-4 w-32 ml-2"></div>
+      <div className="skeleton flex-1 w-full min-h-16"></div>
+    </div>
+  )
+}
+
 export default function Page() {
   const [level, setLevel] = useState<ExamLevel>('A')
   const [questions, setQuestions] = useState<ExamQuestion[] | null>(null)
   const {
     data: questionsData,
+    isLoading: questionsLoading,
+    isValidating: questionsValidating,
+    error: questionsError,
   } = useSWR<BaseResponse<ExamBankResponse>>(`/api/crac/questionBank/${level}`, {
     refreshInterval: 0,
   })
@@ -60,8 +74,16 @@ export default function Page() {
                     onClick={() => setLevel(lvl as ExamLevel)}>{lvl}</button>
           ))}
         </div>
+
         <div
           className={'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 gap-2 md:gap-4'}>
+          {questionsLoading && (
+            <>
+              <QuestionCardPlaceholder/>
+              <QuestionCardPlaceholder/>
+              <QuestionCardPlaceholder/>
+            </>
+          )}
           {questions?.map((question, index) => (
             <QuestionCard key={index} question={question}/>
           ))}

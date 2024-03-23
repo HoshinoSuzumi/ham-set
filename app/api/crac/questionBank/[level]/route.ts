@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from 'next/server';
 import * as fs from 'fs';
 import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api/schema';
 import {createHash} from 'crypto'
-import path from 'path';
+import {list} from '@vercel/blob'
 
 
 const LKs = {
@@ -2137,11 +2137,14 @@ const LKs = {
 async function getServerSideProps() {
   const SPLIT_ITEM = '\r\n\r\n'
   try {
+    const blobs = (await list({prefix: 'crac/questionBank/'})).blobs
+    const getBankBlob = (level: ExamLevel) => blobs.find(b => b.pathname === `crac/questionBank/${level}.txt`)
+    const fetchBankItem = async (url: string) => (await (await fetch(url)).text()).trim().split(SPLIT_ITEM)
     const rowItems = {
-      A: fs.readFileSync('public/crac/questionBank/A.txt', {encoding: 'utf8'}).trim().split(SPLIT_ITEM),
-      B: fs.readFileSync('public/crac/questionBank/B.txt', {encoding: 'utf8'}).trim().split(SPLIT_ITEM),
-      C: fs.readFileSync('public/crac/questionBank/C.txt', {encoding: 'utf8'}).trim().split(SPLIT_ITEM),
-      FULL: fs.readFileSync('public/crac/questionBank/FULL.txt', {encoding: 'utf8'}).trim().split(SPLIT_ITEM),
+      A: await fetchBankItem(getBankBlob('A')!.url),
+      B: await fetchBankItem(getBankBlob('B')!.url),
+      C: await fetchBankItem(getBankBlob('C')!.url),
+      FULL: await fetchBankItem(getBankBlob('FULL')!.url),
     }
 
     const banks: {
@@ -2176,8 +2179,7 @@ async function getQuestionBankData(level: ExamLevel) {
   if (level !== 'A' && level !== 'B' && level !== 'C' && level !== 'FULL') {
     return void 0
   }
-  // return fs.readFileSync(`/crac/questionBank/${level}.txt`, {encoding: 'utf8'}).trim()
-  return fs.readFileSync(path.join(process.cwd(), 'data', 'crac', 'questionBank', `${level}.txt`), {encoding: 'utf8'}).trim()
+  return fs.readFileSync(`/crac/questionBank/${level}.txt`, {encoding: 'utf8'}).trim()
 }
 
 function parseItemToExamQuestion(item: string): ExamQuestion {
