@@ -2175,7 +2175,7 @@ async function getQuestionBankData(level: ExamLevel) {
   if (level !== 'A' && level !== 'B' && level !== 'C' && level !== 'FULL') {
     return void 0
   }
-  return fs.readFileSync(`public/crac/questionBank/${level}.txt`, {encoding: 'utf8'}).trim()
+  return fs.readFileSync(`/crac/questionBank/${level}.txt`, {encoding: 'utf8'}).trim()
 }
 
 function parseItemToExamQuestion(item: string): ExamQuestion {
