@@ -162,8 +162,7 @@ function QuestionCard({
                 </span>
               </div>
               <div className={'w-full text-sm flex justify-end items-center gap-2'}>
-                <div onClick={() => setModalVisible(true)}
-                     className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
+                <div className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
                   <Icon icon={'tabler:clock-edit'} className={'text-base'}/>
                   <span className={`text-xs ${noto_sc.className}`}>
                     {dayjs(annotation.create_at).fromNow()}
