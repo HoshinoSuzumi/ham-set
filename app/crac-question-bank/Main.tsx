@@ -246,7 +246,7 @@ export default function Main() {
                     onClick={() => setLevel(lvl as ExamLevel)}>{lvl}</button>
           ))}
         </div>
-        <p className={`font-bold ${noto_sc.className}`}>不要吐槽上面的按钮了，目前在开发阶段，这玩意是测试用的</p>
+        <p className={`font-bold ${noto_sc.className}`}>{level}类({questions?.length || 'N/A'}题)</p>
 
         <div
           className={'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 gap-2 md:gap-4'}>
