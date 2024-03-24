@@ -83,7 +83,7 @@ export default function MainDrawer({children, nav}: {
       <input id={'main-drawer'} type={'checkbox'} className={'drawer-toggle'}/>
       <div className={'drawer-content flex flex-col'}>
         <header
-          className={'sticky top-0 inset-x-0 h-16 bg-base-100 border-b flex flex-row justify-between items-center px-2 z-50'}>
+          className={'sticky top-0 inset-x-0 h-16 bg-base-100 border-b dark:border-b-neutral-700 flex flex-row justify-between items-center px-2 z-50'}>
           <div className={'flex space-x-2'}>
             <div className={'flex-none lg:hidden'}>
               <label htmlFor={'main-drawer'} className={'btn btn-ghost drawer-button'}>

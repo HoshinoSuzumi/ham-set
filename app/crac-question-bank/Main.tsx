@@ -4,7 +4,7 @@ import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api
 import {useEffect, useState} from 'react';
 import useSWR from 'swr';
 import {Annotation, getLkAnnotations, setLkAnnotation} from '@/app/actions';
-import {noto_sc, saira} from '@/app/fonts';
+import {noto_sc, rubik, saira} from '@/app/fonts';
 import {Icon} from '@iconify-icon/react';
 import {Banner, Button, Input, Modal, Notification, TextArea} from '@douyinfe/semi-ui';
 
@@ -89,10 +89,10 @@ function QuestionCard({
           </div>
         </div>
         <div
-          className={`rounded-lg bg-neutral-100 border border-neutral-content/80 dark:border-neutral-content/30 p-4 mt-2 h-full ${noto_sc.className}`}>
+          className={`rounded-lg bg-neutral-100 dark:bg-neutral border border-neutral-content/80 dark:border-neutral-content/30 p-4 mt-2 h-full ${noto_sc.className}`}>
           {question.options[0]}
           {annotation && (
-            <div className={'border-t mt-4 pt-2'}>
+            <div className={'border-t dark:border-t-neutral-600/80 mt-4 pt-2'}>
               <div className={'text-sm inline-flex flex-col gap-1'}>
                 <div className={`font-bold text-accent inline-flex justify-between items-center gap-2`}>
                   <div className={'inline-flex items-center gap-0.5'}>
@@ -222,10 +222,11 @@ export default function Main() {
         <div
           className={'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 md:gap-4'}>
           {['A', 'B', 'C', 'FULL'].map((lvl) => (
-            <button className={`btn ${level === lvl && 'btn-active'}`} key={lvl}
+            <button className={`btn ${rubik.className} ${level === lvl && 'btn-primary'}`} key={lvl}
                     onClick={() => setLevel(lvl as ExamLevel)}>{lvl}</button>
           ))}
         </div>
+        <p className={`font-bold ${noto_sc.className}`}>不要吐槽上面的按钮了，目前在开发阶段，这玩意是测试用的</p>
 
         <div
           className={'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 gap-2 md:gap-4'}>
