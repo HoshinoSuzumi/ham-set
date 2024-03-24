@@ -3,10 +3,15 @@
 import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api/schema';
 import {useEffect, useState} from 'react';
 import useSWR from 'swr';
-import {Annotation, getLkAnnotations, setLkAnnotation} from '@/app/actions';
+import {Annotation, getAnnotationsByLk, getAnnotationsList, newAnnotation, upvoteAnnotation} from '@/app/actions';
 import {noto_sc, rubik, saira} from '@/app/fonts';
 import {Icon} from '@iconify-icon/react';
 import {Banner, Button, Input, Modal, Notification, Popover, TextArea} from '@douyinfe/semi-ui';
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import {IconSpinner} from "@/components/Icon/IconSpinner";
+
+require('dayjs/locale/zh-cn')
 
 function QuestionCard({
   question,
@@ -17,12 +22,21 @@ function QuestionCard({
   annotation?: Annotation,
   onAnnotationChange?: (lk: string, annotation: Annotation) => void,
 }) {
+  dayjs.extend(relativeTime)
+  dayjs.locale('zh-cn')
   const [modalVisible, setModalVisible] = useState(false)
+  const [listModalVisible, setListModalVisible] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [modalForm, setModalForm] = useState({
     author: annotation?.author,
     annotation: annotation?.annotation,
   })
+  const [allAnnotations, setAllAnnotations] = useState<Annotation[]>([])
+
+  async function fetchAnnotations() {
+    const gotAnnotations = await getAnnotationsByLk(question.id)
+    setAllAnnotations(gotAnnotations)
+  }
 
   function handleEdit(
     lk: string,
@@ -43,14 +57,25 @@ function QuestionCard({
       return
     }
     setSubmitting(true)
-    setLkAnnotation(question.id, content, author).then(() => {
+    newAnnotation(question.id, content, author).then(() => {
       setSubmitting(false)
       setModalVisible(false)
-      onAnnotationChange?.(lk, {
-        lk,
-        author,
-        annotation: content,
-      })
+      if (annotation) {
+        onAnnotationChange?.(lk, {
+          ...annotation,
+          annotation: content,
+        })
+      } else {
+        onAnnotationChange?.(lk, {
+          id: 0,
+          lk: lk,
+          annotation: content,
+          author: author,
+          create_at: Date.now(),
+          update_at: Date.now(),
+          upvote: 0
+        })
+      }
     }).catch(() => {
       setSubmitting(false)
       Notification.error({
@@ -76,12 +101,12 @@ function QuestionCard({
               </div>
               {question.picture && (
                 <Popover content={(
-                  <div className={'hidden md:flex justify-center items-center'}>
+                  <div className={'flex justify-center items-center'}>
                     <img src={`/crac/images/${question.picture}`} alt={question.question}
                          className={'w-1/2 h-auto rounded-lg'}/>
                   </div>
                 )} trigger={'hover'} showArrow>
-                  <div className={'flex items-center gap-1 cursor-pointer'}>
+                  <div className={'hidden md:flex items-center gap-1 cursor-pointer'}>
                     <Icon icon={'tabler:photo'} className={'text-xl'}/>
                     <span
                       className={`font-bold text-base text-accent/80 underline underline-offset-4 ${saira.className}`}>Picture</span>
@@ -123,8 +148,8 @@ function QuestionCard({
                     </svg>
                     友台解析
                     <span className={'text-xs mt-0.5 text-base-content/30'}>
-                    by {annotation.author || '匿名'}
-                  </span>
+                      by {annotation.author || '匿名'}
+                    </span>
                     <div onClick={() => setModalVisible(true)}
                          className={'flex items-center gap-0.5 font-bold text-base-content/50 opacity-100 md:opacity-0 group-hover:opacity-100 transition cursor-pointer'}>
                       <Icon icon={'tabler:edit'}/>
@@ -133,8 +158,36 @@ function QuestionCard({
                   </div>
                 </div>
                 <span className={'flex-1 indent-4'}>
-                {annotation.annotation}
-              </span>
+                  {annotation.annotation}
+                </span>
+              </div>
+              <div className={'w-full text-sm flex justify-end items-center gap-2'}>
+                <div onClick={() => setModalVisible(true)}
+                     className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
+                  <Icon icon={'tabler:clock-edit'} className={'text-base'}/>
+                  <span className={`text-xs ${noto_sc.className}`}>
+                    {dayjs(annotation.create_at).fromNow()}
+                  </span>
+                </div>
+                <div onClick={() => {
+                  (async () => await fetchAnnotations())()
+                  setListModalVisible(true)
+                }}
+                     className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
+                  <Icon icon={'tabler:list-details'} className={'text-base'}/>
+                  <span className={`text-xs ${noto_sc.className}`}>所有解析</span>
+                </div>
+                <div onClick={() => {
+                  (async () => await upvoteAnnotation(annotation.id))()
+                  onAnnotationChange?.(question.id, {
+                    ...annotation,
+                    upvote: annotation.upvote + 1,
+                  })
+                }}
+                     className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
+                  <Icon icon={'tabler:arrow-big-up-line'} className={'text-base'}/>
+                  <span className={`${rubik.className}`}>{annotation.upvote}</span>
+                </div>
               </div>
             </div>
           )}
@@ -196,6 +249,62 @@ function QuestionCard({
           </div>
         </div>
       </Modal>
+      <Modal
+        title={`${question.id} 的所有解析`}
+        visible={listModalVisible}
+        centered
+        footer={null}
+        onCancel={() => setListModalVisible(false)}
+      >
+        <ul className={'flex flex-col pb-6 gap-2 max-h-96 overflow-y-auto'}>
+          {allAnnotations.length === 0 && (
+            <li className={'flex justify-center items-center gap-2 bg-neutral-100 dark:bg-neutral-700 rounded p-2'}>
+              <IconSpinner className={'text-lg'}/>
+              <span className={`text-sm ${rubik.className}`}>Loading...</span>
+            </li>
+          )}
+          {allAnnotations.sort(
+            (a, b) => b.upvote - a.upvote
+          ).map((anno, index) => (
+            <li key={index} className={'flex flex-col gap-2 bg-neutral-100 dark:bg-neutral-700 rounded p-2'}>
+              <div className={'flex justify-between items-center gap-2 text-sm text-base-content/80'}>
+                <div className={'flex items-center gap-2'}>
+                  <div className={'flex items-center gap-1'}>
+                    <Icon icon={'tabler:user-circle'} className={'text-base'}/>
+                    <span className={`text-xs font-bold ${noto_sc.className}`}>
+                      {anno.author || '匿名'}
+                    </span>
+                  </div>
+                  <div className={'flex items-center gap-1'}>
+                    <Icon icon={'tabler:clock-edit'} className={'text-base'}/>
+                    <span className={`text-xs ${noto_sc.className}`}>
+                      {dayjs(anno.create_at).fromNow()}
+                    </span>
+                  </div>
+                </div>
+                <div className={'flex items-center gap-1 cursor-pointer'}
+                     onClick={() => {
+                       (async () => await upvoteAnnotation(anno.id))()
+                       setAllAnnotations(allAnnotations.map(item => item.id === anno.id ? {
+                         ...anno,
+                         upvote: anno.upvote + 1
+                       } : item))
+                     }}>
+                  <Icon icon={'tabler:arrow-big-up-line'} className={'text-base'}/>
+                  <span className={`${
+                    anno.upvote === Math.max(...allAnnotations.map(item => item.upvote)) && 'font-bold'
+                  } ${rubik.className}`}>
+                    {anno.upvote}
+                  </span>
+                </div>
+              </div>
+              <div className={`text-sm text-base-content ${noto_sc.className}`}>
+                {anno.annotation}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Modal>
     </>
 
   )
@@ -231,7 +340,7 @@ export default function Main() {
   }, [questionsData?.data]);
   useEffect(() => {
     (async () => {
-      const gotAnnotations = await getLkAnnotations()
+      const gotAnnotations = await getAnnotationsList()
       setAnnotations(gotAnnotations)
     })()
   }, []);
