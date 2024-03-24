@@ -9,7 +9,9 @@ import {Icon} from '@iconify-icon/react';
 import {Banner, Button, Input, Modal, Notification, Popover, TextArea} from '@douyinfe/semi-ui';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import timezone from "dayjs/plugin/timezone";
 import {IconSpinner} from "@/components/Icon/IconSpinner";
+import Image from "next/image";
 
 require('dayjs/locale/zh-cn')
 
@@ -23,7 +25,9 @@ function QuestionCard({
   onAnnotationChange?: (lk: string, annotation: Annotation) => void,
 }) {
   dayjs.extend(relativeTime)
+  dayjs.extend(timezone)
   dayjs.locale('zh-cn')
+  dayjs.tz.setDefault('Asia/Shanghai')
   const [modalVisible, setModalVisible] = useState(false)
   const [listModalVisible, setListModalVisible] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -102,7 +106,7 @@ function QuestionCard({
               {question.picture && (
                 <Popover content={(
                   <div className={'flex justify-center items-center'}>
-                    <img src={`/crac/images/${question.picture}`} alt={question.question}
+                    <Image src={`/crac/images/${question.picture}`} alt={question.question}
                          className={'w-1/2 h-auto rounded-lg'}/>
                   </div>
                 )} trigger={'hover'} showArrow>
