@@ -121,7 +121,7 @@ export default function MainDrawer({children, nav}: {
             type={'tertiary'}
             size={'large'}
             theme={'borderless'}
-            onClick={() => window.open('https://github.com/HoshinoSuzumi/PhoneticAlphabetsTraining', '_blank')}
+            onClick={() => window.open('https://github.com/HoshinoSuzumi/ham-set', '_blank')}
           />
         </header>
 
