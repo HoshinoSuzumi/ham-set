@@ -250,14 +250,10 @@ export default function Main() {
 
         <div
           className={'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 gap-2 md:gap-4'}>
-          {questionsLoading && (
-            <>
-              <QuestionCardPlaceholder/>
-              <QuestionCardPlaceholder/>
-              <QuestionCardPlaceholder/>
-            </>
-          )}
-          {questions?.map((question, index) => (
+          {questionsLoading && Array.from({length: 20}).map((_, index) => (
+            <QuestionCardPlaceholder key={index}/>
+          ))}
+          {!questionsLoading && questions?.map((question, index) => (
             <QuestionCard key={index} question={question} onAnnotationChange={(lk, annotation) => {
               setAnnotations(annotations.find(anno => anno.lk === lk) ? annotations.map(anno => anno.lk === lk ? annotation : anno) : [...annotations, annotation])
             }} annotation={annotations?.filter(item => item.lk === question.id)[0]}/>
