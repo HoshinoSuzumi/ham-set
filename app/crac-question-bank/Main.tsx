@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import {Annotation, getLkAnnotations, setLkAnnotation} from '@/app/actions';
 import {noto_sc, rubik, saira} from '@/app/fonts';
 import {Icon} from '@iconify-icon/react';
-import {Banner, Button, Input, Modal, Notification, TextArea} from '@douyinfe/semi-ui';
+import {Banner, Button, Input, Modal, Notification, Popover, TextArea} from '@douyinfe/semi-ui';
 
 function QuestionCard({
   question,
@@ -74,9 +74,23 @@ function QuestionCard({
                 <Icon icon={'tabler:square-rounded-letter-q'} className={'text-xl'}/>
                 <span className={`font-bold text-base ${saira.className}`}>{question.id}</span>
               </div>
+              {question.picture && (
+                <Popover content={(
+                  <div className={'hidden md:flex justify-center items-center'}>
+                    <img src={`/crac/images/${question.picture}`} alt={question.question}
+                         className={'w-1/2 h-auto rounded-lg'}/>
+                  </div>
+                )} trigger={'hover'} showArrow>
+                  <div className={'flex items-center gap-1 cursor-pointer'}>
+                    <Icon icon={'tabler:photo'} className={'text-xl'}/>
+                    <span
+                      className={`font-bold text-base text-accent/80 underline underline-offset-4 ${saira.className}`}>Picture</span>
+                  </div>
+                </Popover>
+              )}
               <div className={'flex items-center gap-1'}>
                 <Icon icon={'tabler:book-2'} className={'text-xl'}/>
-                <span className={`font-bold text-base ${noto_sc.className}`}>{question.includeIn.join(',')}</span>
+                <span className={`font-bold text-base ${saira.className}`}>{question.includeIn.join(',')}</span>
               </div>
             </div>
             {!annotation && (
@@ -88,6 +102,12 @@ function QuestionCard({
             )}
           </div>
         </div>
+        {question.picture && (
+          <div className={'flex md:hidden justify-center items-center'}>
+            <img src={`/crac/images/${question.picture}`} alt={question.question}
+                 className={'w-full h-auto rounded-lg'}/>
+          </div>
+        )}
         <div
           className={`rounded-lg bg-neutral-100 dark:bg-neutral border border-neutral-content/80 dark:border-neutral-content/30 p-4 mt-2 h-full ${noto_sc.className}`}>
           {question.options[0]}
