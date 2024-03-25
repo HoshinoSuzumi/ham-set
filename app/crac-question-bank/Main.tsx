@@ -133,7 +133,7 @@ function QuestionCard({
         </div>
         {question.picture && (
           <div className={'flex md:hidden justify-center items-center'}>
-            <img src={`/crac/images/${question.picture}`} alt={question.question}
+            <Image src={`/crac/images/${question.picture}`} alt={question.question}
                  className={'w-full h-auto rounded-lg'}/>
           </div>
         )}
