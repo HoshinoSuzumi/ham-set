@@ -39,6 +39,15 @@ export async function getAnnotationsList(): Promise<Annotation[]> {
   return rows
 }
 
-export async function upvoteAnnotation(id: number) {
-  return sql<Annotation>`UPDATE annotations SET upvote = upvote + 1 WHERE id = ${id}`
+export async function upvoteAnnotation(
+  id: number,
+  validate: GeetestCaptchaSuccess
+) {
+  return new Promise((resolve, reject) => {
+    geetestValidate(validate).then(success => {
+      if (success) {
+        resolve(sql<Annotation>`UPDATE annotations SET upvote = upvote + 1 WHERE id = ${id}`)
+      } else reject()
+    }).catch(reject)
+  })
 }

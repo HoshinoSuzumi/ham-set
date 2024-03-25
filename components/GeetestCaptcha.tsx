@@ -70,9 +70,9 @@ export default function GeetestCaptcha({
         if (captchaConfig?.product !== 'bind') {
           captcha.appendTo('#geetest-captcha')
         } else {
-          const btn = document.querySelector<HTMLButtonElement>(selectorWhenBind || 'undefined')
-          if (btn) {
-            btn.onclick = () => {
+          const trigger = document.querySelector<HTMLButtonElement>(selectorWhenBind || 'undefined')
+          if (trigger) {
+            trigger.onclick = () => {
               captcha.showCaptcha()
             }
           }

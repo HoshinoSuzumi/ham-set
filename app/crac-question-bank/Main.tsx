@@ -112,6 +112,29 @@ function QuestionCard({
     )
   }
 
+  function handleUpvoteValidateSuccess(
+    question: ExamQuestion,
+    annotation: Annotation,
+    validate: GeetestCaptchaSuccess
+  ) {
+    (async () => await upvoteAnnotation(annotation.id, validate))()
+    onAnnotationChange?.(question.id, {
+      ...annotation,
+      upvote: annotation.upvote + 1,
+    })
+  }
+
+  function handleUpvoteInModalValidateSuccess(
+    annotation: Annotation,
+    validate: GeetestCaptchaSuccess
+  ) {
+    (async () => await upvoteAnnotation(annotation.id, validate))()
+    setAllAnnotations(allAnnotations.map(item => item.id === annotation.id ? {
+      ...annotation,
+      upvote: annotation.upvote + 1,
+    } : item))
+  }
+
   return (
     <>
       <div
@@ -211,14 +234,18 @@ function QuestionCard({
                   <IconNoObserve icon={'tabler:list-details'} className={'text-base'}/>
                   <span className={`text-xs ${noto_sc.className}`}>所有解析</span>
                 </div>
-                <div onClick={() => {
-                  (async () => await upvoteAnnotation(annotation.id))()
-                  onAnnotationChange?.(question.id, {
-                    ...annotation,
-                    upvote: annotation.upvote + 1,
-                  })
-                }}
-                     className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
+                <GeetestCaptcha
+                  captchaConfig={{
+                    captchaId: '85fd23c240abbea32f8d469d923b6639',
+                    product: 'bind',
+                  }}
+                  selectorWhenBind={`#upvote-button-${question.id}`}
+                  onSuccess={validate => handleUpvoteValidateSuccess(question, annotation, validate)}
+                />
+                <div
+                  id={`upvote-button-${question.id}`}
+                  className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}
+                >
                   <IconNoObserve icon={'tabler:arrow-big-up-line'} className={'text-base'}/>
                   <span className={`${rubik.className}`}>{annotation.upvote}</span>
                 </div>
@@ -313,14 +340,18 @@ function QuestionCard({
                     </span>
                   </div>
                 </div>
-                <div className={'flex items-center gap-1 cursor-pointer'}
-                     onClick={() => {
-                       (async () => await upvoteAnnotation(anno.id))()
-                       setAllAnnotations(allAnnotations.map(item => item.id === anno.id ? {
-                         ...anno,
-                         upvote: anno.upvote + 1,
-                       } : item))
-                     }}>
+                <GeetestCaptcha
+                  captchaConfig={{
+                    captchaId: '85fd23c240abbea32f8d469d923b6639',
+                    product: 'bind',
+                  }}
+                  selectorWhenBind={`#upvote-button-modal-${anno.id}`}
+                  onSuccess={validate => handleUpvoteInModalValidateSuccess(anno, validate)}
+                />
+                <div
+                  id={`upvote-button-modal-${anno.id}`}
+                  className={'flex items-center gap-1 cursor-pointer'}
+                >
                   <IconNoObserve icon={'tabler:arrow-big-up-line'} className={'text-base'}/>
                   <span className={`${
                     anno.upvote === Math.max(...allAnnotations.map(item => item.upvote)) && 'font-bold'
