@@ -2,6 +2,7 @@
 
 import LetterCard, {Phonetic} from '@/app/callsign-dictation/LetterCard';
 import {noto_sc} from '@/app/fonts';
+import GeetestCaptcha from "@/components/GeetestCaptcha";
 
 export default function Home() {
   const TAG = Object.freeze({
@@ -157,6 +158,9 @@ export default function Home() {
             ))}
           </p>
         </div>
+        <GeetestCaptcha captchaConfig={{
+          captchaId: '85fd23c240abbea32f8d469d923b6639'
+        }}/>
         <div
           className={'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 md:gap-4'}>
           {Object.keys(letter_dict).map((letter) => (

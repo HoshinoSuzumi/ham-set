@@ -63,6 +63,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+    {/*<head>*/}
+    {/*  <title>HAM Set</title>*/}
+    {/*  <Script src="//static.geetest.com/v4/gt4.js"></Script>*/}
+    {/*</head>*/}
     <SWRProvider>
       <body className={`${rubik.className}`}>
       <SpeechSynthesisProvider>
