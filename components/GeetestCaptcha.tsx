@@ -75,9 +75,15 @@ export default function GeetestCaptcha({
         if (captchaConfig?.product !== 'bind') {
           captcha.appendTo('#geetest-captcha')
         } else {
-          document.querySelector(selectorWhenBind || 'undefined')?.addEventListener('click', () => {
-            captcha.showCaptcha()
-          })
+          const btn = document.querySelector<HTMLButtonElement>(selectorWhenBind || 'undefined')
+          if (btn) {
+            btn.onclick = () => {
+              captcha.showCaptcha()
+            }
+          }
+          // btn?.addEventListener('click', () => {
+          //   captcha.showCaptcha()
+          // })
         }
 
         captcha.onSuccess(function () {

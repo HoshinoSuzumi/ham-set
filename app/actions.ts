@@ -2,6 +2,7 @@
 
 // @ts-ignore
 import {sql} from '@vercel/postgres';
+import {GeetestCaptchaSuccess, geetestValidate} from "@/app/geetest";
 
 export interface Annotation {
   id: number
@@ -13,8 +14,19 @@ export interface Annotation {
   upvote: number
 }
 
-export async function newAnnotation(lk: string, annotation: string, author: string | null) {
-  return sql<Annotation>`INSERT INTO annotations (lk, annotation, author) VALUES (${lk}, ${annotation}, ${author})`
+export async function newAnnotation(
+  lk: string,
+  annotation: string,
+  author: string | null,
+  validate: GeetestCaptchaSuccess
+) {
+  return new Promise((resolve, reject) => {
+    geetestValidate(validate).then(success => {
+      if (success) {
+        resolve(sql<Annotation>`INSERT INTO annotations (lk, annotation, author) VALUES (${lk}, ${annotation}, ${author})`)
+      } else reject()
+    }).catch(reject)
+  })
 }
 
 export async function getAnnotationsByLk(lk: string): Promise<Annotation[]> {

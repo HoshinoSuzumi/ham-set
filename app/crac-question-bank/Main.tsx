@@ -1,7 +1,7 @@
 'use client'
 
 import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api/schema';
-import {ReactNode, Suspense, useEffect, useState} from 'react';
+import {ReactNode, Suspense, useEffect, useRef, useState} from 'react';
 import useSWR from 'swr';
 import {Annotation, getAnnotationsByLk, getAnnotationsList, newAnnotation, upvoteAnnotation} from '@/app/actions';
 import {noto_sc, rubik, saira} from '@/app/fonts';
@@ -24,6 +24,7 @@ import {IconSpinner} from '@/components/Icon/IconSpinner';
 import Image from 'next/image';
 import IconNoObserve from '@/components/IconNoObserve';
 import GeetestCaptcha from '@/components/GeetestCaptcha';
+import {GeetestCaptchaSuccess} from "@/app/geetest";
 
 require('dayjs/locale/zh-cn')
 
@@ -44,10 +45,6 @@ function QuestionCard({
   const [modalVisible, setModalVisible] = useState(false)
   const [listModalVisible, setListModalVisible] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [modalForm, setModalForm] = useState({
-    author: annotation?.author,
-    annotation: annotation?.annotation,
-  })
   const [allAnnotations, setAllAnnotations] = useState<Annotation[]>([])
 
   async function fetchAnnotations() {
@@ -59,22 +56,23 @@ function QuestionCard({
     lk: string,
     author: string | null,
     content: string,
+    validate: GeetestCaptchaSuccess
   ) {
-    if (content?.length > 80) {
-      Notification.error({
-        title: '内容过长',
-        content: '内容不超过 80 个字符',
-      })
-      return
-    } else if (!content) {
+    if (!content) {
       Notification.error({
         title: '内容为空',
         content: '请输入内容',
       })
       return
+    } else if (content?.length > 80) {
+      Notification.error({
+        title: '内容过长',
+        content: '内容不超过 80 个字符',
+      })
+      return
     }
     setSubmitting(true)
-    newAnnotation(question.id, content, author).then(() => {
+    newAnnotation(question.id, content, author, validate).then(() => {
       setSubmitting(false)
       setModalVisible(false)
       if (annotation) {
@@ -100,6 +98,18 @@ function QuestionCard({
         content: '请稍后再试',
       })
     })
+  }
+
+  const inputAuthor = useRef<HTMLInputElement | null>(null)
+  const inputAnnotation = useRef<HTMLTextAreaElement | null>(null)
+
+  function handleValidateSuccess(validate: GeetestCaptchaSuccess) {
+    handleEdit(
+      question.id,
+      inputAuthor.current?.value || null,
+      inputAnnotation.current?.value || '',
+      validate
+    )
   }
 
   return (
@@ -226,29 +236,17 @@ function QuestionCard({
         onCancel={() => setModalVisible(false)}
       >
         <div className={`pb-6 flex flex-col gap-2 ${noto_sc.className}`}>
-          <Input prefix="呼号/昵称" placeholder={'留空则为匿名'}
-                 defaultValue={annotation?.author as string}
+          <Input ref={inputAuthor} prefix="呼号/昵称" placeholder={'留空则为匿名'}
                  disabled={submitting}
                  showClear
-                 onInput={
-                   (e) => setModalForm({
-                     ...modalForm,
-                     author: e.currentTarget.value,
-                   })
-                 }
+                 defaultValue={annotation?.author || ''}
           ></Input>
-          <TextArea placeholder={'请确保内容的正确和中立'}
+          <TextArea ref={inputAnnotation} placeholder={'请确保内容的正确和中立'}
                     className={'!w-full'}
                     maxCount={80}
                     disabled={submitting}
                     showClear
-                    defaultValue={annotation?.annotation}
-                    onInput={
-                      (e) => setModalForm({
-                        ...modalForm,
-                        annotation: e.currentTarget.value,
-                      })
-                    }
+                    defaultValue={annotation?.annotation || ''}
           />
           <Banner
             type={'info'}
@@ -263,20 +261,20 @@ function QuestionCard({
               product: 'bind',
             }}
             selectorWhenBind={'#submit-button'}
-            onSuccess={validate => {
-              console.log(validate)
-            }}
+            onSuccess={validate => handleValidateSuccess(validate)}
           />
           <div className={'flex gap-2'}>
             <Button block id={'submit-button'}
-                    loading={submitting}
-                    onClick={() => handleEdit(question.id, modalForm.author || null, modalForm.annotation as string)}>
+                    loading={submitting}>
               提交
             </Button>
             <Button type={'tertiary'}
                     block
                     disabled={submitting}
-                    onClick={() => setModalVisible(false)}>
+                    onClick={() => {
+                      setModalVisible(false)
+                    }}
+            >
               取消
             </Button>
           </div>
