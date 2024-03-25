@@ -37,8 +37,10 @@ declare global {
 
 export default function GeetestCaptcha({
   captchaConfig,
+  handler,
 }: {
-  captchaConfig: GeetestUserConfig;
+  captchaConfig: GeetestUserConfig
+  handler: GeetestHandler
 }) {
   const targetElement = useRef(null)
   useEffect(() => {
@@ -50,6 +52,7 @@ export default function GeetestCaptcha({
     script.onload = () => {
       window.initGeetest4(captchaConfig, captcha => {
         captcha.appendTo('#geetest-captcha')
+        handler(captcha)
       })
     }
   }, [captchaConfig])

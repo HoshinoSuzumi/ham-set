@@ -23,6 +23,7 @@ import timezone from 'dayjs/plugin/timezone';
 import {IconSpinner} from '@/components/Icon/IconSpinner';
 import Image from 'next/image';
 import IconNoObserve from '@/components/IconNoObserve';
+import GeetestCaptcha from '@/components/GeetestCaptcha';
 
 require('dayjs/locale/zh-cn')
 
@@ -273,6 +274,14 @@ function QuestionCard({
             bordered
             closeIcon={null}
             description="请确保提交内容的正确和中立，请勿恶意修改。题目解析由大家共建"
+          />
+          <GeetestCaptcha
+            captchaConfig={{
+              captchaId: '85fd23c240abbea32f8d469d923b6639',
+            }}
+            handler={captcha => {
+              console.log(captcha.getValidate())
+            }}
           />
           <div className={'flex gap-2'}>
             <Button block
