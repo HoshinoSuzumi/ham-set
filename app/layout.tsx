@@ -4,6 +4,7 @@ import MainDrawer, {NavListItem} from '@/components/MainDrawer';
 import {SpeechSynthesisProvider} from '@/contexts/SpeechSynthesisContext';
 import {rubik} from '@/app/fonts';
 import {SWRProvider} from '@/app/swr-provider';
+import {Analytics} from "@vercel/analytics/react";
 
 export default function RootLayout({
   children,
@@ -69,6 +70,7 @@ export default function RootLayout({
           {children}
         </MainDrawer>
       </SpeechSynthesisProvider>
+      <Analytics mode={'production'}/>
       </body>
     </SWRProvider>
     </html>
