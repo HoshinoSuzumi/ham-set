@@ -264,8 +264,7 @@ function QuestionCard({
             description="请确保提交内容的正确和中立，请勿恶意修改。题目解析由大家共建"
           />
           <div className={'flex gap-2'}>
-            <Button type={'primary'}
-                    block
+            <Button block
                     loading={submitting}
                     onClick={() => handleEdit(question.id, modalForm.author || null, modalForm.annotation as string)}>
               提交
