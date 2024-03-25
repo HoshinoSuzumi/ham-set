@@ -362,7 +362,7 @@ export default function Main() {
     isLoading: questionsLoading,
     isValidating: questionsValidating,
     error: questionsError,
-  } = useSWR<BaseResponse<ExamBankResponse>>(`/api/crac/questionBank/${level}`, {
+  } = useSWR<BaseResponse<ExamBankResponse>>(`/api/crac/question-bank/${level}`, {
     refreshInterval: 0,
   })
   useEffect(() => {
