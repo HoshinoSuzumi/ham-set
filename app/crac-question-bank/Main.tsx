@@ -1,17 +1,28 @@
 'use client'
 
 import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api/schema';
-import {useEffect, useState} from 'react';
+import {ReactNode, Suspense, useEffect, useState} from 'react';
 import useSWR from 'swr';
 import {Annotation, getAnnotationsByLk, getAnnotationsList, newAnnotation, upvoteAnnotation} from '@/app/actions';
 import {noto_sc, rubik, saira} from '@/app/fonts';
-import {Icon} from '@iconify-icon/react';
-import {Banner, Button, Input, Modal, Notification, Popover, TextArea} from '@douyinfe/semi-ui';
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import timezone from "dayjs/plugin/timezone";
-import {IconSpinner} from "@/components/Icon/IconSpinner";
-import Image from "next/image";
+import {
+  Banner,
+  Button,
+  Input,
+  Modal,
+  Notification,
+  Pagination,
+  Popover,
+  Select,
+  Switch,
+  TextArea,
+} from '@douyinfe/semi-ui';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import timezone from 'dayjs/plugin/timezone';
+import {IconSpinner} from '@/components/Icon/IconSpinner';
+import Image from 'next/image';
+import IconNoObserve from '@/components/IconNoObserve';
 
 require('dayjs/locale/zh-cn')
 
@@ -57,8 +68,8 @@ function QuestionCard({
     </svg>`;
 
   const toBase64 = (str: string) =>
-    typeof window === "undefined"
-      ? Buffer.from(str).toString("base64")
+    typeof window === 'undefined'
+      ? Buffer.from(str).toString('base64')
       : window.btoa(str);
 
   function handleEdit(
@@ -96,7 +107,7 @@ function QuestionCard({
           author: author,
           create_at: Date.now(),
           update_at: Date.now(),
-          upvote: 0
+          upvote: 0,
         })
       }
     }).catch(() => {
@@ -119,7 +130,7 @@ function QuestionCard({
           <div className={'flex justify-between items-center text-base-content/70'}>
             <div className={'flex items-center gap-2'}>
               <div className={'flex items-center gap-1'}>
-                <Icon icon={'tabler:square-rounded-letter-q'} className={'text-xl'}/>
+                <IconNoObserve icon={'tabler:square-rounded-letter-q'} className={'text-xl'} observe={false}/>
                 <span className={`font-bold text-base ${saira.className}`}>{question.id}</span>
               </div>
               {question.picture && (
@@ -134,21 +145,21 @@ function QuestionCard({
                   </div>
                 )} trigger={'hover'} showArrow>
                   <div className={'hidden md:flex items-center gap-1 cursor-pointer'}>
-                    <Icon icon={'tabler:photo'} className={'text-xl'}/>
+                    <IconNoObserve icon={'tabler:photo'} className={'text-xl'}/>
                     <span
                       className={`font-bold text-base text-accent/80 underline underline-offset-4 ${saira.className}`}>Picture</span>
                   </div>
                 </Popover>
               )}
               <div className={'flex items-center gap-1'}>
-                <Icon icon={'tabler:book-2'} className={'text-xl'}/>
+                <IconNoObserve icon={'tabler:book-2'} className={'text-xl'}/>
                 <span className={`font-bold text-base ${saira.className}`}>{question.includeIn.join(',')}</span>
               </div>
             </div>
             {!annotation && (
               <div onClick={() => setModalVisible(true)}
                    className={'flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition cursor-pointer'}>
-                <Icon icon={'tabler:edit'} className={'text-xl'}/>
+                <IconNoObserve icon={'tabler:edit'} className={'text-xl'}/>
                 <span className={`font-bold text-base ${noto_sc.className}`}>编写解析</span>
               </div>
             )}
@@ -165,8 +176,8 @@ function QuestionCard({
           </div>
         )}
         <div
-          className={`rounded-lg bg-neutral-100 dark:bg-neutral border border-neutral-content/80 dark:border-neutral-content/30 p-4 mt-2 h-full ${noto_sc.className}`}>
-          {question.options[0]}
+          className={`flex flex-col rounded-lg bg-neutral-100 dark:bg-neutral border border-neutral-content/80 dark:border-neutral-content/30 p-4 mt-2 h-full ${noto_sc.className}`}>
+          <span className={'flex-1 font-medium'}>{question.options[0]}</span>
           {annotation && (
             <div className={'border-t dark:border-t-neutral-600/80 mt-4 pt-2'}>
               <div className={'text-sm inline-flex flex-col gap-1'}>
@@ -183,7 +194,7 @@ function QuestionCard({
                     </span>
                     <div onClick={() => setModalVisible(true)}
                          className={'flex items-center gap-0.5 font-bold text-base-content/50 opacity-100 md:opacity-0 group-hover:opacity-100 transition cursor-pointer'}>
-                      <Icon icon={'tabler:edit'}/>
+                      <IconNoObserve icon={'tabler:edit'}/>
                       <span className={`${noto_sc.className}`}>编辑</span>
                     </div>
                   </div>
@@ -194,7 +205,7 @@ function QuestionCard({
               </div>
               <div className={'w-full text-sm flex justify-end items-center gap-2'}>
                 <div className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
-                  <Icon icon={'tabler:clock-edit'} className={'text-base'}/>
+                  <IconNoObserve icon={'tabler:clock-edit'} className={'text-base'}/>
                   <span className={`text-xs ${noto_sc.className}`}>
                     {dayjs(annotation.create_at).fromNow()}
                   </span>
@@ -204,7 +215,7 @@ function QuestionCard({
                   setListModalVisible(true)
                 }}
                      className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
-                  <Icon icon={'tabler:list-details'} className={'text-base'}/>
+                  <IconNoObserve icon={'tabler:list-details'} className={'text-base'}/>
                   <span className={`text-xs ${noto_sc.className}`}>所有解析</span>
                 </div>
                 <div onClick={() => {
@@ -215,7 +226,7 @@ function QuestionCard({
                   })
                 }}
                      className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
-                  <Icon icon={'tabler:arrow-big-up-line'} className={'text-base'}/>
+                  <IconNoObserve icon={'tabler:arrow-big-up-line'} className={'text-base'}/>
                   <span className={`${rubik.className}`}>{annotation.upvote}</span>
                 </div>
               </div>
@@ -293,19 +304,19 @@ function QuestionCard({
             </li>
           )}
           {allAnnotations.sort(
-            (a, b) => b.upvote - a.upvote
+            (a, b) => b.upvote - a.upvote,
           ).map((anno, index) => (
             <li key={index} className={'flex flex-col gap-2 bg-neutral-100 dark:bg-neutral-700 rounded p-2'}>
               <div className={'flex justify-between items-center gap-2 text-sm text-base-content/80'}>
                 <div className={'flex items-center gap-2'}>
                   <div className={'flex items-center gap-1'}>
-                    <Icon icon={'tabler:user-circle'} className={'text-base'}/>
+                    <IconNoObserve icon={'tabler:user-circle'} className={'text-base'}/>
                     <span className={`text-xs font-bold ${noto_sc.className}`}>
                       {anno.author || '匿名'}
                     </span>
                   </div>
                   <div className={'flex items-center gap-1'}>
-                    <Icon icon={'tabler:clock-edit'} className={'text-base'}/>
+                    <IconNoObserve icon={'tabler:clock-edit'} className={'text-base'}/>
                     <span className={`text-xs ${noto_sc.className}`}>
                       {dayjs(anno.create_at).fromNow()}
                     </span>
@@ -316,10 +327,10 @@ function QuestionCard({
                        (async () => await upvoteAnnotation(anno.id))()
                        setAllAnnotations(allAnnotations.map(item => item.id === anno.id ? {
                          ...anno,
-                         upvote: anno.upvote + 1
+                         upvote: anno.upvote + 1,
                        } : item))
                      }}>
-                  <Icon icon={'tabler:arrow-big-up-line'} className={'text-base'}/>
+                  <IconNoObserve icon={'tabler:arrow-big-up-line'} className={'text-base'}/>
                   <span className={`${
                     anno.upvote === Math.max(...allAnnotations.map(item => item.upvote)) && 'font-bold'
                   } ${rubik.className}`}>
@@ -355,7 +366,11 @@ function QuestionCardPlaceholder() {
 
 export default function Main() {
   const [level, setLevel] = useState<ExamLevel>('A')
-  const [questions, setQuestions] = useState<ExamQuestion[] | null>(null)
+  const [hasAnnoOnly, setHasAnnoOnly] = useState(false)
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 40,
+  })
   const [annotations, setAnnotations] = useState<Annotation[]>([])
   const {
     data: questionsData,
@@ -365,11 +380,13 @@ export default function Main() {
   } = useSWR<BaseResponse<ExamBankResponse>>(`/api/crac/question-bank/${level}`, {
     refreshInterval: 0,
   })
-  useEffect(() => {
-    if (questionsData?.data) {
-      setQuestions(questionsData.data.questions)
-    }
-  }, [questionsData?.data]);
+
+  const questions = questionsData?.data?.questions || null
+  const questionsHasAnno = questions?.filter(item => {
+    return annotations.map(anno => anno.lk).includes(item.id)
+  })
+  const pagedQuestions = (hasAnnoOnly ? questionsHasAnno : questions)?.slice((pagination.current - 1) * pagination.pageSize, pagination.current * pagination.pageSize)
+
   useEffect(() => {
     (async () => {
       const gotAnnotations = await getAnnotationsList()
@@ -377,29 +394,90 @@ export default function Main() {
     })()
   }, []);
 
+  function QPaginationContainer({
+    children,
+  }: {
+    children: ReactNode
+  }) {
+    return (
+      <div
+        className={'w-full flex flex-col md:flex-row justify-center md:justify-between items-center rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4 gap-4 p-4 px-0 md:px-4'}>
+        {children}
+        <Pagination
+          className={'flex-wrap'}
+          total={(hasAnnoOnly ? questionsHasAnno : questions)?.length || 0}
+          currentPage={pagination.current}
+          pageSize={pagination.pageSize}
+          hideOnSinglePage
+          onPageChange={(page) => setPagination({
+            ...pagination,
+            current: page,
+          })}
+        >
+        </Pagination>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className={'p-4 space-y-2 md:space-y-4'}>
-        <div
-          className={'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 md:gap-4'}>
-          {['A', 'B', 'C', 'FULL'].map((lvl) => (
-            <button className={`btn ${rubik.className} ${level === lvl && 'btn-primary'}`} key={lvl}
-                    onClick={() => setLevel(lvl as ExamLevel)}>{lvl}</button>
-          ))}
-        </div>
-        <p className={`font-bold ${noto_sc.className}`}>{level}类({questions?.length || 'N/A'}题)</p>
-
+        <QPaginationContainer>
+          <div className={'flex items-center gap-2'}>
+            <Select
+              value={level}
+              onSelect={(value) => {
+                setLevel(value as ExamLevel)
+                setPagination({
+                  ...pagination,
+                  current: 1,
+                })
+              }}
+              style={{width: 120}}
+            >
+              <Select.Option value="A">A 类题库</Select.Option>
+              <Select.Option value="B">B 类题库</Select.Option>
+              <Select.Option value="C">C 类题库</Select.Option>
+              <Select.Option value="FULL">总题库</Select.Option>
+            </Select>
+            <p className={`font-medium text-xs ${noto_sc.className}`}>共 {questions?.length || '...'} 题</p>
+            <div className={'flex items-center gap-1'}>
+              <Switch
+                checked={hasAnnoOnly}
+                onChange={checked => {
+                  setPagination({
+                    ...pagination,
+                    current: 1,
+                  })
+                  setHasAnnoOnly(checked)
+                }}
+                aria-label="仅看有解析题目"
+              />
+              <p
+                className={`font-medium text-xs ${noto_sc.className}`}>仅看有解析({questionsHasAnno?.length || '..'}题)</p>
+            </div>
+          </div>
+        </QPaginationContainer>
         <div
           className={'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 gap-2 md:gap-4'}>
           {questionsLoading && Array.from({length: 20}).map((_, index) => (
             <QuestionCardPlaceholder key={index}/>
           ))}
-          {!questionsLoading && questions?.map((question, index) => (
-            <QuestionCard key={index} question={question} onAnnotationChange={(lk, annotation) => {
-              setAnnotations(annotations.find(anno => anno.lk === lk) ? annotations.map(anno => anno.lk === lk ? annotation : anno) : [...annotations, annotation])
-            }} annotation={annotations?.filter(item => item.lk === question.id)[0]}/>
-          ))}
+          <Suspense fallback={<QuestionCardPlaceholder/>}>
+            {!questionsLoading && pagedQuestions?.map((question, index) => (
+              <QuestionCard key={index} question={question} onAnnotationChange={(lk, annotation) => {
+                setAnnotations(annotations.find(anno => anno.lk === lk) ? annotations.map(anno => anno.lk === lk ? annotation : anno) : [...annotations, annotation])
+              }} annotation={annotations?.filter(item => item.lk === question.id)[0]}/>
+            ))}
+          </Suspense>
         </div>
+        <QPaginationContainer>
+          <div className={'flex items-center gap-2'}>
+            <p className={`font-medium text-sm ${noto_sc.className}`}>
+              总 {annotations.length || '...'} 则题目解析 | 题库版本 <span className={rubik.className}>v20211022</span>
+            </p>
+          </div>
+        </QPaginationContainer>
       </div>
     </>
   )
