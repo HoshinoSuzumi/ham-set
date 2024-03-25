@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import {Annotation, getAnnotationsByLk, getAnnotationsList, newAnnotation, upvoteAnnotation} from '@/app/actions';
 import {noto_sc, rubik, saira} from '@/app/fonts';
 import {Icon} from '@iconify-icon/react';
-import {Banner, Button, Input, Modal, Notification, Popover, TextArea} from '@douyinfe/semi-ui';
+import {Banner, Button, Input, Modal, Notification, Popover, Skeleton, TextArea} from '@douyinfe/semi-ui';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
@@ -342,12 +342,21 @@ function QuestionCard({
 
 function QuestionCardPlaceholder() {
   return (
-    <div
-      className="rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4 p-4 flex flex-col gap-4 w-full">
-      <div className="skeleton h-8 w-full"></div>
-      <div className="skeleton h-4 w-32 ml-2"></div>
-      <div className="skeleton flex-1 w-full min-h-16"></div>
-    </div>
+    <Skeleton
+      loading
+      active
+      placeholder={(
+        <>
+          <Skeleton.Title className={'w-full'}/>
+          <div className={'flex items-center gap-2'}>
+            <Skeleton.Paragraph rows={1} className={'w-20'}/>
+            <Skeleton.Paragraph rows={1} className={'w-20'}/>
+          </div>
+          <Skeleton.Image className={'flex-1 w-full min-h-16'}/>
+        </>
+      )}
+      className={'rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4 p-4 flex flex-col gap-4 w-full'}
+    />
   )
 }
 
