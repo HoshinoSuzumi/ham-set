@@ -65,12 +65,7 @@ export default function GeetestCaptcha({
   onSuccess?: (validate: any) => void
 }) {
   useEffect(() => {
-    const script = document.createElement('script')
-    script.src = '//static.geetest.com/v4/gt4.js'
-    script.async = true
-    document.body.appendChild(script)
-
-    script.onload = () => {
+    const initGeetest = () => {
       window.initGeetest4(captchaConfig, captcha => {
         if (captchaConfig?.product !== 'bind') {
           captcha.appendTo('#geetest-captcha')
@@ -81,16 +76,20 @@ export default function GeetestCaptcha({
               captcha.showCaptcha()
             }
           }
-          // btn?.addEventListener('click', () => {
-          //   captcha.showCaptcha()
-          // })
         }
-
         captcha.onSuccess(function () {
           onSuccess && onSuccess(captcha.getValidate())
         })
         onCaptchaMounted && onCaptchaMounted(captcha)
       })
+    }
+    if (!!window.initGeetest4) initGeetest()
+    else {
+      const script = document.createElement('script')
+      script.src = '//static.geetest.com/v4/gt4.js'
+      script.async = true
+      document.body.appendChild(script)
+      script.onload = initGeetest
     }
   }, []);
 
