@@ -42,6 +42,25 @@ function QuestionCard({
     setAllAnnotations(gotAnnotations)
   }
 
+  const shimmer = (w: number, h: number) => `
+    <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <linearGradient id="g">
+          <stop stop-color="#333" offset="20%" />
+          <stop stop-color="#222" offset="50%" />
+          <stop stop-color="#333" offset="70%" />
+        </linearGradient>
+      </defs>
+      <rect width="${w}" height="${h}" fill="#333" />
+      <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+      <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+    </svg>`;
+
+  const toBase64 = (str: string) =>
+    typeof window === "undefined"
+      ? Buffer.from(str).toString("base64")
+      : window.btoa(str);
+
   function handleEdit(
     lk: string,
     author: string | null,
@@ -105,9 +124,13 @@ function QuestionCard({
               </div>
               {question.picture && (
                 <Popover content={(
-                  <div className={'flex justify-center items-center'}>
-                    <Image src={`/crac/images/${question.picture}`} alt={question.question}
-                         className={'w-1/2 h-auto rounded-lg'}/>
+                  <div className={'flex justify-center items-center w-96 aspect-video relative'}>
+                    <Image
+                      src={`/crac/images/${question.picture}`}
+                      alt={question.question}
+                      fill
+                      className={'rounded-lg object-contain'}
+                    />
                   </div>
                 )} trigger={'hover'} showArrow>
                   <div className={'hidden md:flex items-center gap-1 cursor-pointer'}>
@@ -132,9 +155,13 @@ function QuestionCard({
           </div>
         </div>
         {question.picture && (
-          <div className={'flex md:hidden justify-center items-center'}>
-            <Image src={`/crac/images/${question.picture}`} alt={question.question}
-                 className={'w-full h-auto rounded-lg'}/>
+          <div className={'flex md:hidden justify-center items-center w-full aspect-square relative'}>
+            <Image
+              src={`/crac/images/${question.picture}`}
+              alt={question.question}
+              fill
+              className={'rounded-lg object-contain'}
+            />
           </div>
         )}
         <div
