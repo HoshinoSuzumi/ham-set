@@ -40,6 +40,7 @@ function QuestionCard({
   dayjs.extend(timezone)
   dayjs.locale('zh-cn')
   dayjs.tz.setDefault('Asia/Shanghai')
+
   const [modalVisible, setModalVisible] = useState(false)
   const [listModalVisible, setListModalVisible] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -53,25 +54,6 @@ function QuestionCard({
     const gotAnnotations = await getAnnotationsByLk(question.id)
     setAllAnnotations(gotAnnotations)
   }
-
-  const shimmer = (w: number, h: number) => `
-    <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <defs>
-        <linearGradient id="g">
-          <stop stop-color="#333" offset="20%" />
-          <stop stop-color="#222" offset="50%" />
-          <stop stop-color="#333" offset="70%" />
-        </linearGradient>
-      </defs>
-      <rect width="${w}" height="${h}" fill="#333" />
-      <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
-      <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
-    </svg>`;
-
-  const toBase64 = (str: string) =>
-    typeof window === 'undefined'
-      ? Buffer.from(str).toString('base64')
-      : window.btoa(str);
 
   function handleEdit(
     lk: string,
@@ -275,18 +257,18 @@ function QuestionCard({
             closeIcon={null}
             description="请确保提交内容的正确和中立，请勿恶意修改。题目解析由大家共建"
           />
-          {modalVisible && (
-            <GeetestCaptcha
-              captchaConfig={{
-                captchaId: '85fd23c240abbea32f8d469d923b6639',
-              }}
-              handler={captcha => {
-                console.log(captcha.getValidate())
-              }}
-            />
-          )}
+          <GeetestCaptcha
+            captchaConfig={{
+              captchaId: '85fd23c240abbea32f8d469d923b6639',
+              product: 'bind',
+            }}
+            selectorWhenBind={'#submit-button'}
+            onSuccess={validate => {
+              console.log(validate)
+            }}
+          />
           <div className={'flex gap-2'}>
-            <Button block
+            <Button block id={'submit-button'}
                     loading={submitting}
                     onClick={() => handleEdit(question.id, modalForm.author || null, modalForm.annotation as string)}>
               提交

@@ -1,9 +1,27 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect} from "react";
 
 export interface GeetestUserConfig {
-  captchaId: string;
-  protocol?: 'http://' | 'https://';
-  getType?: string;
+  captchaId: string
+  protocol?: 'http://' | 'https://'
+  product?: 'popup' | 'float' | 'bind'
+  nativeButton?: {
+    width?: string
+    height?: string
+  }
+  rem?: number
+  language?: 'zho' | 'eng' | 'jpn'
+  timeout?: number
+  hideBar?: ['close' | 'refresh']
+  mask?: {
+    outside?: boolean
+    bgColor?: string
+  }
+  nextWidth?: string
+  riskType?: string
+  hideSuccess?: boolean
+  offlineCb?: () => void
+  onError?: () => void
+  userInfo?: string
 }
 
 export type GeetestHandler = (captcha: Geetest4) => void
@@ -19,7 +37,7 @@ export interface Geetest4 {
   onFail: () => void
   onNextReady: () => void
   onReady: () => void
-  onSuccess: () => void
+  onSuccess: (callback: () => void) => void
   reset: () => void
   showBox: () => void
   showCaptcha: () => void
@@ -37,33 +55,40 @@ declare global {
 
 export default function GeetestCaptcha({
   captchaConfig,
-  handler,
+  selectorWhenBind,
+  onCaptchaMounted,
+  onSuccess,
 }: {
   captchaConfig: GeetestUserConfig
-  handler: GeetestHandler
+  selectorWhenBind?: string
+  onCaptchaMounted?: GeetestHandler
+  onSuccess?: (validate: any) => void
 }) {
-  const [mounted, setMounted] = useState(false)
-  const targetElement = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
-    const elem = targetElement.current
-    if (!mounted) {
-      const script = document.createElement('script')
-      script.src = '//static.geetest.com/v4/gt4.js'
-      script.async = true
-      document.body.appendChild(script)
+    const script = document.createElement('script')
+    script.src = '//static.geetest.com/v4/gt4.js'
+    script.async = true
+    document.body.appendChild(script)
 
-      script.onload = () => {
-        window.initGeetest4(captchaConfig, captcha => {
+    script.onload = () => {
+      window.initGeetest4(captchaConfig, captcha => {
+        if (captchaConfig?.product !== 'bind') {
           captcha.appendTo('#geetest-captcha')
-          setMounted(true)
-          handler(captcha)
+        } else {
+          document.querySelector(selectorWhenBind || 'undefined')?.addEventListener('click', () => {
+            captcha.showCaptcha()
+          })
+        }
+
+        captcha.onSuccess(function () {
+          onSuccess && onSuccess(captcha.getValidate())
         })
-      }
+        onCaptchaMounted && onCaptchaMounted(captcha)
+      })
     }
-  }, [])
+  }, []);
+
   return (
-    <div>
-      <div ref={targetElement} id="geetest-captcha"/>
-    </div>
+    <div id="geetest-captcha"/>
   )
 }
