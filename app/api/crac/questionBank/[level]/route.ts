@@ -2138,7 +2138,7 @@ async function getServerSideProps() {
   try {
     const blobs = (await list({prefix: 'crac/questionBank/'})).blobs
     const getBankBlob = (level: ExamLevel) => blobs.find(b => b.pathname === `crac/questionBank/${level}.txt`)
-    const fetchBankItem = async (url: string) => (await (await fetch(url)).text()).trim().split(SPLIT_ITEM)
+    const fetchBankItem = async (url: string) => (await (await fetch(url, {cache: 'force-cache'})).text()).trim().split(SPLIT_ITEM)
     const rowItems = {
       A: await fetchBankItem(getBankBlob('A')!.url),
       B: await fetchBankItem(getBankBlob('B')!.url),
