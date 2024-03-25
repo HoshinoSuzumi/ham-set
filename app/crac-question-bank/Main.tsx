@@ -275,14 +275,16 @@ function QuestionCard({
             closeIcon={null}
             description="请确保提交内容的正确和中立，请勿恶意修改。题目解析由大家共建"
           />
-          <GeetestCaptcha
-            captchaConfig={{
-              captchaId: '85fd23c240abbea32f8d469d923b6639',
-            }}
-            handler={captcha => {
-              console.log(captcha.getValidate())
-            }}
-          />
+          {modalVisible && (
+            <GeetestCaptcha
+              captchaConfig={{
+                captchaId: '85fd23c240abbea32f8d469d923b6639',
+              }}
+              handler={captcha => {
+                console.log(captcha.getValidate())
+              }}
+            />
+          )}
           <div className={'flex gap-2'}>
             <Button block
                     loading={submitting}

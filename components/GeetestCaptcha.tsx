@@ -1,4 +1,4 @@
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 
 export interface GeetestUserConfig {
   captchaId: string;
@@ -42,20 +42,25 @@ export default function GeetestCaptcha({
   captchaConfig: GeetestUserConfig
   handler: GeetestHandler
 }) {
-  const targetElement = useRef(null)
+  const [mounted, setMounted] = useState(false)
+  const targetElement = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
-    const script = document.createElement('script')
-    script.src = '//static.geetest.com/v4/gt4.js'
-    script.async = true
-    document.body.appendChild(script)
+    const elem = targetElement.current
+    if (!mounted) {
+      const script = document.createElement('script')
+      script.src = '//static.geetest.com/v4/gt4.js'
+      script.async = true
+      document.body.appendChild(script)
 
-    script.onload = () => {
-      window.initGeetest4(captchaConfig, captcha => {
-        captcha.appendTo('#geetest-captcha')
-        handler(captcha)
-      })
+      script.onload = () => {
+        window.initGeetest4(captchaConfig, captcha => {
+          captcha.appendTo('#geetest-captcha')
+          setMounted(true)
+          handler(captcha)
+        })
+      }
     }
-  }, [captchaConfig])
+  }, [])
   return (
     <div>
       <div ref={targetElement} id="geetest-captcha"/>
