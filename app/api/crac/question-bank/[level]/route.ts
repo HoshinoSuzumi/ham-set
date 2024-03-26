@@ -2133,17 +2133,27 @@ const LKs = {
   ],
 }
 
+const CRAC_BANK_SOURCE = process.env.HS_CRAC_BANK_SOURCE || 'upyun'
+const UPYUN_BUCKET = process.env.HS_UPYUN_BUCKET || 'http://hamset.test.upcdn.net'
+
 async function getServerSideProps() {
   const SPLIT_ITEM = '\r\n\r\n'
   try {
     const blobs = (await list({prefix: 'crac/questionBank/'})).blobs
     const getBankBlob = (level: ExamLevel) => blobs.find(b => b.pathname === `crac/questionBank/${level}.txt`)
+
     const fetchBankItem = async (url: string) => (await (await fetch(url, {cache: 'force-cache'})).text()).trim().split(SPLIT_ITEM)
-    const rowItems = {
+
+    const rowItems = CRAC_BANK_SOURCE === 'vercel' ? {
       A: await fetchBankItem(getBankBlob('A')!.url),
       B: await fetchBankItem(getBankBlob('B')!.url),
       C: await fetchBankItem(getBankBlob('C')!.url),
       FULL: await fetchBankItem(getBankBlob('FULL')!.url),
+    } : {
+      A: await fetchBankItem(`${UPYUN_BUCKET}/crac/exam/A.txt`),
+      B: await fetchBankItem(`${UPYUN_BUCKET}/crac/exam/B.txt`),
+      C: await fetchBankItem(`${UPYUN_BUCKET}/crac/exam/C.txt`),
+      FULL: await fetchBankItem(`${UPYUN_BUCKET}/crac/exam/FULL.txt`),
     }
 
     const banks: {
@@ -2221,6 +2231,9 @@ export async function GET(
   }): Promise<NextResponse<BaseResponse<ExamBankResponse>>> {
   const serverSideProps = await getServerSideProps()
   const searchParams = req.nextUrl.searchParams
+
+  console.log(`· using source ${CRAC_BANK_SOURCE === 'vercel' ? 'Vercel' : 'Upyun'}`)
+  if (CRAC_BANK_SOURCE === 'upyun') console.log(`· using bucket ${UPYUN_BUCKET}`)
 
   const questions: ExamQuestion[] = serverSideProps.props.banks[ctx.params.level]
   if (searchParams.get('shuffle') === 'true') {
