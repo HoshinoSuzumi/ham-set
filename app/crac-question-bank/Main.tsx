@@ -398,8 +398,6 @@ export default function Main() {
   const {
     data: questionsData,
     isLoading: questionsLoading,
-    isValidating: questionsValidating,
-    error: questionsError,
   } = useSWR<BaseResponse<ExamBankResponse>>(`/api/crac/question-bank/${level}`, {
     refreshInterval: 0,
   })
