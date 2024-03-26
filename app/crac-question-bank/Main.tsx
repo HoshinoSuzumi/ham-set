@@ -17,16 +17,12 @@ import {
   Switch,
   TextArea,
 } from '@douyinfe/semi-ui';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import timezone from 'dayjs/plugin/timezone';
 import {IconSpinner} from '@/components/Icon/IconSpinner';
 import Image from 'next/image';
 import IconNoObserve from '@/components/IconNoObserve';
 import GeetestCaptcha from '@/components/GeetestCaptcha';
 import {GeetestCaptchaSuccess} from "@/app/geetest";
-
-require('dayjs/locale/zh-cn')
+import dayjs from "@/app/utils/dayjs";
 
 function QuestionCard({
   question,
@@ -37,11 +33,6 @@ function QuestionCard({
   annotation?: Annotation,
   onAnnotationChange?: (lk: string, annotation: Annotation) => void,
 }) {
-  dayjs.extend(relativeTime)
-  dayjs.extend(timezone)
-  dayjs.locale('zh-cn')
-  dayjs.tz.setDefault('Asia/Shanghai')
-
   const [modalVisible, setModalVisible] = useState(false)
   const [listModalVisible, setListModalVisible] = useState(false)
   const [submitting, setSubmitting] = useState(false)
