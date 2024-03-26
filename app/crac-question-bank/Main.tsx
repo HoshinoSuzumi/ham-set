@@ -215,7 +215,7 @@ function QuestionCard({
                 <div className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
                   <IconNoObserve icon={'tabler:clock-edit'} className={'text-base'}/>
                   <span className={`text-xs ${noto_sc.className}`}>
-                    {dayjs(annotation.create_at).fromNow()}
+                    {dayjs.tz(annotation.create_at).fromNow()}
                   </span>
                 </div>
                 <div onClick={() => {
@@ -329,7 +329,7 @@ function QuestionCard({
                   <div className={'flex items-center gap-1'}>
                     <IconNoObserve icon={'tabler:clock-edit'} className={'text-base'}/>
                     <span className={`text-xs ${noto_sc.className}`}>
-                      {dayjs(anno.create_at).fromNow()}
+                      {dayjs.tz(anno.create_at).fromNow()}
                     </span>
                   </div>
                 </div>
