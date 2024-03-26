@@ -52,20 +52,35 @@ export async function geetestValidate(validate: GeetestCaptchaSuccess) {
     formData.append(key, payload[key])
   }
 
-  try {
-    const response: GeetestValidateResponse = await (await fetch(CAPTCHA_URL, {
+  return new Promise<boolean>((resolve) => {
+    fetch(CAPTCHA_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: formData
-    })).json()
-    return {
-      success: response?.result === 'success'
-    }
-  } catch (e) {
-    return {
-      success: true
-    }
-  }
+    })
+    .then(response => response.json())
+    .then((response: GeetestValidateResponse) => {
+      resolve(response?.result === 'success')
+    })
+    .catch(() => resolve(false))
+  })
+
+  // try {
+  //   const response: GeetestValidateResponse = await (await fetch(CAPTCHA_URL, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/x-www-form-urlencoded'
+  //     },
+  //     body: formData
+  //   })).json()
+  //   return {
+  //     success: response?.result === 'success'
+  //   }
+  // } catch (e) {
+  //   return {
+  //     success: true
+  //   }
+  // }
 }

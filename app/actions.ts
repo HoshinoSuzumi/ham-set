@@ -21,11 +21,13 @@ export async function newAnnotation(
   validate: GeetestCaptchaSuccess
 ) {
   return new Promise((resolve, reject) => {
-    geetestValidate(validate).then(success => {
-      if (success) {
+    geetestValidate(validate).then(pass => {
+      if (pass) {
         resolve(sql<Annotation>`INSERT INTO annotations (lk, annotation, author) VALUES (${lk}, ${annotation}, ${author})`)
-      } else reject()
-    }).catch(reject)
+      } else {
+        reject('captcha failed')
+      }
+    })
   })
 }
 
@@ -44,10 +46,12 @@ export async function upvoteAnnotation(
   validate: GeetestCaptchaSuccess
 ) {
   return new Promise((resolve, reject) => {
-    geetestValidate(validate).then(success => {
-      if (success) {
+    geetestValidate(validate).then(pass => {
+      if (pass) {
         resolve(sql<Annotation>`UPDATE annotations SET upvote = upvote + 1 WHERE id = ${id}`)
-      } else reject()
-    }).catch(reject)
+      } else {
+        reject('captcha failed')
+      }
+    })
   })
 }
