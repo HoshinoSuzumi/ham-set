@@ -17,7 +17,7 @@ export interface GeetestUserConfig {
     bgColor?: string
   }
   nextWidth?: string
-  riskType?: string
+  riskType?: 'slide' | 'word' | 'match' | 'ai'
   hideSuccess?: boolean
   offlineCb?: () => void
   onError?: () => void

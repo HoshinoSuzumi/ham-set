@@ -239,6 +239,7 @@ function QuestionCard({
                   captchaConfig={{
                     captchaId: '85fd23c240abbea32f8d469d923b6639',
                     product: 'bind',
+                    riskType: 'ai'
                   }}
                   selectorWhenBind={`#upvote-button-${question.id}`}
                   onSuccess={validate => handleUpvoteValidateSuccess(question, annotation, validate)}
@@ -345,6 +346,7 @@ function QuestionCard({
                   captchaConfig={{
                     captchaId: '85fd23c240abbea32f8d469d923b6639',
                     product: 'bind',
+                    riskType: 'ai'
                   }}
                   selectorWhenBind={`#upvote-button-modal-${anno.id}`}
                   onSuccess={validate => handleUpvoteInModalValidateSuccess(anno, validate)}
