@@ -91,6 +91,7 @@ export default function GeetestCaptcha({
       document.body.appendChild(script)
       script.onload = initGeetest
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

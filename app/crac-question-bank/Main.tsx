@@ -135,6 +135,7 @@ function QuestionCard({
     } : item))
   }
 
+  // noinspection RequiredAttributes
   return (
     <>
       <div
