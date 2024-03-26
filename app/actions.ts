@@ -36,6 +36,11 @@ export async function getAnnotationsByLk(lk: string): Promise<Annotation[]> {
   return rows || []
 }
 
+export async function getTimezone(): Promise<string> {
+  const {rows} = await sql`SHOW TIME ZONE;`
+  return rows[0].TimeZone
+}
+
 export async function getAnnotationsList(): Promise<Annotation[]> {
   const {rows} = await sql<Annotation>`SELECT * FROM annotations order by upvote desc, id desc`
   return rows

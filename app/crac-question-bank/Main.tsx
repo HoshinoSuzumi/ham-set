@@ -3,7 +3,14 @@
 import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api/schema';
 import {ReactNode, Suspense, useEffect, useRef, useState} from 'react';
 import useSWR from 'swr';
-import {Annotation, getAnnotationsByLk, getAnnotationsList, newAnnotation, upvoteAnnotation} from '@/app/actions';
+import {
+  Annotation,
+  getAnnotationsByLk,
+  getAnnotationsList,
+  getTimezone,
+  newAnnotation,
+  upvoteAnnotation
+} from '@/app/actions';
 import {noto_sc, rubik, saira} from '@/app/fonts';
 import {
   Banner,
@@ -215,7 +222,8 @@ function QuestionCard({
                 <div className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
                   <IconNoObserve icon={'tabler:clock-edit'} className={'text-base'}/>
                   <span className={`text-xs ${noto_sc.className}`}>
-                    {dayjs.tz(annotation.create_at).fromNow()}
+                    {/*{dayjs.tz(annotation.create_at).fromNow()}*/}
+                    {JSON.stringify(annotation.create_at)}
                   </span>
                 </div>
                 <div onClick={() => {
@@ -401,10 +409,12 @@ export default function Main() {
   })
   const pagedQuestions = (hasAnnoOnly ? questionsHasAnno : questions)?.slice((pagination.current - 1) * pagination.pageSize, pagination.current * pagination.pageSize)
 
+  const [tz, setTz] = useState('')
   useEffect(() => {
     (async () => {
       const gotAnnotations = await getAnnotationsList()
       setAnnotations(gotAnnotations)
+      setTz(await getTimezone())
     })()
   }, []);
 
@@ -488,7 +498,8 @@ export default function Main() {
         <QPaginationContainer>
           <div className={'flex items-center gap-2'}>
             <p className={`font-medium text-sm ${noto_sc.className}`}>
-              总 {annotations.length || '...'} 则题目解析 | 题库版本 <span className={rubik.className}>v20211022</span>
+              时区 {tz} | 总 {annotations.length || '...'} 则题目解析 | 题库版本 <span
+              className={rubik.className}>v20211022</span>
             </p>
           </div>
         </QPaginationContainer>
