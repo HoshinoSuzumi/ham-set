@@ -3,14 +3,7 @@
 import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api/schema';
 import {ReactNode, Suspense, useEffect, useRef, useState} from 'react';
 import useSWR from 'swr';
-import {
-  Annotation,
-  getAnnotationsByLk,
-  getAnnotationsList,
-  getTimezone,
-  newAnnotation,
-  upvoteAnnotation
-} from '@/app/actions';
+import {Annotation, getAnnotationsByLk, getAnnotationsList, newAnnotation, upvoteAnnotation} from '@/app/actions';
 import {noto_sc, rubik, saira} from '@/app/fonts';
 import {
   Banner,
@@ -414,7 +407,7 @@ export default function Main() {
     (async () => {
       const gotAnnotations = await getAnnotationsList()
       setAnnotations(gotAnnotations)
-      setTz(await getTimezone())
+      setTz(process.env.TZ || 'UNKNOWN')
     })()
   }, []);
 
