@@ -2232,9 +2232,6 @@ export async function GET(
   const serverSideProps = await getServerSideProps()
   const searchParams = req.nextUrl.searchParams
 
-  console.log(`· using source ${CRAC_BANK_SOURCE === 'vercel' ? 'Vercel' : 'Upyun'}`)
-  if (CRAC_BANK_SOURCE === 'upyun') console.log(`· using bucket ${UPYUN_BUCKET}`)
-
   const questions: ExamQuestion[] = serverSideProps.props.banks[ctx.params.level]
   if (searchParams.get('shuffle') === 'true') {
     questions.sort(() => Math.random() - 0.5)
