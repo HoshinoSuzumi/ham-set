@@ -1,7 +1,7 @@
 'use client'
 
 import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api/schema';
-import {ReactNode, Suspense, useEffect, useRef, useState} from 'react';
+import {ReactNode, useEffect, useRef, useState} from 'react';
 import useSWR from 'swr';
 import {Annotation, getAnnotationsByLk, getAnnotationsList, newAnnotation, upvoteAnnotation} from '@/app/actions';
 import {noto_sc, rubik, saira} from '@/app/fonts';
@@ -130,10 +130,11 @@ function QuestionCard({
   return (
     <>
       <div
-        className={'flex flex-col justify-between rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4 p-4 group'}>
-        <div className={`${noto_sc}`}>
+        className={'flex flex-col justify-between rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4 p-4 group'}
+      >
+        <div className={`${noto_sc.className}`}>
           <div>
-            <h1 className={'text-lg font-bold'}>{question.question}</h1>
+            <h1 className={'text-lg font-medium'}>{question.question}</h1>
           </div>
           <div className={'flex justify-between items-center text-base-content/70'}>
             <div className={'flex items-center gap-2'}>
@@ -362,7 +363,6 @@ function QuestionCard({
         </ul>
       </Modal>
     </>
-
   )
 }
 
@@ -477,13 +477,11 @@ export default function Main() {
           {questionsLoading && Array.from({length: 20}).map((_, index) => (
             <QuestionCardPlaceholder key={index}/>
           ))}
-          <Suspense fallback={<QuestionCardPlaceholder/>}>
-            {!questionsLoading && pagedQuestions?.map((question, index) => (
-              <QuestionCard key={index} question={question} onAnnotationChange={(lk, annotation) => {
-                setAnnotations(annotations.find(anno => anno.lk === lk) ? annotations.map(anno => anno.lk === lk ? annotation : anno) : [...annotations, annotation])
-              }} annotation={annotations?.filter(item => item.lk === question.id)[0]}/>
-            ))}
-          </Suspense>
+          {!questionsLoading && pagedQuestions?.map((question, index) => (
+            <QuestionCard key={index} question={question} onAnnotationChange={(lk, annotation) => {
+              setAnnotations(annotations.find(anno => anno.lk === lk) ? annotations.map(anno => anno.lk === lk ? annotation : anno) : [...annotations, annotation])
+            }} annotation={annotations?.filter(item => item.lk === question.id)[0]}/>
+          ))}
         </div>
         <QPaginationContainer>
           <div className={'flex items-center gap-2'}>
