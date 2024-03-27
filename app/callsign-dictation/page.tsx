@@ -1,5 +1,11 @@
 import React, {CSSProperties} from 'react';
 import {noto_sc, saira} from '@/app/fonts';
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+  title: '呼号听写',
+  description: '模拟呼号抄听和听写',
+}
 
 function Answer({
   callsign,

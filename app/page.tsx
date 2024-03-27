@@ -1,7 +1,11 @@
-'use client'
-
 import LetterCard, {Phonetic} from '@/app/callsign-dictation/LetterCard';
 import {noto_sc} from '@/app/fonts';
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+  title: '字母解释法速查表',
+  description: '字母解释法速查表',
+}
 
 export default function Home() {
   const TAG = Object.freeze({
@@ -136,9 +140,6 @@ export default function Home() {
 
   return (
     <>
-      <title>字母解释法速查表</title>
-      <meta name="description" content="字母解释法速查表"/>
-
       <div className={'p-4 space-y-2 md:space-y-4'}>
         <div
           className={`w-full flex items-center gap-1 p-2 text-xs rounded-lg bg-base-100 border shadow-sm

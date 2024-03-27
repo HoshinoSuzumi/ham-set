@@ -5,6 +5,13 @@ import {SpeechSynthesisProvider} from '@/contexts/SpeechSynthesisContext';
 import {rubik} from '@/app/fonts';
 import {SWRProvider} from '@/app/swr-provider';
 import {Analytics} from "@vercel/analytics/react";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+  title: 'HAM Set',
+  description: 'Powerful tools for amateur radio operators.',
+  keywords: 'HAM, amateur radio, callsign, phonetic, letter, Morse code, satellite, Maidenhead grid, exam, question bank, FCC, CEPT, ITU, IARU, Morse code',
+}
 
 export default function RootLayout({
   children,

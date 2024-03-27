@@ -1,6 +1,5 @@
 'use server'
 
-// @ts-ignore
 import {sql} from '@vercel/postgres';
 import {GeetestCaptchaSuccess, geetestValidate} from "@/app/geetest";
 
@@ -34,11 +33,6 @@ export async function newAnnotation(
 export async function getAnnotationsByLk(lk: string): Promise<Annotation[]> {
   const {rows} = await sql<Annotation>`SELECT * FROM annotations WHERE lk = ${lk} order by upvote desc, id desc`
   return rows || []
-}
-
-export async function getTimezone(): Promise<string> {
-  const {rows} = await sql`SHOW TIME ZONE;`
-  return rows[0].TimeZone
 }
 
 export async function getAnnotationsList(): Promise<Annotation[]> {
