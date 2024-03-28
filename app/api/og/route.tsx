@@ -3,7 +3,6 @@ import {Icon} from "@iconify-icon/react";
 import {NextRequest} from "next/server";
 
 export const runtime = 'edge';
-export const contentType = 'image/png';
 
 export async function GET(
   req: NextRequest
