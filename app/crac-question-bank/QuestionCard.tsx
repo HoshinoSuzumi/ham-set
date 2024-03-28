@@ -1,6 +1,6 @@
 import {ExamQuestion} from "@/app/api/schema";
 import {Annotation, getAnnotationsByLk, newAnnotation, upvoteAnnotation} from "@/app/actions";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {GeetestCaptchaSuccess} from "@/app/geetest";
 import {Banner, Button, Input, Modal, Notification, Popover, TextArea} from "@douyinfe/semi-ui";
 import {noto_sc, rubik, saira} from "@/app/fonts";
@@ -18,16 +18,32 @@ import {IconSpinner} from "@/components/Icon/IconSpinner";
 export default function QuestionCard({
   question,
   annotation,
+  highlight,
   onAnnotationChange,
 }: {
   question: ExamQuestion,
   annotation?: Annotation,
+  highlight?: boolean
   onAnnotationChange?: (lk: string, annotation: Annotation) => void,
 }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [listModalVisible, setListModalVisible] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [allAnnotations, setAllAnnotations] = useState<Annotation[]>([])
+
+  const questionCardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (highlight) {
+      setTimeout(() => {
+        questionCardRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        })
+      }, 200)
+    }
+  }, [highlight]);
 
   async function fetchAnnotations() {
     const gotAnnotations = await getAnnotationsByLk(question.id)
@@ -121,7 +137,8 @@ export default function QuestionCard({
   return (
     <>
       <div
-        className={'flex flex-col justify-between rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4 p-4 group'}
+        ref={questionCardRef}
+        className={`flex flex-col justify-between rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4 p-4 group ${highlight && 'border-indigo-400 dark:border-indigo-500'} transition`}
       >
         <div className={`${noto_sc.className}`}>
           <div>
