@@ -6,7 +6,7 @@ export const contentType = 'image/png';
 
 export async function GET() {
   const fontData = await fetch(
-    new URL('../../../../../assets/font/NotoSansSC-VF.ttf', import.meta.url),
+    new URL('../../../../assets/NotoSansSC-VF.ttf', import.meta.url),
   ).then((res) => res.arrayBuffer());
   return new ImageResponse(
     (
@@ -22,6 +22,7 @@ export async function GET() {
           textAlign: 'center',
           justifyContent: 'center',
           alignItems: 'center',
+          fontFamily: '"Noto Sans SC", sans-serif',
         }}
       >
         <Icon icon={'tabler:antenna'} style={{fontSize: 100}}/>
