@@ -6,7 +6,7 @@ export const contentType = 'image/png';
 
 export async function GET() {
   const fontData = await fetch(
-    new URL('../../../assets/font/NotoSansSC-VF.ttf', import.meta.url),
+    new URL('../../../../assets/font/NotoSansSC-VF.ttf', import.meta.url),
   ).then((res) => res.arrayBuffer());
   return new ImageResponse(
     (
