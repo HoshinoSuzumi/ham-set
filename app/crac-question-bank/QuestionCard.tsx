@@ -8,6 +8,9 @@ import IconNoObserve from "@/components/IconNoObserve";
 import Image from "next/image";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import 'katex/dist/katex.min.css'
 import dayjs from "@/app/utils/dayjs";
 import GeetestCaptcha from "@/components/GeetestCaptcha";
 import {IconSpinner} from "@/components/Icon/IconSpinner";
@@ -199,7 +202,7 @@ export default function QuestionCard({
                 <article
                   className={'annotation-typography flex-1 md:max-h-28 overflow-auto overflow-x-hidden'}
                 >
-                  <Markdown remarkPlugins={[remarkGfm]}>
+                  <Markdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>
                     {annotation.annotation}
                   </Markdown>
                 </article>
@@ -372,13 +375,10 @@ export default function QuestionCard({
                 </div>
               </div>
               <article className={`annotation-typography ${noto_sc.className}`}>
-                <Markdown remarkPlugins={[remarkGfm]}>
+                <Markdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>
                   {anno.annotation}
                 </Markdown>
               </article>
-              {/*<div className={`text-sm text-base-content ${noto_sc.className}`}>*/}
-              {/*  {anno.annotation}*/}
-              {/*</div>*/}
             </li>
           ))}
         </ul>

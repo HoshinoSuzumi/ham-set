@@ -23,7 +23,9 @@
     "react-dom": "^18",
     "react-markdown": "^9.0.1",
     "react-transition-group": "^4.4.5",
+    "rehype-katex": "^7.0.0",
     "remark-gfm": "^4.0.0",
+    "remark-math": "^6.0.0",
     "swr": "^2.2.5"
   },
   "devDependencies": {
