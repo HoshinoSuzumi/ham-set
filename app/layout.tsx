@@ -5,12 +5,19 @@ import {SpeechSynthesisProvider} from '@/contexts/SpeechSynthesisContext';
 import {rubik} from '@/app/fonts';
 import {SWRProvider} from '@/app/swr-provider';
 import {Analytics} from "@vercel/analytics/react";
-import {Metadata} from "next";
+import {Metadata, Viewport} from "next";
 
 export const metadata: Metadata = {
   title: 'HAM Set',
   description: 'Powerful tools for amateur radio operators.',
   keywords: 'HAM, amateur radio, callsign, phonetic, letter, Morse code, satellite, Maidenhead grid, exam, question bank, FCC, CEPT, ITU, IARU, Morse code',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({
@@ -70,10 +77,6 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-    {/*<head>*/}
-    {/*  <title>HAM Set</title>*/}
-    {/*  <Script src="//static.geetest.com/v4/gt4.js"></Script>*/}
-    {/*</head>*/}
     <SWRProvider>
       <body className={`${rubik.className}`}>
       <SpeechSynthesisProvider>
