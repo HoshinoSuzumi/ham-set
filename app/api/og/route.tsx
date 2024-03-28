@@ -11,7 +11,7 @@ export async function GET(
   const searchParams = req.nextUrl.searchParams
 
   const fontData = await fetch(
-    new URL('../../../assets/NotoSansSC-Regular.ttf', import.meta.url),
+    new URL('../../../../assets/NotoSansSC-Regular.ttf', import.meta.url),
     {
       cache: 'no-cache',
     }
