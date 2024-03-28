@@ -1,52 +1,26 @@
 import {ImageResponse} from 'next/og';
-import {Icon} from "@iconify-icon/react";
 import {NextRequest} from "next/server";
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export async function GET(
   req: NextRequest
 ) {
   const searchParams = req.nextUrl.searchParams
 
-  const fontData = await fetch(
-    new URL('../../../assets/NotoSansSC-Regular.ttf', import.meta.url),
-    {
-      cache: 'no-cache',
-    }
-  ).then((res) => res.arrayBuffer());
-
   return new ImageResponse(
     (
       <div
-        style={{
-          fontSize: 40,
-          color: 'black',
-          background: 'white',
-          width: '100%',
-          height: '100%',
-          padding: '50px 200px',
-          display: 'flex',
-          textAlign: 'center',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontFamily: '"Noto Sans SC", sans-serif',
-        }}
+        tw={'w-full h-full flex flex-col justify-between items-start p-8 bg-white'}
       >
-        <Icon icon={'tabler:antenna'} style={{fontSize: 100}}/>
-        {searchParams.get('title') || 'Hello'}
+        <div tw={'bg-gray-100 p-2 rounded-lg border border-indigo-600'}>
+          {searchParams.get('title') || 'Hello'}
+        </div>
       </div>
     ),
     {
       width: 1200,
       height: 630,
-      fonts: [
-        {
-          name: 'Noto Sans SC',
-          data: fontData,
-          style: 'normal',
-        }
-      ]
     },
   );
 }
