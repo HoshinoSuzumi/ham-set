@@ -2,8 +2,9 @@ import {ImageResponse} from 'next/og';
 import {ReactNode} from "react";
 
 export const runtime = 'nodejs';
+export const contentType = 'image/png';
 
-export async function GET() {
+export default async function Image() {
   function Label({
     children
   }: {
