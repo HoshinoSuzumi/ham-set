@@ -71,6 +71,13 @@ export default function MainDrawer({children, nav}: {
       }
     }
 
+    if (mql.matches) {
+      const body = document.body;
+      if (!body.hasAttribute('theme-mode')) {
+        body.setAttribute('theme-mode', 'dark');
+      }
+    }
+
     mql.addEventListener('change', matchMode);
   }, [])
 

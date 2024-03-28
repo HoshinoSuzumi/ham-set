@@ -5,6 +5,7 @@ import {ReactNode, useEffect, useRef, useState} from 'react';
 import useSWR from 'swr';
 import {Annotation, getAnnotationsByLk, getAnnotationsList, newAnnotation, upvoteAnnotation} from '@/app/actions';
 import {noto_sc, rubik, saira} from '@/app/fonts';
+import "./Main.scss";
 import {
   Banner,
   Button,
@@ -23,6 +24,8 @@ import IconNoObserve from '@/components/IconNoObserve';
 import GeetestCaptcha from '@/components/GeetestCaptcha';
 import {GeetestCaptchaSuccess} from "@/app/geetest";
 import dayjs from "@/app/utils/dayjs";
+import Markdown from 'react-markdown';
+import remarkGfm from "remark-gfm";
 
 function QuestionCard({
   question,
@@ -208,9 +211,13 @@ function QuestionCard({
                     </div>
                   </div>
                 </div>
-                <span className={'flex-1 indent-4'}>
-                  {annotation.annotation}
-                </span>
+                <article
+                  className={'annotation-typography flex-1 md:max-h-28 overflow-auto overflow-x-hidden'}
+                >
+                  <Markdown remarkPlugins={[remarkGfm]}>
+                    {annotation.annotation}
+                  </Markdown>
+                </article>
               </div>
               <div className={'w-full text-sm flex justify-end items-center gap-2'}>
                 <div className={'flex items-center gap-0.5 font-bold text-base-content/50 cursor-pointer'}>
@@ -252,7 +259,11 @@ function QuestionCard({
       <Modal
         title={`为 ${question.id} ${annotation ? '编辑' : '创建'}解析`}
         visible={modalVisible}
+        width={window.innerWidth < 768 ? '100%' : 640}
         centered
+        fullScreen={
+          window.innerWidth < 768
+        }
         footer={null}
         onCancel={() => setModalVisible(false)}
       >
@@ -264,11 +275,27 @@ function QuestionCard({
           ></Input>
           <TextArea ref={inputAnnotation} placeholder={'请确保内容的正确和中立'}
                     className={'!w-full'}
-                    maxCount={80}
+                    maxCount={512}
                     disabled={submitting}
+                    rows={12}
                     showClear
                     defaultValue={annotation?.annotation || ''}
           />
+          <Button
+            onClick={() => {
+              window.open('https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax')
+            }}
+            className={'w-fit'}
+            type={'tertiary'}
+            icon={<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+              <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+                <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <path d="M7 15V9l2 2l2-2v6m3-2l2 2l2-2m-2 2V9"/>
+              </g>
+            </svg>}
+          >
+            Markdown with GFM 支持
+          </Button>
           <Banner
             type={'info'}
             fullMode={false}
@@ -304,7 +331,11 @@ function QuestionCard({
       <Modal
         title={`${question.id} 的所有解析`}
         visible={listModalVisible}
+        width={window.innerWidth < 768 ? '100%' : 640}
         centered
+        fullScreen={
+          window.innerWidth < 768
+        }
         footer={null}
         onCancel={() => setListModalVisible(false)}
       >
@@ -355,9 +386,14 @@ function QuestionCard({
                   </span>
                 </div>
               </div>
-              <div className={`text-sm text-base-content ${noto_sc.className}`}>
-                {anno.annotation}
-              </div>
+              <article className={`annotation-typography ${noto_sc.className}`}>
+                <Markdown remarkPlugins={[remarkGfm]}>
+                  {anno.annotation}
+                </Markdown>
+              </article>
+              {/*<div className={`text-sm text-base-content ${noto_sc.className}`}>*/}
+              {/*  {anno.annotation}*/}
+              {/*</div>*/}
             </li>
           ))}
         </ul>

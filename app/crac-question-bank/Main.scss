@@ -1,0 +1,7 @@
+.annotation-typography {
+  @apply prose dark:prose-invert prose-neutral prose-sm prose-headings:text-base prose-img:max-w-[50%] overflow-auto overflow-x-hidden;
+
+  & > * {
+    @apply my-0;
+  }
+}
