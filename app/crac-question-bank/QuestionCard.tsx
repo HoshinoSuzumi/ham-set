@@ -138,7 +138,7 @@ export default function QuestionCard({
     <>
       <div
         ref={questionCardRef}
-        className={`flex flex-col justify-between rounded-lg bg-base-100 border shadow-sm border-neutral-content/80 dark:border-neutral-content/30 border-b-4 p-4 group ${highlight && 'border-indigo-400 dark:border-indigo-500'} transition`}
+        className={`flex flex-col justify-between rounded-lg bg-base-100 border shadow-sm p-4 border-b-4 ${highlight ? 'border-indigo-400 dark:border-indigo-500' : 'border-neutral-content/80 dark:border-neutral-content/30'} group transition`}
       >
         <div className={`${noto_sc.className}`}>
           <div>
