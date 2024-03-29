@@ -41,9 +41,12 @@ body {
 }
 
 @layer base {
-  [type=button], [type=reset], [type=submit], button {
+  button,
+  input:where([type='button']),
+  input:where([type='reset']),
+  input:where([type='submit']) {
     -webkit-appearance: button;
-    background-color: unset;
+    background-color: initial;
     background-image: none;
   }
 }
