@@ -14,6 +14,7 @@ import 'katex/dist/katex.min.css'
 import dayjs from "@/app/utils/dayjs";
 import GeetestCaptcha from "@/components/GeetestCaptcha";
 import {IconSpinner} from "@/components/Icon/IconSpinner";
+import {CSSTransition, TransitionGroup} from "react-transition-group";
 
 export default function QuestionCard({
   question,
@@ -30,6 +31,7 @@ export default function QuestionCard({
   const [listModalVisible, setListModalVisible] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [allAnnotations, setAllAnnotations] = useState<Annotation[]>([])
+  const [optionsExpanded, setOptionsExpanded] = useState(false)
 
   const questionCardRef = useRef<HTMLDivElement>(null)
 
@@ -173,13 +175,26 @@ export default function QuestionCard({
                 <span className={`font-bold text-base ${saira.className}`}>{question.includeIn.join(',')}</span>
               </div>
             </div>
-            {!annotation && (
-              <div onClick={() => setModalVisible(true)}
-                   className={'flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition cursor-pointer'}>
-                <IconNoObserve icon={'tabler:edit'} className={'text-xl'}/>
-                <span className={`font-bold text-base ${noto_sc.className}`}>编写解析</span>
-              </div>
-            )}
+            <div className={'flex items-center gap-2'}>
+              {!annotation && (
+                <div onClick={() => setModalVisible(true)}
+                     className={'flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition cursor-pointer'}>
+                  <IconNoObserve icon={'tabler:edit'} className={'text-xl'}/>
+                  <span className={`font-bold text-base ${noto_sc.className}`}>编写解析</span>
+                </div>
+              )}
+              <Button
+                size={'small'}
+                theme={'borderless'}
+                type={'tertiary'}
+                className={'!px-1'}
+                icon={<IconNoObserve icon={optionsExpanded ? 'tabler:chevrons-up' : 'tabler:chevrons-down'}
+                                     className={'text-xl'}/>}
+                onClick={() => setOptionsExpanded(!optionsExpanded)}
+              >
+                {optionsExpanded ? '收起' : '展开'}
+              </Button>
+            </div>
           </div>
         </div>
         {question.picture && (
@@ -194,7 +209,53 @@ export default function QuestionCard({
         )}
         <div
           className={`flex flex-col rounded-lg bg-neutral-100 dark:bg-neutral border border-neutral-content/80 dark:border-neutral-content/30 p-4 mt-2 h-full ${noto_sc.className}`}>
-          <span className={'flex-1 font-medium'}>{question.options[0]}</span>
+          {/*<span className={'flex-1 font-medium'}>{question.options[0]}</span>*/}
+          <div className={'grid grid-cols-1 gap-2'}>
+            <TransitionGroup component={null}>
+              {question.options.map((option, index) => (
+                (optionsExpanded || index === 0) && (
+                  <CSSTransition
+                    key={index}
+                    classNames={{
+                      enterActive: 'transition-all duration-300 opacity-100',
+                      exitActive: 'transition-all duration-300 opacity-0',
+                      enter: 'opacity-0',
+                      exit: 'transition-all duration-300 opacity-0',
+                    }}
+                    timeout={300}
+                  >
+                    <div
+                      className={`flex justify-between items-start py-2 rounded-lg border border-transparent relative overflow-hidden
+                                  ${optionsExpanded ? 'px-2 pl-0 gap-2 bg-neutral-200 dark:bg-neutral-800' : 'p-0'}
+                                  ${optionsExpanded && index === 0 && 'bg-accent/10 dark:bg-accent/10 border-accent/30 dark:border-accent/30'}
+                      `}
+                    >
+                      <span
+                        className={`font-bold text-base overflow-hidden transition-all duration-300
+                                    ${optionsExpanded ? 'w-4 ml-2' : 'w-0'} ${rubik.className}
+                        `}
+                      >
+                        {String.fromCharCode(65 + index)}
+                      </span>
+                      <span className={`flex-1 font-medium z-[1] ${saira.className}`}>{option.trim()}</span>
+                      {(optionsExpanded && index === 0) && (
+                        <svg className={'absolute -top-2.5 -right-2.5 text-accent/30 fill-accent/20'}
+                             xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24"
+                        >
+                          <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                             strokeWidth="2">
+                            <path
+                              d="M5 7.2A2.2 2.2 0 0 1 7.2 5h1a2.2 2.2 0 0 0 1.55-.64l.7-.7a2.2 2.2 0 0 1 3.12 0l.7.7c.412.41.97.64 1.55.64h1a2.2 2.2 0 0 1 2.2 2.2v1c0 .58.23 1.138.64 1.55l.7.7a2.2 2.2 0 0 1 0 3.12l-.7.7a2.2 2.2 0 0 0-.64 1.55v1a2.2 2.2 0 0 1-2.2 2.2h-1a2.2 2.2 0 0 0-1.55.64l-.7.7a2.2 2.2 0 0 1-3.12 0l-.7-.7a2.2 2.2 0 0 0-1.55-.64h-1a2.2 2.2 0 0 1-2.2-2.2v-1a2.2 2.2 0 0 0-.64-1.55l-.7-.7a2.2 2.2 0 0 1 0-3.12l.7-.7A2.2 2.2 0 0 0 5 8.2z"/>
+                            <path d="m9 12l2 2l4-4"/>
+                          </g>
+                        </svg>
+                      )}
+                    </div>
+                  </CSSTransition>
+                )
+              ))}
+            </TransitionGroup>
+          </div>
           {annotation && (
             <div className={'border-t dark:border-t-neutral-600/80 mt-4 pt-2'}>
               <div className={'text-sm inline-flex flex-col gap-1'}>
