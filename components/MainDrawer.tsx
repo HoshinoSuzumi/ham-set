@@ -254,7 +254,7 @@ export default function MainDrawer({children, nav}: {
           </div>
         </footer>
       </div>
-      <div className={'drawer-side'}>
+      <div className={'drawer-side z-30'}>
         <label htmlFor={'main-drawer'} aria-label={'close sidebar'} className={'drawer-overlay'}/>
         <ul
           className={`menu pt-20 px-2 w-64 space-y-1 min-h-screen bg-base-100/80 backdrop-blur-lg backdrop-saturate-50 text-base-content ${noto_sc.className}`}>
