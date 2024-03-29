@@ -58,27 +58,13 @@ export default function MainDrawer({children, nav}: {
   useEffect(() => {
     const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
-    function matchMode(e: MediaQueryListEvent) {
+    function msqListener(e: MediaQueryListEvent) {
       const body = document.body;
-      if (e.matches) {
-        if (!body.hasAttribute('theme-mode')) {
-          body.setAttribute('theme-mode', 'dark');
-        }
-      } else {
-        if (body.hasAttribute('theme-mode')) {
-          body.removeAttribute('theme-mode');
-        }
-      }
+      body.setAttribute('theme-mode', e.matches ? 'dark' : 'light');
     }
 
-    if (mql.matches) {
-      const body = document.body;
-      if (!body.hasAttribute('theme-mode')) {
-        body.setAttribute('theme-mode', 'dark');
-      }
-    }
-
-    mql.addEventListener('change', matchMode);
+    document.body.setAttribute('theme-mode', mql.matches ? 'dark' : 'light');
+    mql.addEventListener('change', msqListener);
   }, [])
 
   const handleVoiceChange = (value: any) => {

@@ -223,6 +223,7 @@ export default function QuestionCard({
                     }}
                     style={{
                       transitionDelay: `${(index + 1) * 50}ms`,
+                      transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
                     }}
                     timeout={{
                       enter: index * 50 + 300,
