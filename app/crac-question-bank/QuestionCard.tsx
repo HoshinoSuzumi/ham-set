@@ -216,12 +216,18 @@ export default function QuestionCard({
                   <CSSTransition
                     key={index}
                     classNames={{
-                      enterActive: 'transition-all duration-300 opacity-100',
-                      exitActive: 'transition-all duration-300 opacity-0',
-                      enter: 'opacity-0',
+                      enterActive: 'transition-all duration-300 opacity-100 translate-x-0',
+                      exitActive: 'transition-all duration-300 opacity-0 -translate-x-4',
+                      enter: 'opacity-0 -translate-x-4',
                       exit: 'transition-all duration-300 opacity-0',
                     }}
-                    timeout={300}
+                    style={{
+                      transitionDelay: `${(index + 1) * 50}ms`,
+                    }}
+                    timeout={{
+                      enter: index * 50 + 300,
+                      exit: 300,
+                    }}
                   >
                     <div
                       className={`flex justify-between items-start py-2 rounded-lg border border-transparent relative overflow-hidden
