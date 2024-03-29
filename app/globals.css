@@ -40,6 +40,14 @@ body {
   background-image: var(--background-pattern);
 }
 
+@layer base {
+  [type=button], [type=reset], [type=submit], button {
+    -webkit-appearance: button;
+    background-color: unset;
+    background-image: none;
+  }
+}
+
 @layer utilities {
   .bg-pattern-mask {
     @apply bg-neutral-200 dark:bg-neutral-800;
