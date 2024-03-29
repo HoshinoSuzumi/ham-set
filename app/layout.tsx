@@ -1,4 +1,5 @@
 import './globals.css';
+import '../assets/preflight.css';
 import {ReactNode} from 'react';
 import MainDrawer, {NavListItem} from '@/components/MainDrawer';
 import {SpeechSynthesisProvider} from '@/contexts/SpeechSynthesisContext';

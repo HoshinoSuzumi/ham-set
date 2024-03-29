@@ -231,20 +231,20 @@ export default function QuestionCard({
                     }}
                   >
                     <div
-                      className={`flex justify-between items-start py-2 rounded-lg border border-transparent relative overflow-hidden
+                      className={`flex justify-between items-start py-2 rounded-lg border-2 border-transparent relative overflow-hidden
                                   ${optionsExpanded ? 'px-2 pl-0 gap-2' : 'p-0'}
                                   ${(optionsExpanded && index !== 0) && 'bg-neutral-200 dark:bg-neutral-800'}
-                                  ${(optionsExpanded && index === 0) && 'bg-accent/10 dark:bg-accent/10 border-accent/30 dark:border-accent/30'}
+                                  ${(optionsExpanded && index === 0) && 'bg-accent/10 dark:bg-accent/10 border-accent/35 dark:border-accent/30'}
                       `}
                     >
                       <span
-                        className={`font-bold text-base overflow-hidden transition-all duration-300
+                        className={`font-bold text-base text-neutral-500 dark:text-neutral-500 overflow-hidden transition-all duration-300
                                     ${optionsExpanded ? 'w-4 ml-3.5' : 'w-0'} ${rubik.className}
                         `}
                       >
-                        {String.fromCharCode(65 + index)}
+                        {String.fromCharCode(65 + index)}.
                       </span>
-                      <span className={`flex-1 font-medium z-[1] ${saira.className}`}>{option.trim()}</span>
+                      <span className={`flex-1 font-medium z-[1] ${noto_sc.className}`}>{option.trim()}</span>
                       {(optionsExpanded && index === 0) && (
                         <svg className={'absolute -top-2.5 -right-2.5 text-accent/30 fill-accent/20'}
                              xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24"
@@ -354,21 +354,36 @@ export default function QuestionCard({
                     showClear
                     defaultValue={annotation?.annotation || ''}
           />
-          <Button
-            onClick={() => {
-              window.open('https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax')
-            }}
-            className={'w-fit'}
-            type={'tertiary'}
-            icon={<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
-              <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
-                <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                <path d="M7 15V9l2 2l2-2v6m3-2l2 2l2-2m-2 2V9"/>
-              </g>
-            </svg>}
-          >
-            Markdown with GFM 支持
-          </Button>
+          <div className={'flex items-center gap-2 overflow-auto overflow-y-hidden'}>
+            <Button
+              onClick={() => {
+                window.open('https://docs.github.com/zh/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax')
+              }}
+              className={'w-fit'}
+              type={'tertiary'}
+              icon={<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+                  <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <path d="M7 15V9l2 2l2-2v6m3-2l2 2l2-2m-2 2V9"/>
+                </g>
+              </svg>}
+            >
+              GFMarkdown 支持
+            </Button>
+            <Button
+              onClick={() => {
+                window.open('https://texdoc.org/index.html')
+              }}
+              className={'w-fit'}
+              type={'tertiary'}
+              icon={<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                      d="M3 19a2 2 0 0 0 2 2c2 0 2-4 3-9s1-9 3-9a2 2 0 0 1 2 2m-8 7h6m4 0l6 6m-6 0l6-6"/>
+              </svg>}
+            >
+              LaTeX 支持
+            </Button>
+          </div>
           <Banner
             type={'info'}
             fullMode={false}

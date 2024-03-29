@@ -8,6 +8,7 @@ const config: Config = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './assets/**/*.{css,scss}',
   ],
   theme: {
     extend: {
@@ -22,6 +23,9 @@ const config: Config = {
     daisyui,
     typography
   ],
+  corePlugins: {
+    preflight: false,
+  },
   daisyui: {
     themes: ['light', 'dark', 'cyberpunk'],
   },
