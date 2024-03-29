@@ -226,13 +226,14 @@ export default function QuestionCard({
                   >
                     <div
                       className={`flex justify-between items-start py-2 rounded-lg border border-transparent relative overflow-hidden
-                                  ${optionsExpanded ? 'px-2 pl-0 gap-2 bg-neutral-200 dark:bg-neutral-800' : 'p-0'}
-                                  ${optionsExpanded && index === 0 && 'bg-accent/10 dark:bg-accent/10 border-accent/30 dark:border-accent/30'}
+                                  ${optionsExpanded ? 'px-2 pl-0 gap-2' : 'p-0'}
+                                  ${(optionsExpanded && index !== 0) && 'bg-neutral-200 dark:bg-neutral-800'}
+                                  ${(optionsExpanded && index === 0) && 'bg-accent/10 dark:bg-accent/10 border-accent/30 dark:border-accent/30'}
                       `}
                     >
                       <span
                         className={`font-bold text-base overflow-hidden transition-all duration-300
-                                    ${optionsExpanded ? 'w-4 ml-2' : 'w-0'} ${rubik.className}
+                                    ${optionsExpanded ? 'w-4 ml-3.5' : 'w-0'} ${rubik.className}
                         `}
                       >
                         {String.fromCharCode(65 + index)}
