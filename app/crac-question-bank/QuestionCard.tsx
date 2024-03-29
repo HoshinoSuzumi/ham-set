@@ -209,8 +209,7 @@ export default function QuestionCard({
         )}
         <div
           className={`flex flex-col rounded-lg bg-neutral-100 dark:bg-neutral border border-neutral-content/80 dark:border-neutral-content/30 p-4 mt-2 h-full ${noto_sc.className}`}>
-          {/*<span className={'flex-1 font-medium'}>{question.options[0]}</span>*/}
-          <div className={'grid grid-cols-1 gap-2'}>
+          <div className={'flex-1 grid grid-cols-1 gap-2'}>
             <TransitionGroup component={null}>
               {question.options.map((option, index) => (
                 (optionsExpanded || index === 0) && (
