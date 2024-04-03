@@ -389,7 +389,8 @@ export default function QuestionCard({
             fullMode={false}
             bordered
             closeIcon={null}
-            description="请确保提交内容的正确和中立，请勿恶意修改。题目解析由大家共建"
+            icon={<IconNoObserve icon={'tabler:creative-commons-by'} className={'text-xl'}/>}
+            description="您发布的题解内容以 CC BY-NC-SA 4.0 协议发布"
           />
           <GeetestCaptcha
             captchaConfig={{

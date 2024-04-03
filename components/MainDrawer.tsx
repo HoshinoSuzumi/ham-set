@@ -138,6 +138,9 @@ export default function MainDrawer({children, nav}: {
                              target={'_blank'}>CTFever</a><br/>
                 Fantastic toolkit for CTFers and everyone
               </p>
+              <p className={`text-neutral-500 text-xs ${noto_sc.className}`}>
+                考试题库中的所有题解均由像您一样的用户编写，并以 CC BY-NC-SA 4.0 协议发布，转载请注明出处
+              </p>
             </div>
             <Space wrap>
               <a href={'https://github.com/HoshinoSuzumi/ham-set'} target={'_blank'}>
