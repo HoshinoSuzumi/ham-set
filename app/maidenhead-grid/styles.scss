@@ -1,0 +1,15 @@
+@keyframes blink {
+  0% {
+    @apply bg-inherit;
+  }
+  5% {
+    @apply bg-blue-300;
+  }
+  100% {
+    @apply bg-inherit;
+  }
+}
+
+.blink {
+  animation: blink 1000ms linear infinite;
+}

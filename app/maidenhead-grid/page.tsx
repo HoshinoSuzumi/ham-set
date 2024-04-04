@@ -1,4 +1,5 @@
-import {Metadata} from "next";
+import {Metadata} from 'next'
+import {Main} from '@/app/maidenhead-grid/Main'
 
 export const metadata: Metadata = {
   title: '梅登黑德网格定位',
@@ -7,8 +8,6 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <>
-      <h1>Maidenhead Grid Locator</h1>
-    </>
+    <Main/>
   )
 }

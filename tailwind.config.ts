@@ -1,6 +1,6 @@
-import type {Config} from 'tailwindcss';
-import daisyui from 'daisyui';
-import typography from "@tailwindcss/typography";
+import type {Config} from 'tailwindcss'
+import daisyui from 'daisyui'
+import typography from '@tailwindcss/typography'
 
 
 const config: Config = {
@@ -16,6 +16,12 @@ const config: Config = {
         '3xl': '1792px',
         '4xl': '2048px',
         '5xl': '2304px',
+      },
+      fontSize: {
+        '2xs': '0.625rem',
+      },
+      boxShadow: {
+        'panel-card': 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',
       },
     },
   },
