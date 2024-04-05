@@ -116,7 +116,7 @@ export const Main = () => {
     <>
       <AmapAPILoader>
         <div className={'w-full h-full relative'}>
-          <div className={'w-full h-full'}>
+          <div className={'w-full h-full bg-white dark:bg-neutral-900'}>
             <Map
               zoom={zoom}
               center={center}
