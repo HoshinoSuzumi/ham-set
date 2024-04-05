@@ -1,6 +1,6 @@
 'use client'
 
-import React, {createContext, ReactNode, useEffect, useState} from 'react';
+import React, {createContext, ReactNode, useEffect, useState} from 'react'
 
 interface SpeechOptions {
   interrupt?: boolean;
@@ -22,6 +22,7 @@ interface TTSApi {
   getVoices: () => SpeechSynthesisVoice[];
   shutUp: () => void;
   speech: (text: string, options?: SpeechOptions) => void;
+  synthReady: any;
 }
 
 interface SpeechSynthesisProviderProps {
@@ -37,12 +38,14 @@ export const SpeechSynthesisProvider: React.FC<SpeechSynthesisProviderProps> = (
   const [currentSpeed, setCurrentSpeed] = useState(1.0);
   const [currentPitch, setCurrentPitch] = useState(1.0);
 
+  const synthReady = !!synth
+
   useEffect(() => {
-    const synth = window.speechSynthesis;
+    const synth = window.speechSynthesis || null
     setSynth(synth);
 
     const initSynth = () => {
-      const voices = synth.getVoices().sort((a, b) => {
+      const voices = synth?.getVoices().sort((a, b) => {
         const a_sort = a.lang.toUpperCase();
         const b_sort = b.lang.toUpperCase();
         if (a_sort < b_sort) {
@@ -52,13 +55,13 @@ export const SpeechSynthesisProvider: React.FC<SpeechSynthesisProviderProps> = (
         } else {
           return +1;
         }
-      });
+      }) || [];
       setVoices(voices);
       setSelectedVoice(voices.find((voice) => voice.default) || null);
     };
     initSynth();
 
-    if (synth.onvoiceschanged !== undefined) {
+    if (synth?.onvoiceschanged !== undefined) {
       synth.onvoiceschanged = initSynth;
     }
   }, []);
@@ -96,6 +99,7 @@ export const SpeechSynthesisProvider: React.FC<SpeechSynthesisProviderProps> = (
         getVoices: () => voices,
         shutUp,
         speech,
+        synthReady,
       }}
     >
       {children}

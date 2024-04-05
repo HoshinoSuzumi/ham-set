@@ -1,10 +1,10 @@
 'use client'
 
-import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext';
-import {useContext, useRef, useState} from 'react';
-import {CSSTransition, SwitchTransition} from 'react-transition-group';
-import IconTablerVolume from '@/components/Icon/IconTablerVolume';
-import {IconSpinner} from '@/components/Icon/IconSpinner';
+import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext'
+import {useContext, useRef, useState} from 'react'
+import {CSSTransition, SwitchTransition} from 'react-transition-group'
+import IconTablerVolume from '@/components/Icon/IconTablerVolume'
+import {IconSpinner} from '@/components/Icon/IconSpinner'
 
 export interface Phonetic {
   word: string
@@ -22,7 +22,7 @@ export default function LetterCard({
   letter: string,
   phonetics: Phonetic[]
 }) {
-  const {speech, shutUp} = useContext(SpeechSynthesisContext)!
+  const {speech, shutUp, synthReady} = useContext(SpeechSynthesisContext)!
   const [index, setIndex] = useState(0)
   const [pending, setPending] = useState(false)
   const [speaking, setSpeaking] = useState(false)
@@ -43,28 +43,33 @@ export default function LetterCard({
         <SwitchTransition>
           <CSSTransition nodeRef={nodeRef} classNames={'swap-phonetic'} timeout={150} key={index}>
             <div className={`w-full flex flex-col p-2 pt-1 ${phonetics.length > 1 && 'pr-3'}`} ref={nodeRef}>
-              <h1 className={'w-fit cursor-pointer hover:drop-shadow group flex flex-row items-end'} onClick={() => {
-                setPending(true)
-                speech(phonetics[index].word, {
-                  interrupt: true,
-                  onstart: () => {
-                    setSpeaking(true)
-                    setPending(false)
-                  },
-                  onend: () => {
-                    setSpeaking(false)
-                    setPending(false)
-                  },
-                  onerror: () => {
-                    setSpeaking(false)
-                    setPending(false)
-                  },
-                })
-              }}>
+              <h1
+                className={'w-fit cursor-pointer hover:drop-shadow group flex flex-row items-end'}
+                onClick={() => {
+                  if (!synthReady) return
+                  setPending(true)
+                  speech(phonetics[index].word, {
+                    interrupt: true,
+                    onstart: () => {
+                      setSpeaking(true)
+                      setPending(false)
+                    },
+                    onend: () => {
+                      setSpeaking(false)
+                      setPending(false)
+                    },
+                    onerror: () => {
+                      setSpeaking(false)
+                      setPending(false)
+                    },
+                  })
+                }}
+              >
                 <span className={'text-2xl text-accent font-bold'}>
                   {letter.toUpperCase()}
                 </span>
-                <span className={`text-lg font-normal ${isNumber && 'pl-1'} ${speaking ? 'text-accent' : 'text-content'}`}>
+                <span
+                  className={`text-lg font-normal ${isNumber && 'pl-1'} ${speaking ? 'text-accent' : 'text-content'}`}>
                   {phonetics[index].word.slice(isNumber ? 0 : 1)}
                 </span>
                 {pending && !speaking && (
@@ -105,7 +110,8 @@ export default function LetterCard({
                    ${index === i ? 'bg-accent' : 'bg-neutral-content'}`}></div>
               ))}
             </div>
-            <button className={'h-full bg-neutral-content/50 dark:bg-neutral-content/20 p-1 cursor-pointer'} onClick={handleSwap}>
+            <button className={'h-full bg-neutral-content/50 dark:bg-neutral-content/20 p-1 cursor-pointer'}
+                    onClick={handleSwap}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
                 <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5"
                       d="M11 8L7 4m0 0L3 8m4-4v16m6-4l4 4m0 0l4-4m-4 4V4"/>

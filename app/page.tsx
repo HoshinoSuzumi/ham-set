@@ -1,6 +1,7 @@
-import LetterCard, {Phonetic} from '@/app/callsign-dictation/LetterCard';
-import {noto_sc} from '@/app/fonts';
-import {Metadata} from "next";
+import LetterCard, {Phonetic} from '@/app/callsign-dictation/LetterCard'
+import {noto_sc} from '@/app/fonts'
+import {Metadata} from 'next'
+import {NotSupportSynthAPI} from '@/components/NotSupportSynthAPI'
 
 export const metadata: Metadata = {
   title: '字母解释法速查表',
@@ -141,6 +142,7 @@ export default function Home() {
   return (
     <>
       <div className={'p-4 space-y-2 md:space-y-4'}>
+        <NotSupportSynthAPI/>
         <div
           className={`w-full flex items-center gap-1 p-2 text-xs rounded-lg bg-base-100 border shadow-sm
                       border-neutral-content/80 dark:border-neutral-content/30 border-b-4 ${noto_sc.className}`}>
@@ -169,5 +171,5 @@ export default function Home() {
         </div>
       </div>
     </>
-  );
+  )
 }
