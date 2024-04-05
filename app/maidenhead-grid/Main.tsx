@@ -1,12 +1,14 @@
 'use client'
 
 import './styles.scss'
+import './hideAmapCopyright.css'
 import {AmapAPILoader} from '@/components/AmapAPILoader'
 import {Panel} from '@/app/maidenhead-grid/Panel'
 import {DatetimeList} from '@/app/maidenhead-grid/DatetimeList'
 import {useCallback, useEffect, useState} from 'react'
 import {maidenheadToBoundingBox, WGS84ToMaidenhead} from '@hamset/maidenhead-locator'
 import dynamic from 'next/dynamic'
+import IconNoObserve from '@/components/IconNoObserve'
 import MapsEvent = AMap.MapsEvent
 import LngLat = AMap.LngLat
 
@@ -30,6 +32,16 @@ const [
 ]
 
 export const Main = () => {
+  // components state
+  const [panelExpanded, setPanelExpanded] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  useEffect(() => {
+    const mql = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = () => setIsDarkMode(mql.matches)
+    mql.addEventListener('change', handler)
+    setIsDarkMode(mql.matches)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
   // map state
   const [mapLoaded, setMapLoaded] = useState(false)
   const [zoom, setZoom] = useState(8)
@@ -76,8 +88,7 @@ export const Main = () => {
     setIsLocationBlink(true)
     const timer = setTimeout(() => setIsLocationBlink(false), 1000)
 
-    // setup map
-    if (location?.coords) {
+    if (location?.coords && !center) {
       setCenter([location.coords.longitude, location.coords.latitude])
       setZoom(14)
     }
@@ -89,11 +100,6 @@ export const Main = () => {
     // blink effect
     setIsTargetBlink(true)
     const timer = setTimeout(() => setIsTargetBlink(false), 1000)
-
-    // setup map
-    if (targetLocation?.lat && targetLocation?.lng) {
-      setCenter([targetLocation.lng, targetLocation.lat])
-    }
 
     return () => clearTimeout(timer)
   }, [targetLocation])
@@ -114,7 +120,7 @@ export const Main = () => {
             <Map
               zoom={zoom}
               center={center}
-              mapStyle={'amap://styles/normal'}
+              mapStyle={`amap://styles/${isDarkMode ? 'darkblue' : 'normal'}`}
               onComplete={() => setMapLoaded(true)}
               onClick={onMapClick}
             >
@@ -157,15 +163,25 @@ export const Main = () => {
             </Map>
           </div>
 
-          <div className={'absolute top-0 right-0 bottom-0 p-6 flex justify-end pointer-events-none'}>
-            <div className={'flex flex-col gap-4 h-fit pointer-events-auto'}>
+          <div
+            className={`absolute md:top-0 right-0 bottom-0 left-0 md:left-auto p-2 md:p-6 flex flex-col items-end pointer-events-none ease-out transition duration-300 md:translate-y-0 ${panelExpanded ? 'translate-y-0' : 'translate-y-[calc(100%-160px)]'}`}>
+            <div className={'inline md:hidden w-full h-0 relative'}>
+              <button
+                className={'absolute -top-[24px] right-2 flex justify-center items-center bg-white dark:bg-neutral-800 dark:border-neutral-700 rounded-t-lg border-2 border-b-0 px-4 h-[24px] pointer-events-auto'}
+                onClick={() => setPanelExpanded(!panelExpanded)}
+              >
+                <IconNoObserve icon={panelExpanded ? 'tabler:chevron-down' : 'tabler:chevron-up'}
+                               className={'text-xl'}/>
+              </button>
+            </div>
+            <div className={'flex flex-col-reverse md:flex-col gap-2 md:gap-4 w-full md:h-fit pointer-events-auto'}>
 
               <Panel label={'参考时间'} icon={'tabler:clock'}>
                 <DatetimeList/>
               </Panel>
 
               <Panel label={'台站位置'} icon={'tabler:gps'}>
-                <ul className={'divide-y'}>
+                <ul className={'divide-y dark:divide-neutral-700'}>
                   <li className={'flex justify-between items-center py-1.5 pt-0'}>
                     <h2 className={'text-xs text-neutral-400'}>
                       经度 <span className={'font-mono'}>Lng</span>
@@ -196,7 +212,7 @@ export const Main = () => {
               {targetGrid && (
                 <>
                   <Panel label={'目标位置'} icon={'tabler:gps'}>
-                    <ul className={'divide-y'}>
+                    <ul className={'divide-y dark:divide-neutral-700'}>
                       <li className={'flex justify-between items-center py-1.5 pt-0'}>
                         <h2 className={'text-xs text-neutral-400'}>
                           经度 <span className={'font-mono'}>Lng</span>

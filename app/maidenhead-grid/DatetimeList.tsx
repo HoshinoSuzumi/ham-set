@@ -17,7 +17,7 @@ export const DatetimeList = () => {
   }, [])
 
   return (
-    <ul className={'divide-y'}>
+    <ul className={'divide-y dark:divide-neutral-700'}>
       <li className={'flex justify-between items-center py-1.5 pt-0'}>
         <h2 className={'text-xs text-neutral-400'}>
           UTC 日期 (DMY)

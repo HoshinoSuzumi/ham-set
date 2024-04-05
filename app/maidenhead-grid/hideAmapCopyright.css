@@ -1,0 +1,4 @@
+.amap-logo,
+.amap-copyright {
+  @apply !hidden md:!block;
+}

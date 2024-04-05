@@ -14,7 +14,7 @@ export const Panel = ({
   return (
     <>
       <div
-        className={'w-[300px] px-2 py-1 bg-white rounded shadow-panel-card flex flex-col gap-2'}
+        className={'w-full md:w-[300px] px-2 py-1 bg-white dark:bg-neutral-800 rounded shadow-panel-card flex flex-col gap-2'}
       >
         <h2 className={`text-xs font-medium text-neutral-400 ${noto_sc.className}`}>
           {icon && (

@@ -1,13 +1,13 @@
 'use client'
 
-import {ReactNode, useContext, useEffect, useState} from 'react';
-import Link from 'next/link';
-import {usePathname} from 'next/navigation';
-import {Icon} from '@iconify-icon/react';
-import {noto_sc, rubik, saira} from '@/app/fonts';
-import {Button, Popover, Select, Space, Tooltip} from '@douyinfe/semi-ui';
-import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext';
-import Text from '@douyinfe/semi-ui/lib/es/typography/text';
+import {ReactNode, useContext, useEffect, useState} from 'react'
+import Link from 'next/link'
+import {usePathname} from 'next/navigation'
+import {Icon} from '@iconify-icon/react'
+import {noto_sc, rubik, saira} from '@/app/fonts'
+import {Button, Popover, Select, Space, Tooltip} from '@douyinfe/semi-ui'
+import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext'
+import Text from '@douyinfe/semi-ui/lib/es/typography/text'
 
 
 export interface NavListItem {
@@ -122,7 +122,7 @@ export default function MainDrawer({children, nav}: {
           {children}
         </main>
 
-        <footer className={'footer p-6 md:p-10 bg-base-300 text-base-content justify-between'}>
+        <footer className={'footer p-6 md:p-10 bg-base-300 text-base-content justify-between z-20'}>
           <aside className={'h-full flex flex-col justify-between'}>
             <div className={'space-y-2'}>
               <p className={'flex items-center gap-1 text-lg'}>
