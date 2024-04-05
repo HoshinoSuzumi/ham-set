@@ -1,7 +1,7 @@
 'use server'
 
-import {sql} from '@vercel/postgres';
-import {GeetestCaptchaSuccess, geetestValidate} from "@/app/geetest";
+import {sql} from '@vercel/postgres'
+import {GeetestCaptchaSuccess, geetestValidate} from '@/app/geetest'
 
 export interface Annotation {
   id: number
@@ -17,7 +17,7 @@ export async function newAnnotation(
   lk: string,
   annotation: string,
   author: string | null,
-  validate: GeetestCaptchaSuccess
+  validate: GeetestCaptchaSuccess,
 ) {
   return new Promise((resolve, reject) => {
     geetestValidate(validate).then(pass => {
@@ -42,7 +42,7 @@ export async function getAnnotationsList(): Promise<Annotation[]> {
 
 export async function upvoteAnnotation(
   id: number,
-  validate: GeetestCaptchaSuccess
+  validate: GeetestCaptchaSuccess,
 ) {
   return new Promise((resolve, reject) => {
     geetestValidate(validate).then(pass => {
@@ -52,5 +52,45 @@ export async function upvoteAnnotation(
         reject('captcha failed')
       }
     })
+  })
+}
+
+export async function pastebin(
+  content: string,
+  options?: {
+    name?: string
+    format?: string
+  },
+): Promise<string> {
+  const apiKey = process.env.PASTEBIN_API_KEY
+  let payload = {
+    api_dev_key: apiKey || 'API_KEY_NOT_SET',
+    api_paste_private: '1',
+    api_option: 'paste',
+    api_paste_code: content,
+  } as Record<string, string>
+  if (options?.name) {
+    payload = {
+      ...payload,
+      api_paste_name: options.name,
+    }
+  }
+  if (options?.format) {
+    payload = {
+      ...payload,
+      api_paste_format: options.format,
+    }
+  }
+  return new Promise<string>((resolve, reject) => {
+    fetch('https://pastebin.com/api/api_post.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(payload),
+    })
+    .then(response => response.text())
+    .then(resolve)
+    .catch(reject)
   })
 }
