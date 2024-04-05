@@ -60,11 +60,14 @@ export async function pastebin(
   options?: {
     name?: string
     format?: string
+    folder?: string
   },
 ): Promise<string> {
   const apiKey = process.env.PASTEBIN_API_KEY
+  const userKey = process.env.PASTEBIN_USER_KEY
   let payload = {
     api_dev_key: apiKey || 'API_KEY_NOT_SET',
+    api_user_key: userKey || 'USER_KEY_NOT_SET',
     api_paste_private: '1',
     api_option: 'paste',
     api_paste_code: content,
@@ -72,13 +75,19 @@ export async function pastebin(
   if (options?.name) {
     payload = {
       ...payload,
-      api_paste_name: options.name,
+      api_paste_name: options.name || 'untitled',
     }
   }
   if (options?.format) {
     payload = {
       ...payload,
       api_paste_format: options.format,
+    }
+  }
+  if (options?.folder) {
+    payload = {
+      ...payload,
+      api_folder_key: options.folder,
     }
   }
   return new Promise<string>((resolve, reject) => {

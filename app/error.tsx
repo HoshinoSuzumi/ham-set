@@ -48,8 +48,9 @@ export default function Error({
       },
     }
     pastebin(JSON.stringify(report_payload, null, 2), {
-      name: `HamSet 错误报告[${dayjs().local()}] - ${error.message || 'untitled'}`,
+      name: `HamSet 错误报告[${dayjs().local().toString()}] - ${error.message || 'untitled'}`,
       format: 'json',
+      folder: 'TgXi1c0z',
     }).then(url => {
       setPastebinUrl(url)
       setShowErrorStack(false)
