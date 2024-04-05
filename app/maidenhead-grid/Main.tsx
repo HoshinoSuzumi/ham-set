@@ -49,8 +49,7 @@ export const Main = () => {
   // straight distance
   const localLnglat = (mapLoaded && location?.coords) ? new AMap.LngLat(location.coords.longitude, location.coords.latitude) : null
   const targetLnglat = (mapLoaded && targetLocation && targetLocation.lat && targetLocation.lng) ? new AMap.LngLat(targetLocation.lng, targetLocation.lat) : null
-  // @ts-ignore TODO: https://github.com/uiwjs/react-amap/pull/351
-  const straightDistance = (mapLoaded && localLnglat && targetLnglat) ? localLnglat.distance(targetLnglat) : null
+  const straightDistance = (mapLoaded && localLnglat && targetLnglat) ? localLnglat.distance!(targetLnglat) : null
 
   useEffect(() => {
     if (!navigator.geolocation) return
