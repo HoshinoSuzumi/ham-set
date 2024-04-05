@@ -21,7 +21,7 @@ export default function MainDrawer({children, nav}: {
   children: ReactNode;
   nav: NavListItem[];
 }) {
-  const pathname = usePathname();
+  const pathname = usePathname()
   const {
     getVoices,
     setVoice,
@@ -38,6 +38,7 @@ export default function MainDrawer({children, nav}: {
       label: string;
     }[];
   }[]>([])
+  const [drawerOn, setDrawerOn] = useState(false)
 
   useEffect(() => {
     const voices = getVoices()
@@ -56,15 +57,15 @@ export default function MainDrawer({children, nav}: {
   }, [getVoices])
 
   useEffect(() => {
-    const mql = window.matchMedia('(prefers-color-scheme: dark)');
+    const mql = window.matchMedia('(prefers-color-scheme: dark)')
 
     function msqListener(e: MediaQueryListEvent) {
-      const body = document.body;
-      body.setAttribute('theme-mode', e.matches ? 'dark' : 'light');
+      const body = document.body
+      body.setAttribute('theme-mode', e.matches ? 'dark' : 'light')
     }
 
-    document.body.setAttribute('theme-mode', mql.matches ? 'dark' : 'light');
-    mql.addEventListener('change', msqListener);
+    document.body.setAttribute('theme-mode', mql.matches ? 'dark' : 'light')
+    mql.addEventListener('change', msqListener)
   }, [])
 
   const handleVoiceChange = (value: any) => {
@@ -73,7 +74,13 @@ export default function MainDrawer({children, nav}: {
 
   return (
     <div className={`drawer`}>
-      <input id={'main-drawer'} type={'checkbox'} className={'drawer-toggle'}/>
+      <input
+        id={'main-drawer'}
+        type={'checkbox'}
+        className={'drawer-toggle'}
+        checked={drawerOn}
+        onChange={(e) => setDrawerOn(e.target.checked)}
+      />
       <div className={'drawer-content flex flex-col'}>
         <header
           className={'sticky top-0 inset-x-0 h-16 bg-base-100 border-b dark:border-b-neutral-700 flex flex-row justify-between items-center px-2 z-50'}>
@@ -249,7 +256,11 @@ export default function MainDrawer({children, nav}: {
           className={`menu pt-20 px-2 w-64 space-y-1 min-h-screen bg-base-100/80 backdrop-blur-lg backdrop-saturate-50 text-base-content ${noto_sc.className}`}>
           {nav.map((item, index) =>
             <li key={index}>
-              <Link href={item.pathname || '#'} className={`${pathname === item.pathname ? 'active' : ''}`}>
+              <Link
+                href={item.pathname || '#'}
+                className={`${pathname === item.pathname ? 'active' : ''}`}
+                onClick={() => setDrawerOn(false)}
+              >
                 {item.icon || <span className={'w-4 h-4'}></span>}
                 <span>{item.label}</span>
               </Link>
