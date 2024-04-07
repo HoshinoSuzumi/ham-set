@@ -1,12 +1,12 @@
-import './globals.css';
-import '../assets/preflight.css';
-import {ReactNode} from 'react';
-import MainDrawer, {NavListItem} from '@/components/MainDrawer';
-import {SpeechSynthesisProvider} from '@/contexts/SpeechSynthesisContext';
-import {rubik} from '@/app/fonts';
-import {SWRProvider} from '@/app/swr-provider';
-import {Analytics} from "@vercel/analytics/react";
-import {Metadata, Viewport} from "next";
+import './globals.css'
+import '../assets/preflight.css'
+import {ReactNode} from 'react'
+import MainDrawer, {NavListItem} from '@/components/MainDrawer'
+import {SpeechSynthesisProvider} from '@/contexts/SpeechSynthesisContext'
+import {rubik} from '@/app/fonts'
+import {SWRProvider} from '@/app/swr-provider'
+import {Analytics} from '@vercel/analytics/react'
+import {Metadata, Viewport} from 'next'
 
 export const metadata: Metadata = {
   title: 'HAM Set',
@@ -37,14 +37,14 @@ export default function RootLayout({
         </g>
       </svg>,
     },
-    {
-      label: '呼号听写',
-      pathname: '/callsign-dictation',
-      icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-        <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-              d="M4 20h4L18.5 9.5a1.5 1.5 0 0 0-4-4L4 16v4m9.5-13.5l4 4"/>
-      </svg>,
-    },
+    // {
+    //   label: '呼号听写',
+    //   pathname: '/callsign-dictation',
+    //   icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+    //     <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+    //           d="M4 20h4L18.5 9.5a1.5 1.5 0 0 0-4-4L4 16v4m9.5-13.5l4 4"/>
+    //   </svg>,
+    // },
     {
       label: '考试题库',
       pathname: '/crac-question-bank',
