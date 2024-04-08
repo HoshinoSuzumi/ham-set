@@ -1,3 +1,7 @@
 .semi-table-pagination-outer {
-  @apply px-4;
+  @apply px-4 flex-wrap items-center;
+}
+
+table {
+  @apply text-nowrap;
 }
