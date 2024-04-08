@@ -59,16 +59,28 @@ export default function Page() {
   ]
 
   const {
-    data,
-    isLoading,
-  } = useSWR('https://mirror.ghproxy.com/https://raw.githubusercontent.com/palewire/ham-satellite-database/main/data/amsat-all-frequencies.json')
+    data: frequenciesData,
+    isLoading: isFrequenciesLoading,
+  } = useSWR<[{
+    status: string
+    name: string
+    norad_id: string
+    uplink: string
+    downlink: string
+    beacon: string
+    mode: string
+  }]>('https://mirror.ghproxy.com/https://raw.githubusercontent.com/palewire/ham-satellite-database/main/data/amsat-all-frequencies.json')
+
+  // const groupedFrequencies = frequenciesData?.reduce((acc, cur) => {
+  //   const existing = acc.
+  // }, [])
 
   return (
     <div className={'w-full h-full flex flex-col gap-8 items-center pt-8 md:p-8 bg-white dark:bg-neutral-900'}>
       <div>
         <h1 className={`flex flex-col items-center text-lg font-medium ${noto_sc.className}`}>
           <Icon icon={'tabler:satellite'} className={'text-4xl mb-2'}/>
-          <span>业余无线电卫星数据库(开发中)</span>
+          <span>业余无线电卫星数据库</span>
           <span className={`text-xs opacity-50 ${rubik.className}`}>Amateur Radio Satellites Database</span>
         </h1>
         <Input
@@ -81,8 +93,9 @@ export default function Page() {
       <div className={'flex-1 w-full md:w-[80%] md:border md:rounded-lg md:overflow-hidden'}>
         <Table
           columns={columns}
-          dataSource={data}
-          loading={isLoading}
+          dataSource={frequenciesData}
+          pagination={false}
+          loading={isFrequenciesLoading}
         />
       </div>
     </div>
