@@ -68,7 +68,7 @@ export default function Page() {
       <div>
         <h1 className={`flex flex-col items-center text-lg font-medium ${noto_sc.className}`}>
           <Icon icon={'tabler:satellite'} className={'text-4xl mb-2'}/>
-          <span>业余无线电卫星数据库</span>
+          <span>业余无线电卫星数据库(开发中)</span>
           <span className={`text-xs opacity-50 ${rubik.className}`}>Amateur Radio Satellites Database</span>
         </h1>
         <Input
