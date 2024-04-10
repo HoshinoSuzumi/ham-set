@@ -1,13 +1,12 @@
 'use server'
 
+import {LatestTleSet} from '@/types/types'
+
 export async function getTle() {
-  return new Promise<{}>((resolve, reject) => {
-    fetch('https://db.satnogs.org/api/tle/?format=json')
+  return new Promise<LatestTleSet[]>((resolve, reject) => {
+    fetch('https://db-satnogs.freetls.fastly.net/api/tle/?format=json')
     .then(res => res.json())
-    .then(res => {
-      console.log(res)
-      resolve(res)
-    })
+    .then(res => resolve(res))
     .catch(err => reject(err))
   })
 }

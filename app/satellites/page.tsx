@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export interface FrequenciesRawData {
   status: string
   name: string
-  norad_id: number
+  norad_id: string
   satnogs_id: string
   uplink: string
   downlink: string
@@ -28,7 +28,7 @@ export interface Transponder {
 
 export interface FrequenciesData {
   name: string
-  norad_id: number
+  norad_id: string
   satnogs_id: string
   transponders: Transponder[]
 }

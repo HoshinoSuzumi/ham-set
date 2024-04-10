@@ -9,6 +9,7 @@ import {Icon} from '@iconify-icon/react'
 import {noto_sc, rubik} from '@/app/fonts'
 import {Input, Table} from '@douyinfe/semi-ui'
 import {IconSearch} from '@douyinfe/semi-icons'
+import {LatestTleSet} from '@/types/types'
 import {getTle} from '@/app/satnogs'
 
 export const Main = () => {
@@ -81,11 +82,15 @@ export const Main = () => {
     {
       title: 'NORAD ID',
       dataIndex: 'norad_id',
-      sorter: (a, b) => ((a?.norad_id || 0) - (b?.norad_id || 0)) || 0,
+      sorter: (a, b) => a?.norad_id?.localeCompare(b?.norad_id || '') || 0,
     },
     {
-      title: 'SatNOGS ID',
-      dataIndex: 'satnogs_id',
+      title: 'TLE',
+      render: (record) => (
+        <div>
+          <pre>{tleData ? JSON.stringify(tleData.find(tleItem => tleItem.norad_cat_id == record.norad_id), null, 2) || 'none' : 'none'}</pre>
+        </div>
+      ),
     },
   ]
 
@@ -123,14 +128,21 @@ export const Main = () => {
     return acc
   }, [])
 
-  const [tleData, setTleData] = useState()
+  // const {
+  //   data: tleData,
+  //   isLoading: isTleLoading,
+  // } = useSWR<LatestTleSet[]>('https://db-satnogs.freetls.fastly.net/api/tle/?format=json', {
+  //   refreshWhenHidden: false,
+  //   refreshWhenOffline: false,
+  // })
 
+  const [tleData, setTleData] = useState<LatestTleSet[]>([])
   useEffect(() => {
-    getTle().then(res => {
-      console.log(res)
-    }).catch(err => {
-      console.error(err)
-    })
+    (async () => {
+      const gotTleData = await getTle()
+      console.log(gotTleData)
+      setTleData(gotTleData)
+    })()
   }, [])
 
   function handleCompositionStart() {
