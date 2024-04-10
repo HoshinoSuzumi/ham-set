@@ -1,7 +1,7 @@
-import {NextRequest, NextResponse} from 'next/server';
-import {BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion} from '@/app/api/schema';
-import {createHash} from 'crypto'
-import {list} from '@vercel/blob'
+import { NextRequest, NextResponse } from 'next/server'
+import { BaseResponse, ExamBankResponse, ExamLevel, ExamQuestion } from '@/app/api/types'
+import { createHash } from 'crypto'
+import { list } from '@vercel/blob'
 
 
 const LKs = {

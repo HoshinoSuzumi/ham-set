@@ -1,6 +1,6 @@
 'use server'
 
-import {LatestTleSet} from '@/types/types'
+import { LatestTleSet } from '@/app/api/types'
 
 export async function getTle() {
   return new Promise<LatestTleSet[]>((resolve, reject) => {

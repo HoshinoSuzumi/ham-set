@@ -1,13 +1,13 @@
 'use client'
 
-import {BaseResponse, ExamBankResponse, ExamLevel} from '@/app/api/schema';
-import {ReactNode, useEffect, useState} from 'react';
-import useSWR from 'swr';
-import {Annotation, getAnnotationsList} from '@/app/actions';
-import {noto_sc, rubik} from '@/app/fonts';
-import "./Main.scss";
-import {BackTop, Input, Notification, Pagination, Select, Switch,} from '@douyinfe/semi-ui';
-import QuestionCard from "@/app/crac-question-bank/QuestionCard";
+import { BaseResponse, ExamBankResponse, ExamLevel } from '@/app/api/types'
+import { ReactNode, useEffect, useState } from 'react'
+import useSWR from 'swr'
+import { Annotation, getAnnotationsList } from '@/app/actions'
+import { noto_sc, rubik } from '@/app/fonts'
+import './Main.scss'
+import { BackTop, Input, Notification, Pagination, Select, Switch } from '@douyinfe/semi-ui'
+import QuestionCard from '@/app/crac-question-bank/QuestionCard'
 
 function QuestionCardPlaceholder({
   count

@@ -1,72 +1,42 @@
 'use client'
 
 import './styles.scss'
-import {Key, useEffect, useRef, useState} from 'react'
-import {ColumnProps} from '@douyinfe/semi-ui/lib/es/table'
+import { Key, useRef, useState } from 'react'
+import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
 import useSWR from 'swr'
-import {FrequenciesData, FrequenciesRawData, Transponder} from '@/app/satellites/page'
-import {Icon} from '@iconify-icon/react'
-import {noto_sc, rubik} from '@/app/fonts'
-import {Input, Table} from '@douyinfe/semi-ui'
-import {IconSearch} from '@douyinfe/semi-icons'
-import {LatestTleSet} from '@/types/types'
-import {getTle} from '@/app/satnogs'
+import { Icon } from '@iconify-icon/react'
+import { noto_sc, rubik } from '@/app/fonts'
+import { Input, Table } from '@douyinfe/semi-ui'
+import { IconSearch } from '@douyinfe/semi-icons'
+import { BaseResponse, LatestTleSet, Satellite, Transmitter } from '@/app/api/types'
+import { getSatelliteInfo } from 'tle.js'
 
 export const Main = () => {
-  const compositionRef = useRef({isComposition: false})
-  const [filteredValue, setFilteredValue] = useState<FrequenciesData[]>([])
+  const compositionRef = useRef({ isComposition: false })
+  const [filteredValue, setFilteredValue] = useState<Satellite[]>([])
 
-  const columns: ColumnProps<FrequenciesData>[] = [
+  const columns: ColumnProps<Satellite>[] = [
     {
-      title: '转发器',
-      dataIndex: 'transponders',
+      title: '收发器',
+      dataIndex: 'transmitters',
       width: 100,
       align: 'center',
-      render: (record) => (
-        <div className={'mx-auto flex w-10 h-1.5 rounded-lg bg-black overflow-hidden divide-x dark:divide-neutral-700'}>
-          {record?.map((transponder: Transponder, index: Key | null | undefined) => (
-            <div
-              key={index}
-              style={{
-                width: 1 / record.length * 100 + '%',
-              }}
-              className={`h-full ${transponder.status === 'active' ? 'bg-green-500' : transponder.status === 'inactive' ? 'bg-red-500' : 'bg-gray-300'}`}
-            ></div>
-          ))}
-        </div>
-      ),
-      filters: [
-        {
-          text: 'FM',
-          value: 'FM',
-        },
-        {
-          text: 'CW',
-          value: 'CW',
-        },
-        {
-          text: 'Linear',
-          value: 'Linear',
-        },
-        {
-          text: 'SSB',
-          value: 'SSB',
-        },
-        {
-          text: 'FSK',
-          value: 'FSK',
-        },
-        {
-          text: 'AFSK',
-          value: 'AFSK',
-        },
-        {
-          text: 'QPSK',
-          value: 'QPSK',
-        },
-      ],
-      onFilter: (value, record) => {
-        return record?.transponders.some(item => item.mode?.includes(value)) || false
+      render: (record: Satellite) => {
+        const transmitters = transmittersData?.data?.filter(t => t.norad_cat_id === record?.norad_cat_id)
+        return (
+          <div
+            className={ 'mx-auto flex w-10 h-1.5 rounded-lg bg-black overflow-hidden divide-x dark:divide-neutral-700' }>
+            { transmitters?.map((transmitter: Transmitter, index: Key | null | undefined) => (
+              <div
+                key={ index }
+                style={ {
+                  width: 1 / transmitters.length * 100 + '%',
+                } }
+                className={ `h-full ${ transmitter.status === 'active' ? 'bg-green-500' : transmitter.status === 'inactive' ? 'bg-red-500' : 'bg-gray-300' }` }
+              ></div>
+            )) }
+          </div>
+        )
       },
     },
     {
@@ -75,75 +45,53 @@ export const Main = () => {
       sorter: (a, b) => a?.name.localeCompare(b?.name || '') || 0,
       onFilter: (value, record) => {
         const lowerValue = value.toLowerCase()
-        return record?.name.toLowerCase().includes(lowerValue) || `${record?.norad_id || ''}`.includes(lowerValue) || false
+        return record?.name.toLowerCase().includes(lowerValue) || `${ record?.norad_cat_id || '' }`.includes(lowerValue) || false
       },
       filteredValue,
     },
     {
       title: 'NORAD ID',
-      dataIndex: 'norad_id',
-      sorter: (a, b) => a?.norad_id?.localeCompare(b?.norad_id || '') || 0,
+      dataIndex: 'norad_cat_id',
     },
     {
-      title: 'TLE',
-      render: (record) => (
-        <div>
-          <pre>{tleData ? JSON.stringify(tleData.find(tleItem => tleItem.norad_cat_id == record.norad_id), null, 2) || 'none' : 'none'}</pre>
-        </div>
-      ),
+      title: 'Position',
+      render: (record) => {
+        const tleRaw = tleData?.data?.find(tleItem => tleItem?.norad_cat_id == record?.norad_cat_id)
+        if (!tleRaw) return 'none'
+        const tle = getSatelliteInfo(
+          [tleRaw.tle0, tleRaw.tle1, tleRaw.tle2],
+          new Date().getMilliseconds(),
+        )
+        return (
+          <pre>Lat: { tle.lat.toFixed(5) } | Lng: { tle.lng.toFixed(5) } | Ele: { tle.elevation.toFixed(2) }°</pre>
+        )
+      },
     },
   ]
 
   const {
-    data: frequenciesData,
-    isLoading: isFrequenciesLoading,
-  } = useSWR<FrequenciesRawData[]>('https://mirror.ghproxy.com/https://raw.githubusercontent.com/palewire/ham-satellite-database/main/data/amsat-all-frequencies.json')
+    data: satellitesData,
+    isLoading: isSatellitesLoading,
+  } = useSWR<BaseResponse<Satellite[]>>('/api/satellite/satnogs/satellites', {
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+  })
 
-  const groupedFrequencies = frequenciesData?.reduce<FrequenciesData[]>((acc, cur) => {
-    const existing = acc.find(item => item.name === cur.name)
-    if (!existing) {
-      acc.push({
-        name: cur.name,
-        norad_id: cur.norad_id,
-        satnogs_id: cur.satnogs_id,
-        transponders: [
-          {
-            uplink: cur.uplink,
-            downlink: cur.downlink,
-            beacon: cur.beacon,
-            mode: cur.mode,
-            status: cur.status,
-          },
-        ],
-      })
-    } else {
-      existing.transponders.push({
-        uplink: cur.uplink,
-        downlink: cur.downlink,
-        beacon: cur.beacon,
-        mode: cur.mode,
-        status: cur.status,
-      })
-    }
-    return acc
-  }, [])
+  const {
+    data: transmittersData,
+    isLoading: isTransmittersLoading,
+  } = useSWR<BaseResponse<Transmitter[]>>(`/api/satellite/satnogs/${ encodeURIComponent('transmitters/?format=json&service=Amateur') }`, {
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+  })
 
-  // const {
-  //   data: tleData,
-  //   isLoading: isTleLoading,
-  // } = useSWR<LatestTleSet[]>('https://db-satnogs.freetls.fastly.net/api/tle/?format=json', {
-  //   refreshWhenHidden: false,
-  //   refreshWhenOffline: false,
-  // })
-
-  const [tleData, setTleData] = useState<LatestTleSet[]>([])
-  useEffect(() => {
-    (async () => {
-      const gotTleData = await getTle()
-      console.log(gotTleData)
-      setTleData(gotTleData)
-    })()
-  }, [])
+  const {
+    data: tleData,
+    isLoading: isTleLoading,
+  } = useSWR<BaseResponse<LatestTleSet[]>>(`/api/satellite/satnogs/${ encodeURIComponent('tle?format=json') }`, {
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+  })
 
   function handleCompositionStart() {
     compositionRef.current.isComposition = true
@@ -165,39 +113,44 @@ export const Main = () => {
   }
 
   return (
-    <div className={'w-full h-full flex flex-col gap-8 items-center pt-8 md:p-8 bg-white dark:bg-neutral-900'}>
+    <div className={ 'w-full h-full flex flex-col gap-8 items-center pt-8 md:p-8 bg-white dark:bg-neutral-900' }>
       <div>
-        <h1 className={`flex flex-col items-center text-lg font-medium ${noto_sc.className}`}>
-          <Icon icon={'tabler:satellite'} className={'text-4xl mb-2'}/>
+        <h1 className={ `flex flex-col items-center text-lg font-medium ${ noto_sc.className }` }>
+          <Icon icon={ 'tabler:satellite' } className={ 'text-4xl mb-2' }/>
           <span>业余无线电卫星数据库</span>
-          <span className={`text-xs opacity-50 ${rubik.className}`}>Amateur Radio Satellites Database</span>
+          <span className={ `text-xs opacity-50 ${ rubik.className }` }>Amateur Radio Satellites Database</span>
         </h1>
         <Input
-          placeholder={'搜索卫星名称、NORAD ID'}
-          className={'!w-64 mt-4'}
-          size={'large'}
-          disabled={isFrequenciesLoading}
-          prefix={<IconSearch/>}
-          onCompositionStart={handleCompositionStart}
-          onCompositionEnd={handleCompositionEnd}
-          onChange={handleChange}
+          placeholder={ '搜索卫星名称、NORAD ID' }
+          className={ '!w-64 mt-4' }
+          size={ 'large' }
+          disabled={ isSatellitesLoading }
+          prefix={ <IconSearch/> }
+          onCompositionStart={ handleCompositionStart }
+          onCompositionEnd={ handleCompositionEnd }
+          onChange={ handleChange }
         />
       </div>
-      <div className={'flex-1 w-full md:w-[80%]'}>
+      <div className={ 'flex-1 w-full md:w-[80%]' }>
         <Table
           bordered
-          rowKey={'name'}
-          style={rubik.style}
-          columns={columns}
-          dataSource={groupedFrequencies}
+          rowKey={ 'name' }
+          style={ rubik.style }
+          columns={ columns }
+          dataSource={ satellitesData?.data || [] }
           expandCellFixed
-          hideExpandedColumn={false}
-          pagination={{
+          expandedRowRender={ (record) => (
+            <div>
+              <pre>{ JSON.stringify(record, null, 2) }</pre>
+            </div>
+          ) }
+          hideExpandedColumn={ false }
+          pagination={ {
             pageSize: 30,
             position: 'both',
-            formatPageText: (page) => `第 ${page?.currentStart}-${page?.currentEnd} 项，共 ${page?.total} 组`,
-          }}
-          loading={isFrequenciesLoading}
+            formatPageText: (page) => `第 ${ page?.currentStart }-${ page?.currentEnd } 项，共 ${ page?.total } 组`,
+          } }
+          loading={ isSatellitesLoading }
         />
       </div>
     </div>

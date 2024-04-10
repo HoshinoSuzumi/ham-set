@@ -1,20 +1,20 @@
-import {ExamQuestion} from "@/app/api/schema";
-import {Annotation, getAnnotationsByLk, newAnnotation, upvoteAnnotation} from "@/app/actions";
-import {useEffect, useRef, useState} from "react";
-import {GeetestCaptchaSuccess} from "@/app/geetest";
-import {Banner, Button, Input, Modal, Notification, Popover, TextArea} from "@douyinfe/semi-ui";
-import {noto_sc, rubik, saira} from "@/app/fonts";
-import IconNoObserve from "@/components/IconNoObserve";
-import Image from "next/image";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
+import { ExamQuestion } from '@/app/api/types'
+import { Annotation, getAnnotationsByLk, newAnnotation, upvoteAnnotation } from '@/app/actions'
+import { useEffect, useRef, useState } from 'react'
+import { GeetestCaptchaSuccess } from '@/app/geetest'
+import { Banner, Button, Input, Modal, Notification, Popover, TextArea } from '@douyinfe/semi-ui'
+import { noto_sc, rubik, saira } from '@/app/fonts'
+import IconNoObserve from '@/components/IconNoObserve'
+import Image from 'next/image'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
-import dayjs from "@/app/utils/dayjs";
-import GeetestCaptcha from "@/components/GeetestCaptcha";
-import {IconSpinner} from "@/components/Icon/IconSpinner";
-import {CSSTransition, TransitionGroup} from "react-transition-group";
+import dayjs from '@/app/utils/dayjs'
+import GeetestCaptcha from '@/components/GeetestCaptcha'
+import { IconSpinner } from '@/components/Icon/IconSpinner'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 export default function QuestionCard({
   question,
