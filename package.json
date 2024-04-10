@@ -28,7 +28,8 @@
     "rehype-katex": "^7.0.0",
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
-    "swr": "^2.2.5"
+    "swr": "^2.2.5",
+    "tle.js": "^4.9.0"
   },
   "devDependencies": {
     "@iconify-icon/react": "^2.0.1",

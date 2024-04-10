@@ -1,7 +1,7 @@
 'use client'
 
 import './styles.scss'
-import {Key, useRef, useState} from 'react'
+import {Key, useEffect, useRef, useState} from 'react'
 import {ColumnProps} from '@douyinfe/semi-ui/lib/es/table'
 import useSWR from 'swr'
 import {FrequenciesData, FrequenciesRawData, Transponder} from '@/app/satellites/page'
@@ -9,7 +9,7 @@ import {Icon} from '@iconify-icon/react'
 import {noto_sc, rubik} from '@/app/fonts'
 import {Input, Table} from '@douyinfe/semi-ui'
 import {IconSearch} from '@douyinfe/semi-icons'
-import {TransponderCard} from '@/app/satellites/TransponderCard'
+import {getTle} from '@/app/satnogs'
 
 export const Main = () => {
   const compositionRef = useRef({isComposition: false})
@@ -123,6 +123,16 @@ export const Main = () => {
     return acc
   }, [])
 
+  const [tleData, setTleData] = useState()
+
+  useEffect(() => {
+    getTle().then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.error(err)
+    })
+  }, [])
+
   function handleCompositionStart() {
     compositionRef.current.isComposition = true
   }
@@ -170,14 +180,6 @@ export const Main = () => {
           dataSource={groupedFrequencies}
           expandCellFixed
           hideExpandedColumn={false}
-          expandIcon={<Icon icon={'tabler:caret-right-filled'}/>}
-          expandedRowRender={(record) => (
-            <div className={'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'}>
-              {record?.transponders.map((transponder, index) => (
-                <TransponderCard transponder={transponder} key={index}/>
-              ))}
-            </div>
-          )}
           pagination={{
             pageSize: 30,
             position: 'both',
