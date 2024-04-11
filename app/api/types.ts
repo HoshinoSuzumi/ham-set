@@ -35,15 +35,15 @@ export interface Satellite {
   image: string;
   status: SatelliteStatus;
   decayed: null;
-  launched: Date | null;
-  deployed: Date | null;
+  launched: string | null;
+  deployed: string | null;
   website: string;
   operator: SatelliteOperator;
   countries: string;
   telemetries: {
     decoder: string;
   }[];
-  updated: Date;
+  updated: string;
   citation: string;
   is_frequency_violator: boolean;
   associated_satellites: string[];
