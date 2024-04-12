@@ -243,7 +243,7 @@ export const SatelliteTable = ({
               (pagination?.current || 1) * (pagination?.pageSize || 10),
             ).map((satellite, index) => (
               <SatelliteTableRow
-                key={ index }
+                key={ satellite.norad_cat_id || satellite.norad_follow_id || satellite.sat_id || index }
                 satellite={ satellite }
                 tle={ tleList.find(i => i.norad_cat_id === satellite.norad_cat_id) || null }
                 timestamp={ timestamp }

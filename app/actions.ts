@@ -1,7 +1,10 @@
 'use server'
 
-import {sql} from '@vercel/postgres'
-import {GeetestCaptchaSuccess, geetestValidate} from '@/app/geetest'
+import { sql } from '@vercel/postgres'
+import { GeetestCaptchaSuccess, geetestValidate } from '@/app/geetest'
+import { UUID } from '@uniiem/uuid'
+import { kv } from '@vercel/kv'
+import { ObserverLocationStore } from '@/types/types'
 
 export interface Annotation {
   id: number
@@ -31,12 +34,12 @@ export async function newAnnotation(
 }
 
 export async function getAnnotationsByLk(lk: string): Promise<Annotation[]> {
-  const {rows} = await sql<Annotation>`SELECT * FROM annotations WHERE lk = ${lk} order by upvote desc, id desc`
+  const { rows } = await sql<Annotation>`SELECT * FROM annotations WHERE lk = ${lk} order by upvote desc, id desc`
   return rows || []
 }
 
 export async function getAnnotationsList(): Promise<Annotation[]> {
-  const {rows} = await sql<Annotation>`SELECT * FROM annotations order by upvote desc, id desc`
+  const { rows } = await sql<Annotation>`SELECT * FROM annotations order by upvote desc, id desc`
   return rows
 }
 
@@ -102,4 +105,18 @@ export async function pastebin(
     .then(resolve)
     .catch(reject)
   })
+}
+
+export async function observerLocation(ref: UUID, payload?: ObserverLocationStore) {
+  if (!payload) {
+    return await kv.get<ObserverLocationStore>(ref)
+  } else {
+    try {
+      return await kv.set(ref, payload, {
+        ex: 5 * 60,
+      })
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
