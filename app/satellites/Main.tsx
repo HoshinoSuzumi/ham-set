@@ -5,11 +5,10 @@ import { useRef, useState } from 'react'
 import useSWR from 'swr'
 import { Icon } from '@iconify-icon/react'
 import { noto_sc, rubik } from '@/app/fonts'
-import { Input } from '@douyinfe/semi-ui'
+import { Banner, Input } from '@douyinfe/semi-ui'
 import { IconSearch } from '@douyinfe/semi-icons'
 import { BaseResponse, LatestTleSet, Satellite } from '@/app/api/types'
 import { SatelliteTable } from '@/app/satellites/SatelliteTable'
-import dayjs from '@/app/utils/dayjs'
 
 export const Main = () => {
   const compositionRef = useRef({ isComposition: false })
@@ -19,20 +18,10 @@ export const Main = () => {
     pageSize: 10,
   })
 
-  const tle_case = [
-    'ISS (ZARYA)',
-    '1 25544U 98067A   23006.23627037  .00014367  00000+0  25952-3 0  9997',
-    '2 25544  51.6447  50.7420 0004899 231.6381 243.6067 15.49962952376670',
-  ]
-
-  const startMS = dayjs().unix() * 1000 // current time
-  const endMS = dayjs().add(1, 'day').unix() * 1000 // 1 day later
-
-  // console.log(getPasses(tle_case as TLE, startMS, endMS, 1000))
-
   const {
     data: satellitesData,
     isLoading: isSatellitesLoading,
+    error: satellitesError,
   } = useSWR<BaseResponse<Satellite[]>>('/api/satellite/satnogs/satellites', {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
@@ -93,6 +82,17 @@ export const Main = () => {
         />
       </div>
       <div className={ 'w-full xl:w-[80%]' }>
+        { satellitesData && satellitesData.code !== 0 && (
+          <Banner
+            className={ 'mb-4 mx-4 md:mx-0' }
+            fullMode={ false }
+            title="加载失败"
+            type="danger"
+            bordered
+            description="加载卫星数据时出现错误，请检查网络"
+          ></Banner>
+        ) }
+
         <SatelliteTable
           satellites={ (satellitesData?.data || []) }
           tleList={ tleData?.data || [] }

@@ -7,6 +7,7 @@ import { Icon } from '@iconify-icon/react'
 import { noto_sc, rubik } from '@/app/fonts'
 import { IconSpinner } from '@/components/Icon/IconSpinner'
 import { Button } from '@douyinfe/semi-ui'
+import useSWR, { SWRConfig } from 'swr'
 
 const NationalFlag = ({ countries }: { countries: string }) => {
   const countriesList = countries.split(',')
@@ -87,6 +88,31 @@ const SatelliteTableRow = ({
 }) => {
   const [expanded, setExpanded] = useState(false)
 
+  const {
+    data: sightingData,
+    isLoading: isSightingLoading,
+  } = useSWR(expanded && {
+    resource: 'https://ham-api.c5r.app/sat/sightings',
+    init: {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tle0: tle?.tle0,
+        tle1: tle?.tle1,
+        tle2: tle?.tle2,
+        hours: 24,
+        elevation_threshold: 20,
+        observer: {
+          lat: 0,
+          lon: 0,
+          alt: 0,
+        },
+      }),
+    },
+  })
+
   return (
     <>
       <tr
@@ -132,7 +158,7 @@ const SatelliteTableRow = ({
             colSpan={ 3 }
           >
             <div>
-              什么都没有
+              <pre>{ JSON.stringify(sightingData, null, 2) }</pre>
             </div>
           </TableCell>
         </tr>
@@ -203,26 +229,33 @@ export const SatelliteTable = ({
           <tbody>
           { satellites.length === 0 && (
             <tr>
-              <TableCell className={ 'text-center' } colSpan={ 3 }>暂无数据</TableCell>
+              <TableCell className={ 'text-center' } colSpan={ 4 }>暂无数据</TableCell>
             </tr>
           ) }
-          { filteredSatellites.slice(
-            (pagination?.current || 1) * (pagination?.pageSize || 10) - (pagination?.pageSize || 10),
-            (pagination?.current || 1) * (pagination?.pageSize || 10),
-          ).map((satellite, index) => (
-            <SatelliteTableRow
-              key={ index }
-              satellite={ satellite }
-              tle={ tleList.find(i => i.norad_cat_id === satellite.norad_cat_id) || null }
-              timestamp={ timestamp }
-              compact={ compact }
-            />
-          )) }
+          <SWRConfig value={ {
+            fetcher: ({ resource, init }: {
+              resource: string | URL | Request,
+              init: RequestInit | undefined
+            }) => fetch(resource, init).then(res => res.json()),
+          } }>
+            { filteredSatellites.slice(
+              (pagination?.current || 1) * (pagination?.pageSize || 10) - (pagination?.pageSize || 10),
+              (pagination?.current || 1) * (pagination?.pageSize || 10),
+            ).map((satellite, index) => (
+              <SatelliteTableRow
+                key={ index }
+                satellite={ satellite }
+                tle={ tleList.find(i => i.norad_cat_id === satellite.norad_cat_id) || null }
+                timestamp={ timestamp }
+                compact={ compact }
+              />
+            )) }
+          </SWRConfig>
           </tbody>
           <caption
             className={ `text-xs pt-4 text-neutral-500 dark:text-neutral-400 caption-bottom ${ noto_sc.className }` }
           >
-            数据来源于 SatNOGS
+            数据来源于 <a href={ 'https://db.satnogs.org/' } target={ '_blank' }>SatNOGS DB</a>
           </caption>
         </table>
       </div>

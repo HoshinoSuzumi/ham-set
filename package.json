@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev -p 4090",
     "vercel-dev": "vercel dev --listen 3000",
     "build": "next build",
     "start": "next start",
@@ -28,8 +28,7 @@
     "rehype-katex": "^7.0.0",
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
-    "swr": "^2.2.5",
-    "tle.js": "^4.9.0"
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "@iconify-icon/react": "^2.0.1",
