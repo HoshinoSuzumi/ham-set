@@ -1,12 +1,17 @@
 'use client'
 
-import { LatestTleSet, Satellite } from '@/app/api/types'
+import './styles.scss'
+import { BaseResponse, LatestTleSet, Satellite, Transmitter } from '@/app/api/types'
 import dayjs from '@/app/utils/dayjs'
 import { CSSProperties, ReactNode, useEffect, useState } from 'react'
 import { Icon } from '@iconify-icon/react'
 import { noto_sc, rubik } from '@/app/fonts'
 import { IconSpinner } from '@/components/Icon/IconSpinner'
-import { Button } from '@douyinfe/semi-ui'
+import { Button, SideSheet } from '@douyinfe/semi-ui'
+import useSWR, { SWRConfig } from 'swr'
+import { SatelliteSighting } from '@/types/types'
+import Image from 'next/image'
+import { TransponderCard } from '@/app/satellites/TransponderCard'
 
 const NationalFlag = ({ countries }: { countries: string }) => {
   const countriesList = countries.split(',')
@@ -86,22 +91,88 @@ const SatelliteTableRow = ({
   compact?: boolean
 }) => {
   const [expanded, setExpanded] = useState(false)
+  const [sidePopVisible, setSidePopVisible] = useState(false)
 
+  const shimmer = (w: number, h: number) => `
+    <svg width="${ w }" height="${ h }" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <linearGradient id="g">
+          <stop stop-color="#333" offset="20%" />
+          <stop stop-color="#222" offset="50%" />
+          <stop stop-color="#333" offset="70%" />
+        </linearGradient>
+      </defs>
+      <rect width="${ w }" height="${ h }" fill="#333" />
+      <rect id="r" width="${ w }" height="${ h }" fill="url(#g)" />
+      <animate xlink:href="#r" attributeName="x" from="-${ w }" to="${ w }" dur="1s" repeatCount="indefinite"  />
+    </svg>`
+
+  const toBase64 = (str: string) =>
+    typeof window === 'undefined'
+      ? Buffer.from(str).toString('base64')
+      : window.btoa(str)
+
+  const SideLoadingPlaceholder = ({ text, className }: { text: string, className?: string }) => (
+    <div className={ `w-full flex items-center gap-1 p-3 rounded-lg border ${ className }` }>
+      <IconSpinner/>
+      <p>{ text }</p>
+    </div>
+  )
+
+  const {
+    data: sightingData,
+    isLoading: isSightingLoading,
+  } = useSWR<SatelliteSighting[]>(sidePopVisible && {
+    resource: 'https://ham-api.c5r.app/sat/sightings',
+    init: {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tle0: tle?.tle0,
+        tle1: tle?.tle1,
+        tle2: tle?.tle2,
+        hours: 24,
+        elevation_threshold: 20,
+        observer: {
+          lat: 0,
+          lon: 0,
+          alt: 0,
+        },
+      }),
+    },
+  })
+
+  const {
+    data: transmittersData,
+    isLoading: isTransmittersLoading,
+  } = useSWR<BaseResponse<Transmitter[]>>(sidePopVisible && {
+    resource: `/api/satellite/satnogs/${ encodeURIComponent(`transmitters/?format=json&service=Amateur&sat_id=${ satellite.sat_id }`) }`,
+  }, {
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+  })
+
+  // noinspection RequiredAttributes
   return (
     <>
       <tr
-        className={ `cursor-pointer hover:bg-neutral-100 transition border-y ${ expanded && 'border-b-transparent' }` }
-        onClick={ () => setExpanded(!expanded) }
+        className={ `cursor-pointer hover:bg-neutral-50 transition border-y ${ expanded && 'border-b-transparent' }` }
       >
         <TableCell compact={ compact } className={ 'w-10' }>
           <div className={ 'flex items-center gap-1' }>
-            <Icon observe={ false }
-                  icon={ expanded ? 'tabler:chevron-down' : 'tabler:chevron-right' }
-                  className={ 'text-neutral-500' }
+            <Button
+              theme={ 'borderless' }
+              icon={ <Icon icon={ expanded ? 'tabler:chevron-down' : 'tabler:chevron-right' }
+                           className={ 'text-neutral-500' }/> }
+              onClick={ () => setExpanded(!expanded) }
             />
-            <Button theme={ 'borderless' }
-                    icon={ <Icon icon={ 'tabler:star' } className={ 'text-neutral-500' }/> }
-            />
+            {/* TODO: Satellite bookmark */ }
+            {/*<Button*/ }
+            {/*  theme={ 'borderless' }*/ }
+            {/*  icon={ <Icon icon={ 'tabler:star' } className={ 'text-neutral-500' }/> }*/ }
+            {/*/>*/ }
           </div>
         </TableCell>
         <TableCell compact={ compact }>
@@ -121,6 +192,16 @@ const SatelliteTableRow = ({
         <TableCell compact={ compact }>
           { satellite.launched ? dayjs(satellite.launched).format('YYYY-MM-DD') : '-' }
         </TableCell>
+        <TableCell compact={ compact } className={ 'w-10 text-opacity-90' }>
+          <Button
+            theme={ 'borderless' }
+            type={ 'tertiary' }
+            icon={ <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-lg' }/> }
+            onClick={ () => setSidePopVisible(true) }
+          >
+            收发器
+          </Button>
+        </TableCell>
       </tr>
       { expanded && (
         <tr
@@ -129,14 +210,157 @@ const SatelliteTableRow = ({
           } }
         >
           <TableCell
-            colSpan={ 3 }
+            colSpan={ 5 }
           >
-            <div>
-              什么都没有
+            <div className={ 'w-full px-8 flex flex-wrap gap-8' }>
+              { satellite.image && (
+                <div className={ 'w-64 h-fit rounded-lg overflow-hidden' }>
+                  <Image
+                    width={ 256 }
+                    height={ 192 }
+                    src={ `https://db-satnogs.freetls.fastly.net/media/${ satellite.image }` }
+                    alt={ satellite.name || satellite.names || `${ satellite.norad_cat_id }` }
+                    placeholder={ `data:image/svg+xml;base64,${ toBase64(shimmer(700, 475)) }` }
+                    className={ 'object-cover' }
+                  />
+                </div>
+              ) }
+              <dl className={ `grid grid-cols-2 gap-2 text-sm w-fit h-fit ${ noto_sc.className }` }>
+                { satellite.names && (
+                  <>
+                    <dt>卫星别名</dt>
+                    <dd>{ satellite.names }</dd>
+                  </>
+                ) }
+                <dt>NORAD ID</dt>
+                <dd>{ satellite.norad_cat_id || '未知' }</dd>
+                <dt>SatNOGS ID</dt>
+                <dd>{ satellite.sat_id || '未知' }</dd>
+              </dl>
+              <dl className={ `grid grid-cols-2 gap-2 text-sm w-fit h-fit ${ noto_sc.className }` }>
+                { satellite.launched && (
+                  <>
+                    <dt>发射日期</dt>
+                    <dd>{ dayjs(satellite.launched).format('YYYY-MM-DD') }</dd>
+                  </>
+                ) }
+                { satellite.deployed && (
+                  <>
+                    <dt>部署日期</dt>
+                    <dd>{ dayjs(satellite.deployed).format('YYYY-MM-DD') }</dd>
+                  </>
+                ) }
+                { satellite.decayed && (
+                  <>
+                    <dt>衰变日期</dt>
+                    <dd>{ dayjs(satellite.decayed).format('YYYY-MM-DD') }</dd>
+                  </>
+                ) }
+                { satellite.associated_satellites.length > 0 && (
+                  <>
+                    <dt>相关卫星</dt>
+                    <dd>{ satellite.associated_satellites.join(', ') }</dd>
+                  </>
+                ) }
+              </dl>
             </div>
           </TableCell>
         </tr>
       ) }
+      <SideSheet
+        title={ `${ satellite.name } 过境和收发器` }
+        visible={ sidePopVisible }
+        onCancel={ () => setSidePopVisible(false) }
+        size={ 'medium' }
+        className={ '!w-full md:!w-auto' }
+      >
+        { isSightingLoading ?
+          <SideLoadingPlaceholder className={ 'mb-2' } text={ '加载卫星过境...' }></SideLoadingPlaceholder>
+          : (
+            <>
+              <h1
+                className={ `text-base font-bold mb-2 ${ noto_sc.className }` }
+              >
+                <Icon icon={ 'tabler:planet' } className={ 'text-xl mr-1' } inline/>
+                <span>未来 24 小时过境</span>
+              </h1>
+              <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-6' }>
+                { (sightingData && typeof sightingData.length === 'number') && sightingData.map((sighting, index) => (
+                  <div
+                    key={ index }
+                    className={ `w-full px-3 py-2 flex flex-col gap-2 bg-white dark:bg-neutral-800 border dark:border-neutral-700 rounded ${ rubik.className }` }
+                  >
+                    <div className={ 'w-full flex items-center justify-center' }>
+                      <div className={ 'flex items-center font-medium gap-1' }>
+                        <span>{ dayjs(sighting.rise.time).format('YYYY-MM-DD') }</span>
+                      </div>
+                    </div>
+                    <div className={ 'w-full flex items-center justify-between' }>
+                      <div className={ 'flex items-center gap-1' }>
+                        <Icon icon={ 'tabler:arrow-down-from-arc' } className={ 'text-primary text-base' }/>
+                        <span>{ dayjs(sighting.rise.time).format('HH:mm:ss') }</span>
+                      </div>
+                      <div
+                        title={ `${ dayjs(sighting.rise.time).format('YYYY-MM-DD HH:mm:ss') } 入境，持续 ${
+                          Math.floor((dayjs(sighting.set.time).unix() - dayjs(sighting.rise.time).unix()) / 60)
+                        } 分钟` }
+                        className={ 'flex items-center gap-1' }
+                      >
+                        <Icon icon={ 'tabler:clock' } className={ 'text-primary text-base' }/>
+                        <span>{ Math.floor((dayjs(sighting.set.time).unix() - dayjs(sighting.rise.time).unix()) / 60) }min</span>
+                      </div>
+                      <div className={ 'flex items-center gap-1' }>
+                        <Icon icon={ 'tabler:arrow-down-to-arc' } className={ 'text-primary text-base' }/>
+                        <span>{ dayjs(sighting.set.time).format('HH:mm:ss') }</span>
+                      </div>
+                    </div>
+                    <div className={ 'w-full flex items-center justify-between' }>
+                      <div
+                        title={ '入境方位' }
+                        className={ 'flex items-center gap-1' }
+                      >
+                        <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
+                        <span><span className={ noto_sc.className }>入</span>: { sighting.rise.azimuth }°</span>
+                      </div>
+                      <div
+                        title={ `最高仰角: ${ dayjs(sighting.culminate.time).format('YYYY-MM-DD HH:mm:ss') }` }
+                        className={ 'flex items-center gap-1' }
+                      >
+                        <Icon icon={ 'tabler:angle' } className={ 'text-primary text-base' }/>
+                        <span>{ sighting.culminate.elevation }°</span>
+                      </div>
+                      <div
+                        title={ '离境方位' }
+                        className={ 'flex items-center gap-1' }
+                      >
+                        <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
+                        <span><span className={ noto_sc.className }>离</span>: { sighting.set.azimuth }°</span>
+                      </div>
+                    </div>
+                  </div>
+                )) }
+              </div>
+            </>
+          ) }
+
+        { isTransmittersLoading ?
+          <SideLoadingPlaceholder className={ 'mb-2' } text={ '加载中继列表...' }></SideLoadingPlaceholder>
+          : (
+            <>
+              <h1
+                className={ `text-base font-bold mb-2 ${ noto_sc.className }` }
+              >
+                <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-xl mr-1' } inline/>
+                <span>卫星收发器</span>
+              </h1>
+              <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-2' }>
+                { transmittersData?.data && transmittersData.data.map(transponder => (
+                  <TransponderCard transmitter={ transponder } key={ transponder.norad_cat_id || transponder.sat_id }/>
+                )) }
+              </div>
+            </>
+          ) }
+      </SideSheet>
     </>
   )
 }
@@ -198,31 +422,40 @@ export const SatelliteTable = ({
             <TableCell isHead>卫星</TableCell>
             <TableCell isHead>NORAD ID</TableCell>
             <TableCell isHead>发射日期</TableCell>
+            <TableCell isHead></TableCell>
           </tr>
           </thead>
           <tbody>
           { satellites.length === 0 && (
             <tr>
-              <TableCell className={ 'text-center' } colSpan={ 3 }>暂无数据</TableCell>
+              <TableCell className={ 'text-center' } colSpan={ 5 }>暂无数据</TableCell>
             </tr>
           ) }
-          { filteredSatellites.slice(
-            (pagination?.current || 1) * (pagination?.pageSize || 10) - (pagination?.pageSize || 10),
-            (pagination?.current || 1) * (pagination?.pageSize || 10),
-          ).map((satellite, index) => (
-            <SatelliteTableRow
-              key={ index }
-              satellite={ satellite }
-              tle={ tleList.find(i => i.norad_cat_id === satellite.norad_cat_id) || null }
-              timestamp={ timestamp }
-              compact={ compact }
-            />
-          )) }
+          <SWRConfig value={ {
+            fetcher: ({ resource, init }: {
+              resource: string | URL | Request,
+              init: RequestInit | undefined
+            }) => fetch(resource, init).then(res => res.json()),
+          } }>
+            { filteredSatellites.slice(
+              (pagination?.current || 1) * (pagination?.pageSize || 10) - (pagination?.pageSize || 10),
+              (pagination?.current || 1) * (pagination?.pageSize || 10),
+            ).map((satellite, index) => (
+              <SatelliteTableRow
+                key={ satellite.norad_cat_id || satellite.norad_follow_id || satellite.sat_id || index }
+                satellite={ satellite }
+                tle={ tleList.find(i => i.norad_cat_id === satellite.norad_cat_id) || null }
+                timestamp={ timestamp }
+                compact={ compact }
+              />
+            )) }
+          </SWRConfig>
           </tbody>
           <caption
-            className={ `text-xs pt-4 text-neutral-500 dark:text-neutral-400 caption-bottom ${ noto_sc.className }` }
+            className={ `text-xs py-4 text-neutral-500 dark:text-neutral-400 caption-bottom ${ noto_sc.className }` }
           >
-            数据来源于 SatNOGS
+            星历数据来源 <a href={ 'https://db.satnogs.org/' } target={ '_blank' }>SatNOGS DB</a> | <a
+            href={ 'https://ham-api.c5r.app/docs' } target={ '_blank' }>卫星过境信息计算接口</a>
           </caption>
         </table>
       </div>

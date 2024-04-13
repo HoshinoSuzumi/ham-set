@@ -10,27 +10,40 @@ export const TransponderCard = ({
   return (
     <div
       className={`w-full px-3 py-2 bg-white dark:bg-neutral-800 border dark:border-neutral-700 rounded ${rubik.className}`}>
-      <div className={'flex flex-col gap-2'}>
-        <div className={'flex items-center gap-0.5 text-nowrap'}>
+      <div className={ 'flex flex-col gap-2' }>
+        <div className={ 'flex items-center gap-0.5 text-nowrap' }>
           <Icon
             title={ transmitter.status }
             icon={ transmitter.status === 'active' ? 'tabler:circle-check-filled' : transmitter.status === 'inactive' ? 'tabler:circle-x-filled' : 'tabler:help-circle-filled' }
             className={ `text-xl -ml-1 ${ transmitter.status === 'active' ? 'text-green-500' : transmitter.status === 'inactive' ? 'text-red-500' : 'text-gray-500' }` }
           />
           <span
-            title={ transmitter.mode || 'UNKNOWN MODE' }
-            className={'font-medium text-ellipsis overflow-hidden'}
+            title={ transmitter.description || 'Transponder' }
+            className={ 'font-medium text-ellipsis overflow-hidden' }
           >
-            { transmitter.mode || 'UNKNOWN MODE' }
+            { transmitter.description || 'Transponder' }
           </span>
         </div>
-        <div className={`flex justify-between items-center flex-wrap`}>
-          <div className={'flex items-center gap-1'}>
-            <Icon icon={'tabler:antenna'} className={'text-base text-primary'}/>
+        <div className={ 'flex items-center gap-0.5 text-nowrap opacity-80' }>
+          <Icon
+            title={ '调制模式' }
+            icon={ 'tabler:radio' }
+            className={ `text-lg -ml-0.5 -mt-0.5` }
+          />
+          <span
+            title={ transmitter.mode || 'Unknown mode' }
+            className={ 'font-medium text-ellipsis overflow-hidden' }
+          >
+            { transmitter.mode || 'Unknown mode' }
+          </span>
+        </div>
+        <div className={ `flex justify-between items-center flex-wrap` }>
+          <div className={ 'flex items-center gap-1' }>
+            <Icon icon={ 'tabler:antenna' } className={ 'text-base text-primary' }/>
             <span title={ '上行频率' }>{ transmitter.uplink_low || '--' }</span>
           </div>
-          <div className={'flex items-center gap-1'}>
-            <Icon icon={'tabler:satellite'} className={'text-base text-primary'}/>
+          <div className={ 'flex items-center gap-1' }>
+            <Icon icon={ 'tabler:satellite' } className={ 'text-base text-primary' }/>
             <span title={ '下行频率' }>{ transmitter.downlink_low || '--' }</span>
           </div>
         </div>
