@@ -21,10 +21,13 @@ export async function GET(
       data,
     })
   } catch (err) {
+    // return HTTP error
     return NextResponse.json<BaseResponse<{}>>({
       code: 1,
       message: (err as Error).message,
       data: null,
+    }, {
+      status: 500,
     })
   }
 }

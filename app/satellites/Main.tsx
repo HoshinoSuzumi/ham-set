@@ -83,14 +83,6 @@ export const Main = () => {
     refreshWhenOffline: false,
   })
 
-  // const {
-  //   data: transmittersData,
-  //   isLoading: isTransmittersLoading,
-  // } = useSWR<BaseResponse<Transmitter[]>>(`/api/satellite/satnogs/${ encodeURIComponent('transmitters/?format=json&service=Amateur') }`, {
-  //   refreshWhenHidden: false,
-  //   refreshWhenOffline: false,
-  // })
-
   const {
     data: tleData,
     isLoading: isTleLoading,

@@ -1,13 +1,17 @@
 'use client'
 
-import { LatestTleSet, Satellite } from '@/app/api/types'
+import './styles.scss'
+import { BaseResponse, LatestTleSet, Satellite, Transmitter } from '@/app/api/types'
 import dayjs from '@/app/utils/dayjs'
 import { CSSProperties, ReactNode, useEffect, useState } from 'react'
 import { Icon } from '@iconify-icon/react'
 import { noto_sc, rubik } from '@/app/fonts'
 import { IconSpinner } from '@/components/Icon/IconSpinner'
-import { Button } from '@douyinfe/semi-ui'
+import { Button, SideSheet } from '@douyinfe/semi-ui'
 import useSWR, { SWRConfig } from 'swr'
+import { SatelliteSighting } from '@/types/types'
+import Image from 'next/image'
+import { TransponderCard } from '@/app/satellites/TransponderCard'
 
 const NationalFlag = ({ countries }: { countries: string }) => {
   const countriesList = countries.split(',')
@@ -87,11 +91,38 @@ const SatelliteTableRow = ({
   compact?: boolean
 }) => {
   const [expanded, setExpanded] = useState(false)
+  const [sidePopVisible, setSidePopVisible] = useState(false)
+
+  const shimmer = (w: number, h: number) => `
+    <svg width="${ w }" height="${ h }" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <linearGradient id="g">
+          <stop stop-color="#333" offset="20%" />
+          <stop stop-color="#222" offset="50%" />
+          <stop stop-color="#333" offset="70%" />
+        </linearGradient>
+      </defs>
+      <rect width="${ w }" height="${ h }" fill="#333" />
+      <rect id="r" width="${ w }" height="${ h }" fill="url(#g)" />
+      <animate xlink:href="#r" attributeName="x" from="-${ w }" to="${ w }" dur="1s" repeatCount="indefinite"  />
+    </svg>`
+
+  const toBase64 = (str: string) =>
+    typeof window === 'undefined'
+      ? Buffer.from(str).toString('base64')
+      : window.btoa(str)
+
+  const SideLoadingPlaceholder = ({ text }: { text: string }) => (
+    <div className={ 'w-full flex items-center gap-1 p-3 rounded-lg border' }>
+      <IconSpinner/>
+      <p>{ text }</p>
+    </div>
+  )
 
   const {
     data: sightingData,
     isLoading: isSightingLoading,
-  } = useSWR(expanded && {
+  } = useSWR<SatelliteSighting[]>(expanded && {
     resource: 'https://ham-api.c5r.app/sat/sightings',
     init: {
       method: 'POST',
@@ -113,21 +144,35 @@ const SatelliteTableRow = ({
     },
   })
 
+  const {
+    data: transmittersData,
+    isLoading: isTransmittersLoading,
+  } = useSWR<BaseResponse<Transmitter[]>>(sidePopVisible && {
+    resource: `/api/satellite/satnogs/${ encodeURIComponent(`transmitters/?format=json&service=Amateur&sat_id=${ satellite.sat_id }`) }`,
+  }, {
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+  })
+
+  // noinspection RequiredAttributes
   return (
     <>
       <tr
-        className={ `cursor-pointer hover:bg-neutral-100 transition border-y ${ expanded && 'border-b-transparent' }` }
-        onClick={ () => setExpanded(!expanded) }
+        className={ `cursor-pointer hover:bg-neutral-50 transition border-y ${ expanded && 'border-b-transparent' }` }
       >
         <TableCell compact={ compact } className={ 'w-10' }>
           <div className={ 'flex items-center gap-1' }>
-            <Icon observe={ false }
-                  icon={ expanded ? 'tabler:chevron-down' : 'tabler:chevron-right' }
-                  className={ 'text-neutral-500' }
+            <Button
+              theme={ 'borderless' }
+              icon={ <Icon icon={ expanded ? 'tabler:chevron-down' : 'tabler:chevron-right' }
+                           className={ 'text-neutral-500' }/> }
+              onClick={ () => setExpanded(!expanded) }
             />
-            <Button theme={ 'borderless' }
-                    icon={ <Icon icon={ 'tabler:star' } className={ 'text-neutral-500' }/> }
-            />
+            {/* TODO: Satellite bookmark */ }
+            {/*<Button*/ }
+            {/*  theme={ 'borderless' }*/ }
+            {/*  icon={ <Icon icon={ 'tabler:star' } className={ 'text-neutral-500' }/> }*/ }
+            {/*/>*/ }
           </div>
         </TableCell>
         <TableCell compact={ compact }>
@@ -147,6 +192,16 @@ const SatelliteTableRow = ({
         <TableCell compact={ compact }>
           { satellite.launched ? dayjs(satellite.launched).format('YYYY-MM-DD') : '-' }
         </TableCell>
+        <TableCell compact={ compact } className={ 'w-10 text-opacity-90' }>
+          <Button
+            theme={ 'borderless' }
+            type={ 'tertiary' }
+            icon={ <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-lg' }/> }
+            onClick={ () => setSidePopVisible(true) }
+          >
+            收发器
+          </Button>
+        </TableCell>
       </tr>
       { expanded && (
         <tr
@@ -155,14 +210,78 @@ const SatelliteTableRow = ({
           } }
         >
           <TableCell
-            colSpan={ 3 }
+            colSpan={ 5 }
           >
-            <div>
-              <pre>{ JSON.stringify(sightingData, null, 2) }</pre>
+            <div className={ 'w-full px-8 flex flex-wrap gap-8' }>
+              { satellite.image && (
+                <div className={ 'w-64 h-fit rounded-lg overflow-hidden' }>
+                  <Image
+                    width={ 256 }
+                    height={ 192 }
+                    src={ `https://db-satnogs.freetls.fastly.net/media/${ satellite.image }` }
+                    alt={ satellite.name || satellite.names || `${ satellite.norad_cat_id }` }
+                    placeholder={ `data:image/svg+xml;base64,${ toBase64(shimmer(700, 475)) }` }
+                    className={ 'object-cover' }
+                  />
+                </div>
+              ) }
+              <dl className={ `grid grid-cols-2 gap-2 text-sm w-fit h-fit ${ noto_sc.className }` }>
+                { satellite.names && (
+                  <>
+                    <dt>卫星别名</dt>
+                    <dd>{ satellite.names }</dd>
+                  </>
+                ) }
+                <dt>NORAD ID</dt>
+                <dd>{ satellite.norad_cat_id || '未知' }</dd>
+                <dt>SatNOGS ID</dt>
+                <dd>{ satellite.sat_id || '未知' }</dd>
+              </dl>
+              <dl className={ `grid grid-cols-2 gap-2 text-sm w-fit h-fit ${ noto_sc.className }` }>
+                { satellite.launched && (
+                  <>
+                    <dt>发射日期</dt>
+                    <dd>{ dayjs(satellite.launched).format('YYYY-MM-DD') }</dd>
+                  </>
+                ) }
+                { satellite.deployed && (
+                  <>
+                    <dt>部署日期</dt>
+                    <dd>{ dayjs(satellite.deployed).format('YYYY-MM-DD') }</dd>
+                  </>
+                ) }
+                { satellite.decayed && (
+                  <>
+                    <dt>衰变日期</dt>
+                    <dd>{ dayjs(satellite.decayed).format('YYYY-MM-DD') }</dd>
+                  </>
+                ) }
+                { satellite.associated_satellites.length > 0 && (
+                  <>
+                    <dt>相关卫星</dt>
+                    <dd>{ satellite.associated_satellites.join(', ') }</dd>
+                  </>
+                ) }
+              </dl>
             </div>
           </TableCell>
         </tr>
       ) }
+      <SideSheet
+        title={ '卫星过境和收发器信息' }
+        visible={ sidePopVisible }
+        onCancel={ () => setSidePopVisible(false) }
+        size={ 'medium' }
+        className={ '!w-full md:!w-auto' }
+      >
+        { isTransmittersLoading ? <SideLoadingPlaceholder text={ '加载中继列表...' }></SideLoadingPlaceholder>
+          : <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2' }>
+            { transmittersData?.data && transmittersData.data.map(transponder => (
+              <TransponderCard transmitter={ transponder } key={ transponder.norad_cat_id || transponder.sat_id }/>
+            )) }
+          </div>
+        }
+      </SideSheet>
     </>
   )
 }
@@ -224,12 +343,13 @@ export const SatelliteTable = ({
             <TableCell isHead>卫星</TableCell>
             <TableCell isHead>NORAD ID</TableCell>
             <TableCell isHead>发射日期</TableCell>
+            <TableCell isHead></TableCell>
           </tr>
           </thead>
           <tbody>
           { satellites.length === 0 && (
             <tr>
-              <TableCell className={ 'text-center' } colSpan={ 4 }>暂无数据</TableCell>
+              <TableCell className={ 'text-center' } colSpan={ 5 }>暂无数据</TableCell>
             </tr>
           ) }
           <SWRConfig value={ {
@@ -253,9 +373,10 @@ export const SatelliteTable = ({
           </SWRConfig>
           </tbody>
           <caption
-            className={ `text-xs pt-4 text-neutral-500 dark:text-neutral-400 caption-bottom ${ noto_sc.className }` }
+            className={ `text-xs py-4 text-neutral-500 dark:text-neutral-400 caption-bottom ${ noto_sc.className }` }
           >
-            数据来源于 <a href={ 'https://db.satnogs.org/' } target={ '_blank' }>SatNOGS DB</a>
+            星历数据来源 <a href={ 'https://db.satnogs.org/' } target={ '_blank' }>SatNOGS DB</a> | <a
+            href={ 'https://ham-api.c5r.app/docs' } target={ '_blank' }>卫星过境信息计算接口</a>
           </caption>
         </table>
       </div>

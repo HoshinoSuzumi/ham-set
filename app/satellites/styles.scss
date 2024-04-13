@@ -5,3 +5,19 @@
 table {
   @apply text-nowrap;
 }
+
+dt {
+  @apply opacity-80;
+}
+
+dd {
+  @apply font-medium;
+}
+
+@media (max-width: 448px) {
+  .semi-sidesheet-inner,
+  .semi-sidesheet-inner-wrap,
+  .semi-sidesheet-size-small {
+    width: 100% !important;
+  }
+}
