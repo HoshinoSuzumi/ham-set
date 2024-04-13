@@ -9,7 +9,7 @@ import { noto_sc, rubik } from '@/app/fonts'
 import { IconSpinner } from '@/components/Icon/IconSpinner'
 import { Button, SideSheet } from '@douyinfe/semi-ui'
 import useSWR, { SWRConfig } from 'swr'
-import { SatelliteSighting } from '@/types/types'
+import { ObserverLocationStore, SatelliteSighting } from '@/types/types'
 import Image from 'next/image'
 import { TransponderCard } from '@/app/satellites/TransponderCard'
 
@@ -82,12 +82,14 @@ const TableCell = ({
 const SatelliteTableRow = ({
   satellite,
   tle,
+  location,
   timestamp,
   compact,
 }: {
   satellite: Satellite,
-  tle: LatestTleSet | null,
-  timestamp: number,
+  tle: LatestTleSet | null
+  location?: Exclude<ObserverLocationStore, 'pending'> | null
+  timestamp: number
   compact?: boolean
 }) => {
   const [expanded, setExpanded] = useState(false)
@@ -134,11 +136,11 @@ const SatelliteTableRow = ({
         tle1: tle?.tle1,
         tle2: tle?.tle2,
         hours: 24,
-        elevation_threshold: 20,
+        elevation_threshold: 10,
         observer: {
-          lat: 0,
-          lon: 0,
-          alt: 0,
+          lat: location?.latitude || 0,
+          lon: location?.longitude || 0,
+          alt: location?.altitude || 0,
         },
       }),
     },
@@ -368,6 +370,7 @@ const SatelliteTableRow = ({
 export const SatelliteTable = ({
   satellites,
   tleList,
+  location,
   compact,
   loading,
   filteredValue,
@@ -377,6 +380,7 @@ export const SatelliteTable = ({
   satellites: Satellite[]
   filteredValue?: string[]
   tleList: LatestTleSet[]
+  location?: Exclude<ObserverLocationStore, 'pending'> | null
   compact?: boolean
   loading?: boolean
   pagination?: {
@@ -445,6 +449,7 @@ export const SatelliteTable = ({
                 key={ satellite.norad_cat_id || satellite.norad_follow_id || satellite.sat_id || index }
                 satellite={ satellite }
                 tle={ tleList.find(i => i.norad_cat_id === satellite.norad_cat_id) || null }
+                location={ location }
                 timestamp={ timestamp }
                 compact={ compact }
               />

@@ -190,6 +190,7 @@ export const Main = () => {
           <SatelliteTable
             satellites={ (satellitesData?.data || []) }
             tleList={ tleData?.data || [] }
+            location={ location }
             loading={ isSatellitesLoading }
             compact={ false }
             filteredValue={ filteredValue }
