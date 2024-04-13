@@ -112,8 +112,8 @@ const SatelliteTableRow = ({
       ? Buffer.from(str).toString('base64')
       : window.btoa(str)
 
-  const SideLoadingPlaceholder = ({ text }: { text: string }) => (
-    <div className={ 'w-full flex items-center gap-1 p-3 rounded-lg border' }>
+  const SideLoadingPlaceholder = ({ text, className }: { text: string, className?: string }) => (
+    <div className={ `w-full flex items-center gap-1 p-3 rounded-lg border ${ className }` }>
       <IconSpinner/>
       <p>{ text }</p>
     </div>
@@ -122,7 +122,7 @@ const SatelliteTableRow = ({
   const {
     data: sightingData,
     isLoading: isSightingLoading,
-  } = useSWR<SatelliteSighting[]>(expanded && {
+  } = useSWR<SatelliteSighting[]>(sidePopVisible && {
     resource: 'https://ham-api.c5r.app/sat/sightings',
     init: {
       method: 'POST',
@@ -268,19 +268,98 @@ const SatelliteTableRow = ({
         </tr>
       ) }
       <SideSheet
-        title={ '卫星过境和收发器信息' }
+        title={ `${ satellite.name } 过境和收发器` }
         visible={ sidePopVisible }
         onCancel={ () => setSidePopVisible(false) }
         size={ 'medium' }
         className={ '!w-full md:!w-auto' }
       >
-        { isTransmittersLoading ? <SideLoadingPlaceholder text={ '加载中继列表...' }></SideLoadingPlaceholder>
-          : <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2' }>
-            { transmittersData?.data && transmittersData.data.map(transponder => (
-              <TransponderCard transmitter={ transponder } key={ transponder.norad_cat_id || transponder.sat_id }/>
-            )) }
-          </div>
-        }
+        { isSightingLoading ?
+          <SideLoadingPlaceholder className={ 'mb-2' } text={ '加载卫星过境...' }></SideLoadingPlaceholder>
+          : (
+            <>
+              <h1
+                className={ `text-base font-bold mb-2 ${ noto_sc.className }` }
+              >
+                <Icon icon={ 'tabler:planet' } className={ 'text-xl mr-1' } inline/>
+                <span>未来 24 小时过境</span>
+              </h1>
+              <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-6' }>
+                { (sightingData && typeof sightingData.length === 'number') && sightingData.map((sighting, index) => (
+                  <div
+                    key={ index }
+                    className={ `w-full px-3 py-2 flex flex-col gap-2 bg-white dark:bg-neutral-800 border dark:border-neutral-700 rounded ${ rubik.className }` }
+                  >
+                    <div className={ 'w-full flex items-center justify-center' }>
+                      <div className={ 'flex items-center font-medium gap-1' }>
+                        <span>{ dayjs(sighting.rise.time).format('YYYY-MM-DD') }</span>
+                      </div>
+                    </div>
+                    <div className={ 'w-full flex items-center justify-between' }>
+                      <div className={ 'flex items-center gap-1' }>
+                        <Icon icon={ 'tabler:arrow-down-from-arc' } className={ 'text-primary text-base' }/>
+                        <span>{ dayjs(sighting.rise.time).format('HH:mm:ss') }</span>
+                      </div>
+                      <div
+                        title={ `${ dayjs(sighting.rise.time).format('YYYY-MM-DD HH:mm:ss') } 入境，持续 ${
+                          Math.floor((dayjs(sighting.set.time).unix() - dayjs(sighting.rise.time).unix()) / 60)
+                        } 分钟` }
+                        className={ 'flex items-center gap-1' }
+                      >
+                        <Icon icon={ 'tabler:clock' } className={ 'text-primary text-base' }/>
+                        <span>{ Math.floor((dayjs(sighting.set.time).unix() - dayjs(sighting.rise.time).unix()) / 60) }min</span>
+                      </div>
+                      <div className={ 'flex items-center gap-1' }>
+                        <Icon icon={ 'tabler:arrow-down-to-arc' } className={ 'text-primary text-base' }/>
+                        <span>{ dayjs(sighting.set.time).format('HH:mm:ss') }</span>
+                      </div>
+                    </div>
+                    <div className={ 'w-full flex items-center justify-between' }>
+                      <div
+                        title={ '入境方位' }
+                        className={ 'flex items-center gap-1' }
+                      >
+                        <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
+                        <span><span className={ noto_sc.className }>入</span>: { sighting.rise.azimuth }°</span>
+                      </div>
+                      <div
+                        title={ `最高仰角: ${ dayjs(sighting.culminate.time).format('YYYY-MM-DD HH:mm:ss') }` }
+                        className={ 'flex items-center gap-1' }
+                      >
+                        <Icon icon={ 'tabler:angle' } className={ 'text-primary text-base' }/>
+                        <span>{ sighting.culminate.elevation }°</span>
+                      </div>
+                      <div
+                        title={ '离境方位' }
+                        className={ 'flex items-center gap-1' }
+                      >
+                        <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
+                        <span><span className={ noto_sc.className }>离</span>: { sighting.set.azimuth }°</span>
+                      </div>
+                    </div>
+                  </div>
+                )) }
+              </div>
+            </>
+          ) }
+
+        { isTransmittersLoading ?
+          <SideLoadingPlaceholder className={ 'mb-2' } text={ '加载中继列表...' }></SideLoadingPlaceholder>
+          : (
+            <>
+              <h1
+                className={ `text-base font-bold mb-2 ${ noto_sc.className }` }
+              >
+                <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-xl mr-1' } inline/>
+                <span>卫星收发器</span>
+              </h1>
+              <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-2' }>
+                { transmittersData?.data && transmittersData.data.map(transponder => (
+                  <TransponderCard transmitter={ transponder } key={ transponder.norad_cat_id || transponder.sat_id }/>
+                )) }
+              </div>
+            </>
+          ) }
       </SideSheet>
     </>
   )
