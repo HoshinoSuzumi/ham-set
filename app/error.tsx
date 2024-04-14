@@ -1,9 +1,9 @@
 'use client'
 
-import {noto_sc, rubik} from '@/app/fonts'
-import {Button, Typography} from '@douyinfe/semi-ui'
-import {useEffect, useState} from 'react'
-import {pastebin} from '@/app/actions'
+import { noto_sc, rubik } from '@/app/fonts'
+import { Button, Typography } from '@douyinfe/semi-ui'
+import { useEffect, useState } from 'react'
+import { pastebin } from '@/app/actions'
 import dayjs from '@/app/utils/dayjs'
 import Text from '@douyinfe/semi-ui/lib/es/typography/text'
 
@@ -48,7 +48,7 @@ export default function Error({
       },
     }
     pastebin(JSON.stringify(report_payload, null, 2), {
-      name: `HamSet 错误报告[${dayjs().local().toString()}] - ${error.message || 'untitled'}`,
+      name: `HamSet 错误报告[${ dayjs().local().toString() }]`,
       format: 'json',
       folder: 'TgXi1c0z',
     }).then(url => {

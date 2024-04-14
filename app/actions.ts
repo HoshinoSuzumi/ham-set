@@ -73,12 +73,12 @@ export async function pastebin(
     api_user_key: userKey || 'USER_KEY_NOT_SET',
     api_paste_private: '1',
     api_option: 'paste',
-    api_paste_code: encodeURIComponent(content),
+    api_paste_code: content,
   } as Record<string, string>
   if (options?.name) {
     payload = {
       ...payload,
-      api_paste_name: encodeURIComponent(options.name || 'untitled'),
+      api_paste_name: options.name || 'untitled',
     }
   }
   if (options?.format) {
