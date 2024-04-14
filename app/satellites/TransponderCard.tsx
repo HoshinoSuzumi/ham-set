@@ -40,11 +40,11 @@ export const TransponderCard = ({
         <div className={ `flex justify-between items-center flex-wrap` }>
           <div className={ 'flex items-center gap-1' }>
             <Icon icon={ 'tabler:antenna' } className={ 'text-base text-primary' }/>
-            <span title={ '上行频率' }>{ transmitter.uplink_low || '--' }</span>
+            <span title={ '上行频率' }>{ transmitter.uplink_low ? transmitter.uplink_low / 1000000 : '--' }</span>
           </div>
           <div className={ 'flex items-center gap-1' }>
             <Icon icon={ 'tabler:satellite' } className={ 'text-base text-primary' }/>
-            <span title={ '下行频率' }>{ transmitter.downlink_low || '--' }</span>
+            <span title={ '下行频率' }>{ transmitter.downlink_low ? transmitter.downlink_low / 1000000 : '--' }</span>
           </div>
         </div>
       </div>
