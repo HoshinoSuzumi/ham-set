@@ -7,11 +7,15 @@ import { CSSProperties, ReactNode, useEffect, useState } from 'react'
 import { Icon } from '@iconify-icon/react'
 import { noto_sc, rubik } from '@/app/fonts'
 import { IconSpinner } from '@/components/Icon/IconSpinner'
-import { Button, SideSheet } from '@douyinfe/semi-ui'
+import { Button, Select, SideSheet, Tooltip } from '@douyinfe/semi-ui'
 import useSWR, { SWRConfig } from 'swr'
 import { ObserverLocationStore, SatelliteSighting } from '@/types/types'
 import Image from 'next/image'
 import { TransponderCard } from '@/app/satellites/TransponderCard'
+import { TablerAngle } from '@/components/Icon/TablerAngle'
+import { TablerClock } from '@/components/Icon/TablerClock'
+import { TablerWaveSine } from '@/components/Icon/TablerWaveSine'
+import { TablerRoute } from '@/components/Icon/TablerRoute'
 
 const NationalFlag = ({ countries }: { countries: string }) => {
   const countriesList = countries.split(',')
@@ -114,12 +118,228 @@ const SatelliteTableRow = ({
       ? Buffer.from(str).toString('base64')
       : window.btoa(str)
 
-  const SideLoadingPlaceholder = ({ text, className }: { text: string, className?: string }) => (
+  const SideLoadingPlaceholder = ({
+    text,
+    loading = true,
+    className,
+  }: {
+    text: string,
+    loading?: boolean
+    className?: string
+  }) => (
     <div className={ `w-full flex items-center gap-1 p-3 rounded-lg border ${ className }` }>
-      <IconSpinner/>
+      { loading && <IconSpinner/> }
       <p>{ text }</p>
     </div>
   )
+
+  const transmitterModes = [
+    {
+      'value': 90,
+      'label': '4FSK',
+    },
+    {
+      'value': 49,
+      'label': 'AFSK',
+    },
+    {
+      'value': 78,
+      'label': 'AFSK TUBiX10',
+    },
+    {
+      'value': 17,
+      'label': 'AHRPT',
+    },
+    {
+      'value': 19,
+      'label': 'AM',
+    },
+    {
+      'value': 44,
+      'label': 'APT',
+    },
+    {
+      'value': 93,
+      'label': 'ASK',
+    },
+    {
+      'value': 50,
+      'label': 'BPSK',
+    },
+    {
+      'value': 83,
+      'label': 'BPSK PMT-A3',
+    },
+    {
+      'value': 59,
+      'label': 'CERTO',
+    },
+    {
+      'value': 6,
+      'label': 'CW',
+    },
+    {
+      'value': 95,
+      'label': 'DBPSK',
+    },
+    {
+      'value': 96,
+      'label': 'DOKA',
+    },
+    {
+      'value': 97,
+      'label': 'DPSK',
+    },
+    {
+      'value': 71,
+      'label': 'DQPSK',
+    },
+    {
+      'value': 98,
+      'label': 'DSB',
+    },
+    {
+      'value': 57,
+      'label': 'DSTAR',
+    },
+    {
+      'value': 58,
+      'label': 'DUV',
+    },
+    {
+      'value': 92,
+      'label': 'DVB-S2',
+    },
+    {
+      'value': 82,
+      'label': 'FFSK',
+    },
+    {
+      'value': 1,
+      'label': 'FM',
+    },
+    {
+      'value': 7,
+      'label': 'FMN',
+    },
+    {
+      'value': 72,
+      'label': 'FSK',
+    },
+    {
+      'value': 84,
+      'label': 'FSK AX.100 Mode 5',
+    },
+    {
+      'value': 85,
+      'label': 'FSK AX.100 Mode 6',
+    },
+    {
+      'value': 88,
+      'label': 'FSK AX.25 G3RUH',
+    },
+    {
+      'value': 75,
+      'label': 'GFSK',
+    },
+    {
+      'value': 68,
+      'label': 'GFSK Rktr',
+    },
+    {
+      'value': 94,
+      'label': 'GFSK/BPSK',
+    },
+    {
+      'value': 63,
+      'label': 'GMSK',
+    },
+    {
+      'value': 91,
+      'label': 'GMSK USP',
+    },
+    {
+      'value': 45,
+      'label': 'HRPT',
+    },
+    {
+      'value': 89,
+      'label': 'LoRa',
+    },
+    {
+      'value': 53,
+      'label': 'LRPT',
+    },
+    {
+      'value': 20,
+      'label': 'LSB',
+    },
+    {
+      'value': 77,
+      'label': 'MFSK',
+    },
+    {
+      'value': 81,
+      'label': 'MSK',
+    },
+    {
+      'value': 86,
+      'label': 'MSK AX.100 Mode 5',
+    },
+    {
+      'value': 87,
+      'label': 'MSK AX.100 Mode 6',
+    },
+    {
+      'value': 61,
+      'label': 'OFDM',
+    },
+    {
+      'value': 76,
+      'label': 'OQPSK',
+    },
+    {
+      'value': 74,
+      'label': 'PSK',
+    },
+    {
+      'value': 40,
+      'label': 'PSK31',
+    },
+    {
+      'value': 41,
+      'label': 'PSK63',
+    },
+    {
+      'value': 69,
+      'label': 'QPSK',
+    },
+    {
+      'value': 42,
+      'label': 'QPSK31',
+    },
+    {
+      'value': 43,
+      'label': 'QPSK63',
+    },
+    {
+      'value': 5,
+      'label': 'SSTV',
+    },
+    {
+      'value': 9,
+      'label': 'USB',
+    },
+    {
+      'value': 64,
+      'label': 'WSJT',
+    },
+  ]
+
+  const [sightHours, setSightHours] = useState(24)
+  const [sightElevation, setSightElevation] = useState(10)
+  const [transmitterMode, setTransmitterMode] = useState(0)
+  const [transmitterService, setTransmitterService] = useState('Amateur')
 
   const {
     data: sightingData,
@@ -135,8 +355,8 @@ const SatelliteTableRow = ({
         tle0: tle?.tle0,
         tle1: tle?.tle1,
         tle2: tle?.tle2,
-        hours: 24,
-        elevation_threshold: 10,
+        hours: sightHours,
+        elevation_threshold: sightElevation,
         observer: {
           lat: location?.latitude || 0,
           lon: location?.longitude || 0,
@@ -150,7 +370,7 @@ const SatelliteTableRow = ({
     data: transmittersData,
     isLoading: isTransmittersLoading,
   } = useSWR<BaseResponse<Transmitter[]>>(sidePopVisible && {
-    resource: `/api/satellite/satnogs/${ encodeURIComponent(`transmitters/?format=json&service=Amateur&sat_id=${ satellite.sat_id }`) }`,
+    resource: `/api/satellite/satnogs/${ encodeURIComponent(`transmitters/?format=json${ transmitterService === 'all' ? '' : '&service=' + transmitterService }&alive=true&satellite__norad_cat_id=${ satellite.norad_cat_id }${ transmitterMode !== 0 ? '&mode=' + transmitterMode : '' }`) }`,
   }, {
     refreshWhenHidden: false,
     refreshWhenOffline: false,
@@ -198,10 +418,10 @@ const SatelliteTableRow = ({
           <Button
             theme={ 'borderless' }
             type={ 'tertiary' }
-            icon={ <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-lg' }/> }
+            icon={ <Icon icon={ 'tabler:info-circle' } className={ 'text-lg' }/> }
             onClick={ () => setSidePopVisible(true) }
           >
-            收发器
+            数据
           </Button>
         </TableCell>
       </tr>
@@ -280,14 +500,43 @@ const SatelliteTableRow = ({
           <SideLoadingPlaceholder className={ 'mb-2' } text={ '加载卫星过境...' }></SideLoadingPlaceholder>
           : (
             <>
-              <h1
-                className={ `text-base font-bold mb-2 ${ noto_sc.className }` }
-              >
-                <Icon icon={ 'tabler:planet' } className={ 'text-xl mr-1' } inline/>
-                <span>未来 24 小时过境</span>
-              </h1>
+              <div className={ 'flex justify-between items-center mb-2' }>
+                <h1
+                  className={ `text-base font-bold ${ noto_sc.className }` }
+                >
+                  <Icon icon={ 'tabler:planet' } className={ 'text-xl mr-1 mt-0.5' } inline/>
+                  <span>未来过境</span>
+                </h1>
+                <div className={ 'flex items-center gap-2' }>
+                  <Select
+                    defaultValue={ 24 }
+                    value={ sightHours }
+                    onChange={ value => setSightHours(value as number) }
+                    prefix={ <TablerClock className={ 'mx-2' }/> }
+                  >
+                    <Select.Option value={ 12 }>12 小时</Select.Option>
+                    <Select.Option value={ 24 }>24 小时</Select.Option>
+                    <Select.Option value={ 48 }>48 小时</Select.Option>
+                  </Select>
+                  <Tooltip content={ '仰角阈值' }>
+                    <Select
+                      defaultValue={ 10 }
+                      value={ sightElevation }
+                      onChange={ value => setSightElevation(value as number) }
+                      prefix={ <TablerAngle className={ 'mx-2' }/> }
+                    >
+                      <Select.Option value={ 0 }>0°</Select.Option>
+                      <Select.Option value={ 10 }>10°</Select.Option>
+                      <Select.Option value={ 20 }>20°</Select.Option>
+                      <Select.Option value={ 30 }>30°</Select.Option>
+                      <Select.Option value={ 40 }>40°</Select.Option>
+                      <Select.Option value={ 50 }>50°</Select.Option>
+                    </Select>
+                  </Tooltip>
+                </div>
+              </div>
               <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-6' }>
-                { (sightingData && typeof sightingData.length === 'number') && sightingData.map((sighting, index) => (
+                { (sightingData && typeof sightingData.length === 'number' && sightingData.length > 0) ? sightingData.map((sighting, index) => (
                   <div
                     key={ index }
                     className={ `w-full px-3 py-2 flex flex-col gap-2 bg-white dark:bg-neutral-800 border dark:border-neutral-700 rounded ${ rubik.className }` }
@@ -340,7 +589,9 @@ const SatelliteTableRow = ({
                       </div>
                     </div>
                   </div>
-                )) }
+                )) : (
+                  <SideLoadingPlaceholder text={ '暂无过境' } loading={ false }></SideLoadingPlaceholder>
+                ) }
               </div>
             </>
           ) }
@@ -349,16 +600,56 @@ const SatelliteTableRow = ({
           <SideLoadingPlaceholder className={ 'mb-2' } text={ '加载中继列表...' }></SideLoadingPlaceholder>
           : (
             <>
-              <h1
-                className={ `text-base font-bold mb-2 ${ noto_sc.className }` }
-              >
-                <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-xl mr-1' } inline/>
-                <span>卫星收发器</span>
-              </h1>
+              <div className={ 'flex justify-between items-center mb-2' }>
+                <h1
+                  className={ `text-base font-bold ${ noto_sc.className }` }
+                >
+                  <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-xl mr-1' } inline/>
+                  <span>卫星收发器</span>
+                </h1>
+                <div className={ 'flex items-center gap-2' }>
+                  <Tooltip content={ '调制模式' }>
+                    <Select
+                      optionList={ [
+                        {
+                          label: '全部',
+                          value: 0,
+                        }, ...transmitterModes,
+                      ] }
+                      defaultValue={ 0 }
+                      value={ transmitterMode }
+                      onChange={ value => setTransmitterMode(value as number) }
+                      prefix={ <TablerWaveSine className={ 'mx-2' }/> }
+                      position={ 'bottomRight' }
+                    />
+                  </Tooltip>
+                  <Tooltip content={ '业务类型' }>
+                    <Select
+                      optionList={ [
+                        {
+                          label: '业余业务',
+                          value: 'Amateur',
+                        },
+                        {
+                          label: '所有业务',
+                          value: 'all',
+                        },
+                      ] }
+                      defaultValue={ 'Amateur' }
+                      value={ transmitterService }
+                      onChange={ value => setTransmitterService(value as string) }
+                      prefix={ <TablerRoute className={ 'mx-2' }/> }
+                      position={ 'bottomRight' }
+                    />
+                  </Tooltip>
+                </div>
+              </div>
               <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-2' }>
-                { transmittersData?.data && transmittersData.data.map(transponder => (
-                  <TransponderCard transmitter={ transponder } key={ transponder.norad_cat_id || transponder.sat_id }/>
-                )) }
+                { (transmittersData?.data && transmittersData.data.length > 0) ? transmittersData.data.map(transponder => (
+                  <TransponderCard transmitter={ transponder } key={ transponder.uuid }/>
+                )) : (
+                  <SideLoadingPlaceholder text={ '没有该模式下的收发器' } loading={ false }></SideLoadingPlaceholder>
+                ) }
               </div>
             </>
           ) }
