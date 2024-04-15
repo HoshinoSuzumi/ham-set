@@ -87,20 +87,18 @@ const SatelliteTableRow = ({
   satellite,
   tle,
   location,
-  timestamp,
   compact,
 }: {
   satellite: Satellite,
   tle: LatestTleSet | null
   location?: Exclude<ObserverLocationStore, 'pending'> | null
-  timestamp: number
   compact?: boolean
 }) => {
   const [expanded, setExpanded] = useState(false)
   const [sidePopVisible, setSidePopVisible] = useState(false)
 
   const shimmer = (w: number, h: number) => `
-    <svg width="${ w }" height="${ h }" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg width="${ w }" height="${ h }" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
         <linearGradient id="g">
           <stop stop-color="#333" offset="20%" />
@@ -765,7 +763,6 @@ export const SatelliteTable = ({
                 satellite={ satellite }
                 tle={ tleList.find(i => i.norad_cat_id === satellite.norad_cat_id) || null }
                 location={ location }
-                timestamp={ timestamp }
                 compact={ compact }
               />
             )) }
