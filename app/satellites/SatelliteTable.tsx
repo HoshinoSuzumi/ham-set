@@ -506,6 +506,7 @@ const SatelliteTableRow = ({
               defaultValue={ 24 }
               value={ sightHours }
               onChange={ value => setSightHours(value as number) }
+              disabled={ isSightingLoading }
               prefix={ <TablerClock className={ 'mx-2' }/> }
             >
               <Select.Option value={ 12 }>12 小时</Select.Option>
@@ -517,6 +518,7 @@ const SatelliteTableRow = ({
                 defaultValue={ 10 }
                 value={ sightElevation }
                 onChange={ value => setSightElevation(value as number) }
+                disabled={ isSightingLoading }
                 prefix={ <TablerAngle className={ 'mx-2' }/> }
               >
                 <Select.Option value={ 0 }>0°</Select.Option>
@@ -623,6 +625,7 @@ const SatelliteTableRow = ({
                 defaultValue={ 0 }
                 value={ transmitterMode }
                 onChange={ value => setTransmitterMode(value as number) }
+                disabled={ isTransmittersLoading }
                 prefix={ <TablerWaveSine className={ 'mx-2' }/> }
                 position={ 'bottomRight' }
               />
@@ -642,6 +645,7 @@ const SatelliteTableRow = ({
                 defaultValue={ 'Amateur' }
                 value={ transmitterService }
                 onChange={ value => setTransmitterService(value as string) }
+                disabled={ isTransmittersLoading }
                 prefix={ <TablerRoute className={ 'mx-2' }/> }
                 position={ 'bottomRight' }
               />
