@@ -496,163 +496,187 @@ const SatelliteTableRow = ({
         size={ 'medium' }
         className={ '!w-full md:!w-auto' }
       >
-        { isSightingLoading ?
-          <SideLoadingPlaceholder className={ 'mb-2' } text={ '加载卫星过境...' }></SideLoadingPlaceholder>
-          : (
-            <>
-              <div className={ 'flex justify-between items-center mb-2' }>
-                <h1
-                  className={ `text-base font-bold ${ noto_sc.className }` }
-                >
-                  <Icon icon={ 'tabler:planet' } className={ 'text-xl mr-1 mt-0.5' } inline/>
-                  <span>未来过境</span>
-                </h1>
-                <div className={ 'flex items-center gap-2' }>
-                  <Select
-                    defaultValue={ 24 }
-                    value={ sightHours }
-                    onChange={ value => setSightHours(value as number) }
-                    prefix={ <TablerClock className={ 'mx-2' }/> }
-                  >
-                    <Select.Option value={ 12 }>12 小时</Select.Option>
-                    <Select.Option value={ 24 }>24 小时</Select.Option>
-                    <Select.Option value={ 48 }>48 小时</Select.Option>
-                  </Select>
-                  <Tooltip content={ '仰角阈值' }>
-                    <Select
-                      defaultValue={ 10 }
-                      value={ sightElevation }
-                      onChange={ value => setSightElevation(value as number) }
-                      prefix={ <TablerAngle className={ 'mx-2' }/> }
-                    >
-                      <Select.Option value={ 0 }>0°</Select.Option>
-                      <Select.Option value={ 10 }>10°</Select.Option>
-                      <Select.Option value={ 20 }>20°</Select.Option>
-                      <Select.Option value={ 30 }>30°</Select.Option>
-                      <Select.Option value={ 40 }>40°</Select.Option>
-                      <Select.Option value={ 50 }>50°</Select.Option>
-                    </Select>
-                  </Tooltip>
-                </div>
-              </div>
-              <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-6' }>
-                { (sightingData && typeof sightingData.length === 'number' && sightingData.length > 0) ? sightingData.map((sighting, index) => (
-                  <div
-                    key={ index }
-                    className={ `w-full px-3 py-2 flex flex-col gap-2 bg-white dark:bg-neutral-800 border dark:border-neutral-700 rounded ${ rubik.className }` }
-                  >
-                    <div className={ 'w-full flex items-center justify-center' }>
-                      <div className={ 'flex items-center font-medium gap-1' }>
-                        <span>{ dayjs(sighting.rise.time).format('YYYY-MM-DD') }</span>
-                      </div>
-                    </div>
-                    <div className={ 'w-full flex items-center justify-between' }>
-                      <div className={ 'flex items-center gap-1' }>
-                        <Icon icon={ 'tabler:arrow-down-from-arc' } className={ 'text-primary text-base' }/>
-                        <span>{ dayjs(sighting.rise.time).format('HH:mm:ss') }</span>
-                      </div>
+        <div className={ 'flex justify-between items-center mb-2' }>
+          <h1
+            className={ `text-base font-bold ${ noto_sc.className }` }
+          >
+            <Icon icon={ 'tabler:planet' } className={ 'text-xl mr-1 mt-0.5' } inline/>
+            <span>未来过境</span>
+          </h1>
+          <div className={ 'flex items-center gap-2' }>
+            <Select
+              defaultValue={ 24 }
+              value={ sightHours }
+              onChange={ value => setSightHours(value as number) }
+              prefix={ <TablerClock className={ 'mx-2' }/> }
+            >
+              <Select.Option value={ 12 }>12 小时</Select.Option>
+              <Select.Option value={ 24 }>24 小时</Select.Option>
+              <Select.Option value={ 48 }>48 小时</Select.Option>
+            </Select>
+            <Tooltip content={ '仰角阈值' }>
+              <Select
+                defaultValue={ 10 }
+                value={ sightElevation }
+                onChange={ value => setSightElevation(value as number) }
+                prefix={ <TablerAngle className={ 'mx-2' }/> }
+              >
+                <Select.Option value={ 0 }>0°</Select.Option>
+                <Select.Option value={ 10 }>10°</Select.Option>
+                <Select.Option value={ 20 }>20°</Select.Option>
+                <Select.Option value={ 30 }>30°</Select.Option>
+                <Select.Option value={ 40 }>40°</Select.Option>
+                <Select.Option value={ 50 }>50°</Select.Option>
+              </Select>
+            </Tooltip>
+          </div>
+        </div>
+        <div className={ 'mb-6' }>
+          { isSightingLoading
+            ? (
+              <SideLoadingPlaceholder text={ '加载卫星过境...' }/>
+            )
+            : (
+              (sightingData && sightingData.length > 0)
+                ? (
+                  <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2' }>
+                    { sightingData.map((sighting, index) => (
                       <div
-                        title={ `${ dayjs(sighting.rise.time).format('YYYY-MM-DD HH:mm:ss') } 入境，持续 ${
-                          Math.floor((dayjs(sighting.set.time).unix() - dayjs(sighting.rise.time).unix()) / 60)
-                        } 分钟` }
-                        className={ 'flex items-center gap-1' }
+                        key={ index }
+                        className={ `w-full px-3 py-2 flex flex-col gap-2 bg-white dark:bg-neutral-800 border dark:border-neutral-700 rounded ${ rubik.className }` }
                       >
-                        <Icon icon={ 'tabler:clock' } className={ 'text-primary text-base' }/>
-                        <span>{ Math.floor((dayjs(sighting.set.time).unix() - dayjs(sighting.rise.time).unix()) / 60) }min</span>
+                        <div className={ 'w-full flex items-center justify-center' }>
+                          <div className={ 'flex items-center font-medium gap-1' }>
+                            <span>{ dayjs(sighting.rise.time).format('YYYY-MM-DD') }</span>
+                          </div>
+                        </div>
+                        <div className={ 'w-full flex items-center justify-between' }>
+                          <div className={ 'flex items-center gap-1' }>
+                            <Icon icon={ 'tabler:arrow-down-from-arc' } className={ 'text-primary text-base' }/>
+                            <span>{ dayjs(sighting.rise.time).format('HH:mm:ss') }</span>
+                          </div>
+                          <div
+                            title={ `${ dayjs(sighting.rise.time).format('YYYY-MM-DD HH:mm:ss') } 入境，持续 ${
+                              Math.floor((dayjs(sighting.set.time).unix() - dayjs(sighting.rise.time).unix()) / 60)
+                            } 分钟` }
+                            className={ 'flex items-center gap-1' }
+                          >
+                            <Icon icon={ 'tabler:clock' } className={ 'text-primary text-base' }/>
+                            <span>{ Math.floor((dayjs(sighting.set.time).unix() - dayjs(sighting.rise.time).unix()) / 60) }min</span>
+                          </div>
+                          <div className={ 'flex items-center gap-1' }>
+                            <Icon icon={ 'tabler:arrow-down-to-arc' } className={ 'text-primary text-base' }/>
+                            <span>{ dayjs(sighting.set.time).format('HH:mm:ss') }</span>
+                          </div>
+                        </div>
+                        <div className={ 'w-full flex items-center justify-between' }>
+                          <div
+                            title={ '入境方位' }
+                            className={ 'flex items-center gap-1' }
+                          >
+                            <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
+                            <span><span className={ noto_sc.className }>入</span>: { sighting.rise.azimuth }°</span>
+                          </div>
+                          <div
+                            title={ `最高仰角: ${ dayjs(sighting.culminate.time).format('YYYY-MM-DD HH:mm:ss') }` }
+                            className={ 'flex items-center gap-1' }
+                          >
+                            <Icon icon={ 'tabler:angle' } className={ 'text-primary text-base' }/>
+                            <span>{ sighting.culminate.elevation }°</span>
+                          </div>
+                          <div
+                            title={ '离境方位' }
+                            className={ 'flex items-center gap-1' }
+                          >
+                            <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
+                            <span><span className={ noto_sc.className }>离</span>: { sighting.set.azimuth }°</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className={ 'flex items-center gap-1' }>
-                        <Icon icon={ 'tabler:arrow-down-to-arc' } className={ 'text-primary text-base' }/>
-                        <span>{ dayjs(sighting.set.time).format('HH:mm:ss') }</span>
-                      </div>
-                    </div>
-                    <div className={ 'w-full flex items-center justify-between' }>
-                      <div
-                        title={ '入境方位' }
-                        className={ 'flex items-center gap-1' }
-                      >
-                        <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
-                        <span><span className={ noto_sc.className }>入</span>: { sighting.rise.azimuth }°</span>
-                      </div>
-                      <div
-                        title={ `最高仰角: ${ dayjs(sighting.culminate.time).format('YYYY-MM-DD HH:mm:ss') }` }
-                        className={ 'flex items-center gap-1' }
-                      >
-                        <Icon icon={ 'tabler:angle' } className={ 'text-primary text-base' }/>
-                        <span>{ sighting.culminate.elevation }°</span>
-                      </div>
-                      <div
-                        title={ '离境方位' }
-                        className={ 'flex items-center gap-1' }
-                      >
-                        <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
-                        <span><span className={ noto_sc.className }>离</span>: { sighting.set.azimuth }°</span>
-                      </div>
-                    </div>
+                    )) }
                   </div>
-                )) : (
-                  <SideLoadingPlaceholder text={ '暂无过境' } loading={ false }></SideLoadingPlaceholder>
-                ) }
-              </div>
-            </>
-          ) }
+                )
+                : (
+                  <SideLoadingPlaceholder
+                    text={ `${ satellite.name || '未知卫星' } 在 ${ sightHours } 小时内暂无 ${ sightElevation }° 以上过境` }
+                    loading={ false }
+                  />
+                )
+            )
+          }
+        </div>
 
-        { isTransmittersLoading ?
-          <SideLoadingPlaceholder className={ 'mb-2' } text={ '加载中继列表...' }></SideLoadingPlaceholder>
-          : (
-            <>
-              <div className={ 'flex justify-between items-center mb-2' }>
-                <h1
-                  className={ `text-base font-bold ${ noto_sc.className }` }
-                >
-                  <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-xl mr-1' } inline/>
-                  <span>卫星收发器</span>
-                </h1>
-                <div className={ 'flex items-center gap-2' }>
-                  <Tooltip content={ '调制模式' }>
-                    <Select
-                      optionList={ [
-                        {
-                          label: '全部',
-                          value: 0,
-                        }, ...transmitterModes,
-                      ] }
-                      defaultValue={ 0 }
-                      value={ transmitterMode }
-                      onChange={ value => setTransmitterMode(value as number) }
-                      prefix={ <TablerWaveSine className={ 'mx-2' }/> }
-                      position={ 'bottomRight' }
-                    />
-                  </Tooltip>
-                  <Tooltip content={ '业务类型' }>
-                    <Select
-                      optionList={ [
-                        {
-                          label: '业余业务',
-                          value: 'Amateur',
-                        },
-                        {
-                          label: '所有业务',
-                          value: 'all',
-                        },
-                      ] }
-                      defaultValue={ 'Amateur' }
-                      value={ transmitterService }
-                      onChange={ value => setTransmitterService(value as string) }
-                      prefix={ <TablerRoute className={ 'mx-2' }/> }
-                      position={ 'bottomRight' }
-                    />
-                  </Tooltip>
-                </div>
-              </div>
-              <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-2' }>
-                { (transmittersData?.data && transmittersData.data.length > 0) ? transmittersData.data.map(transponder => (
-                  <TransponderCard transmitter={ transponder } key={ transponder.uuid }/>
-                )) : (
-                  <SideLoadingPlaceholder text={ '没有该模式下的收发器' } loading={ false }></SideLoadingPlaceholder>
-                ) }
-              </div>
-            </>
-          ) }
+        <div className={ 'flex justify-between items-center mb-2' }>
+          <h1
+            className={ `text-base font-bold ${ noto_sc.className }` }
+          >
+            <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-xl mr-1' } inline/>
+            <span>卫星收发器</span>
+          </h1>
+          <div className={ 'flex items-center gap-2' }>
+            <Tooltip content={ '调制模式' }>
+              <Select
+                optionList={ [
+                  {
+                    label: '全部',
+                    value: 0,
+                  }, ...transmitterModes,
+                ] }
+                defaultValue={ 0 }
+                value={ transmitterMode }
+                onChange={ value => setTransmitterMode(value as number) }
+                prefix={ <TablerWaveSine className={ 'mx-2' }/> }
+                position={ 'bottomRight' }
+              />
+            </Tooltip>
+            <Tooltip content={ '业务类型' }>
+              <Select
+                optionList={ [
+                  {
+                    label: '业余业务',
+                    value: 'Amateur',
+                  },
+                  {
+                    label: '所有业务',
+                    value: 'all',
+                  },
+                ] }
+                defaultValue={ 'Amateur' }
+                value={ transmitterService }
+                onChange={ value => setTransmitterService(value as string) }
+                prefix={ <TablerRoute className={ 'mx-2' }/> }
+                position={ 'bottomRight' }
+              />
+            </Tooltip>
+          </div>
+        </div>
+        <div className={ 'mb-6' }>
+          { isTransmittersLoading
+            ? (
+              <SideLoadingPlaceholder text={ '加载收发器列表...' }/>
+            )
+            : (
+              (transmittersData?.data && transmittersData.data.length > 0)
+                ? (
+                  <div className={ 'grid grid-cols-1 md:grid-cols-2 gap-2 mb-2' }>
+                    { transmittersData.data.map(transponder => (
+                      <TransponderCard transmitter={ transponder } key={ transponder.uuid }/>
+                    )) }
+                  </div>
+                )
+                : (
+                  <SideLoadingPlaceholder
+                    text={ `${ satellite.name || '未知卫星' } ${
+                      transmitterService === 'Amateur' ? '在业余业务中' : ''
+                    }没有${
+                      transmitterMode === 0 ? '可用' : ' ' + transmitterModes.find(i => i.value === transmitterMode)?.label + ' 调制模式的'
+                    }收发器` }
+                    loading={ false }
+                  />
+                )
+            )
+          }
+        </div>
       </SideSheet>
     </>
   )
