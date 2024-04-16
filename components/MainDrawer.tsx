@@ -1,12 +1,12 @@
 'use client'
 
-import {ReactNode, useContext, useEffect, useState} from 'react'
+import { ReactNode, useContext, useEffect, useState } from 'react'
 import Link from 'next/link'
-import {usePathname} from 'next/navigation'
-import {Icon} from '@iconify-icon/react'
-import {noto_sc, rubik, saira} from '@/app/fonts'
-import {Button, Popover, Select, Space, Tooltip} from '@douyinfe/semi-ui'
-import {SpeechSynthesisContext} from '@/contexts/SpeechSynthesisContext'
+import { usePathname } from 'next/navigation'
+import { Icon } from '@iconify-icon/react'
+import { noto_sc, rubik, saira } from '@/app/fonts'
+import { Button, Popover, Select, Space, Tooltip } from '@douyinfe/semi-ui'
+import { SpeechSynthesisContext } from '@/contexts/SpeechSynthesisContext'
 import Text from '@douyinfe/semi-ui/lib/es/typography/text'
 
 
@@ -116,13 +116,15 @@ export default function MainDrawer({children, nav}: {
               ))}
             </ul>
           </div>
-          <Button
-            icon={<Icon icon={'mdi:github'} className={'text-2xl'}/>}
-            type={'tertiary'}
-            size={'large'}
-            theme={'borderless'}
-            onClick={() => window.open('https://github.com/HoshinoSuzumi/ham-set', '_blank')}
-          />
+          <Tooltip content={ 'GitHub Repository' }>
+            <Button
+              icon={ <Icon icon={ 'mdi:github' } className={ 'text-2xl' }/> }
+              type={ 'tertiary' }
+              size={ 'large' }
+              theme={ 'borderless' }
+              onClick={ () => window.open('https://github.com/HoshinoSuzumi/ham-set', '_blank') }
+            />
+          </Tooltip>
         </header>
 
         <main className={'min-h-[calc(100vh-4rem)]'}>
