@@ -26,7 +26,7 @@ export const Main = () => {
   const [filteredValue, setFilteredValue] = useState<string[]>([])
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
   })
 
   const [mobileLocationRefId, setMobileLocationRefId] = useState<UUID | null>(null)
@@ -116,7 +116,7 @@ export const Main = () => {
       <div className={ 'w-full h-full flex flex-col gap-8 items-center pt-8 md:p-8 bg-white dark:bg-neutral-900' }>
         <div>
           <h1 className={ `flex flex-col items-center text-lg font-medium ${ noto_sc.className }` }>
-            <Icon icon={ 'tabler:satellite' } className={ 'text-4xl mb-2' }/>
+            <Icon icon={ 'tabler:satellite' } className={ 'text-4xl mb-2' } noobserver/>
             <span>业余无线电卫星数据库</span>
             <span className={ `text-xs opacity-50 ${ rubik.className }` }>Amateur Radio Satellites Database</span>
           </h1>
@@ -193,6 +193,7 @@ export const Main = () => {
             location={ location }
             loading={ isSatellitesLoading }
             compact={ false }
+            pagination={ pagination }
             filteredValue={ filteredValue }
             sorter={ (a, b) => {
               return a.name.localeCompare(b.name)

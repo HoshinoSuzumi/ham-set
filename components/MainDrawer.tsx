@@ -8,6 +8,7 @@ import { noto_sc, rubik, saira } from '@/app/fonts'
 import { Button, Popover, Select, Space, Tooltip } from '@douyinfe/semi-ui'
 import { SpeechSynthesisContext } from '@/contexts/SpeechSynthesisContext'
 import Text from '@douyinfe/semi-ui/lib/es/typography/text'
+import IconNoObserve from '@/components/IconNoObserve'
 
 
 export interface NavListItem {
@@ -135,7 +136,7 @@ export default function MainDrawer({children, nav}: {
           <aside className={'h-full flex flex-col justify-between'}>
             <div className={'space-y-2'}>
               <p className={'flex items-center gap-1 text-lg'}>
-                <Icon icon={'mdi:hamburger'} className={'text-2xl'}/>
+                <IconNoObserve icon={ 'mdi:hamburger' } className={ 'text-2xl' }/>
                 <ruby>
                   <span className={'font-bold'}>HAM SET</span>
                   <rt className={`font-bold text-xs text-base-content/70 ${noto_sc.className}`}>火腿套餐</rt>
@@ -156,7 +157,7 @@ export default function MainDrawer({children, nav}: {
                 <Text
                   className={noto_sc.className}
                   type={'tertiary'}
-                  icon={<Icon icon={'mdi:github'}/>}
+                  icon={ <IconNoObserve icon={ 'mdi:github' }/> }
                   strong
                 >
                   GitHub
@@ -176,7 +177,7 @@ export default function MainDrawer({children, nav}: {
                   <Text
                     className={noto_sc.className}
                     type={'tertiary'}
-                    icon={<Icon icon={'mdi:account-circle'}/>}
+                    icon={ <IconNoObserve icon={ 'mdi:account-circle' }/> }
                     strong
                   >
                     Author: 5ANK41
@@ -188,7 +189,7 @@ export default function MainDrawer({children, nav}: {
                   <Text
                     className={noto_sc.className}
                     type={'tertiary'}
-                    icon={<Icon icon={'tabler:heart'}/>}
+                    icon={ <IconNoObserve icon={ 'tabler:heart' }/> }
                     strong
                   >
                     Sponsor

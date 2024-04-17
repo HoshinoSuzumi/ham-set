@@ -1,4 +1,4 @@
-import {Icon} from "@iconify-icon/react";
+import { Icon } from '@iconify-icon/react'
 
 export default function IconNoObserve({
   icon,
@@ -9,9 +9,9 @@ export default function IconNoObserve({
 }) {
   return (
     <Icon
-      icon={icon}
-      observe={false}
-      {...props}
+      icon={ icon }
+      noobserver
+      { ...props }
     />
   )
 }

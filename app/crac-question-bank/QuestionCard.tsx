@@ -149,7 +149,7 @@ export default function QuestionCard({
           <div className={'flex justify-between items-center text-base-content/70'}>
             <div className={'flex items-center gap-2'}>
               <div className={'flex items-center gap-1'}>
-                <IconNoObserve icon={'tabler:square-rounded-letter-q'} className={'text-xl'} observe={false}/>
+                <IconNoObserve icon={ 'tabler:square-rounded-letter-q' } className={ 'text-xl' }/>
                 <span className={`font-bold text-base ${saira.className}`}>{question.id}</span>
               </div>
               {question.picture && (

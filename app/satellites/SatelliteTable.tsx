@@ -16,6 +16,7 @@ import { TablerAngle } from '@/components/Icon/TablerAngle'
 import { TablerClock } from '@/components/Icon/TablerClock'
 import { TablerWaveSine } from '@/components/Icon/TablerWaveSine'
 import { TablerRoute } from '@/components/Icon/TablerRoute'
+import IconNoObserve from '@/components/IconNoObserve'
 
 const NationalFlag = ({ countries }: { countries: string }) => {
   const countriesList = countries.split(',')
@@ -384,14 +385,14 @@ const SatelliteTableRow = ({
           <div className={ 'flex items-center gap-1' }>
             <Button
               theme={ 'borderless' }
-              icon={ <Icon icon={ expanded ? 'tabler:chevron-down' : 'tabler:chevron-right' }
+              icon={ <IconNoObserve icon={ expanded ? 'tabler:chevron-down' : 'tabler:chevron-right' }
                            className={ 'text-neutral-500' }/> }
               onClick={ () => setExpanded(!expanded) }
             />
             {/* TODO: Satellite bookmark */ }
             {/*<Button*/ }
             {/*  theme={ 'borderless' }*/ }
-            {/*  icon={ <Icon icon={ 'tabler:star' } className={ 'text-neutral-500' }/> }*/ }
+            {/*  icon={ <IconNoObserve icon={ 'tabler:star' } className={ 'text-neutral-500' }/> }*/ }
             {/*/>*/ }
           </div>
         </TableCell>
@@ -416,7 +417,7 @@ const SatelliteTableRow = ({
           <Button
             theme={ 'borderless' }
             type={ 'tertiary' }
-            icon={ <Icon icon={ 'tabler:info-circle' } className={ 'text-lg' }/> }
+            icon={ <IconNoObserve icon={ 'tabler:info-circle' } className={ 'text-lg' }/> }
             onClick={ () => setSidePopVisible(true) }
           >
             数据
@@ -498,7 +499,7 @@ const SatelliteTableRow = ({
           <h1
             className={ `text-base font-bold ${ noto_sc.className }` }
           >
-            <Icon icon={ 'tabler:planet' } className={ 'text-xl mr-1 mt-0.5' } inline/>
+            <IconNoObserve icon={ 'tabler:planet' } className={ 'text-xl mr-1 mt-0.5' } inline/>
             <span>未来过境</span>
           </h1>
           <div className={ 'flex items-center gap-2' }>
@@ -552,7 +553,8 @@ const SatelliteTableRow = ({
                         </div>
                         <div className={ 'w-full flex items-center justify-between' }>
                           <div className={ 'flex items-center gap-1' }>
-                            <Icon icon={ 'tabler:arrow-down-from-arc' } className={ 'text-primary text-base' }/>
+                            <IconNoObserve icon={ 'tabler:arrow-down-from-arc' }
+                                           className={ 'text-primary text-base' }/>
                             <span>{ dayjs(sighting.rise.time).format('HH:mm:ss') }</span>
                           </div>
                           <div
@@ -561,11 +563,11 @@ const SatelliteTableRow = ({
                             } 分钟` }
                             className={ 'flex items-center gap-1' }
                           >
-                            <Icon icon={ 'tabler:clock' } className={ 'text-primary text-base' }/>
+                            <IconNoObserve icon={ 'tabler:clock' } className={ 'text-primary text-base' }/>
                             <span>{ Math.floor((dayjs(sighting.set.time).unix() - dayjs(sighting.rise.time).unix()) / 60) }min</span>
                           </div>
                           <div className={ 'flex items-center gap-1' }>
-                            <Icon icon={ 'tabler:arrow-down-to-arc' } className={ 'text-primary text-base' }/>
+                            <IconNoObserve icon={ 'tabler:arrow-down-to-arc' } className={ 'text-primary text-base' }/>
                             <span>{ dayjs(sighting.set.time).format('HH:mm:ss') }</span>
                           </div>
                         </div>
@@ -574,21 +576,21 @@ const SatelliteTableRow = ({
                             title={ '入境方位' }
                             className={ 'flex items-center gap-1' }
                           >
-                            <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
+                            <IconNoObserve icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
                             <span><span className={ noto_sc.className }>入</span>: { sighting.rise.azimuth }°</span>
                           </div>
                           <div
                             title={ `最高仰角: ${ dayjs(sighting.culminate.time).format('YYYY-MM-DD HH:mm:ss') }` }
                             className={ 'flex items-center gap-1' }
                           >
-                            <Icon icon={ 'tabler:angle' } className={ 'text-primary text-base' }/>
+                            <IconNoObserve icon={ 'tabler:angle' } className={ 'text-primary text-base' }/>
                             <span>{ sighting.culminate.elevation }°</span>
                           </div>
                           <div
                             title={ '离境方位' }
                             className={ 'flex items-center gap-1' }
                           >
-                            <Icon icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
+                            <IconNoObserve icon={ 'tabler:compass' } className={ 'text-primary text-base' }/>
                             <span><span className={ noto_sc.className }>离</span>: { sighting.set.azimuth }°</span>
                           </div>
                         </div>
@@ -610,7 +612,7 @@ const SatelliteTableRow = ({
           <h1
             className={ `text-base font-bold ${ noto_sc.className }` }
           >
-            <Icon icon={ 'tabler:arrows-transfer-down' } className={ 'text-xl mr-1' } inline/>
+            <IconNoObserve icon={ 'tabler:arrows-transfer-down' } className={ 'text-xl mr-1' } inline/>
             <span>卫星收发器</span>
           </h1>
           <div className={ 'flex items-center gap-2' }>
@@ -778,6 +780,7 @@ export const SatelliteTable = ({
             星历数据来源 <a href={ 'https://db.satnogs.org/' } target={ '_blank' }>SatNOGS DB</a> | <a
             href={ 'https://ham-api.c5r.app/docs' } target={ '_blank' }>卫星过境信息计算接口</a>
           </caption>
+          {/* TODO: #1 Pagination */ }
         </table>
       </div>
     </>

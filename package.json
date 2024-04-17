@@ -33,7 +33,7 @@
     "swr": "^2.2.5"
   },
   "devDependencies": {
-    "@iconify-icon/react": "^2.0.1",
+    "@iconify-icon/react": "^2.1.0",
     "@tailwindcss/typography": "^0.5.12",
     "@types/node": "^20",
     "@types/react": "^18",
