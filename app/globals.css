@@ -48,6 +48,14 @@ body {
 }
 
 /**
+ * Overrides
+ */
+iconify-icon {
+  width: 1em;
+  height: 1em;
+}
+
+/**
  * Transition
  */
 .fade-in-out-enter-active,
