@@ -1,12 +1,12 @@
 import './globals.css'
 import '../assets/preflight.css'
-import {ReactNode} from 'react'
-import MainDrawer, {NavListItem} from '@/components/MainDrawer'
-import {SpeechSynthesisProvider} from '@/contexts/SpeechSynthesisContext'
-import {rubik} from '@/app/fonts'
-import {SWRProvider} from '@/app/swr-provider'
-import {Analytics} from '@vercel/analytics/react'
-import {Metadata, Viewport} from 'next'
+import { ReactNode } from 'react'
+import MainDrawer, { NavListItem } from '@/components/MainDrawer'
+import { SpeechSynthesisProvider } from '@/contexts/SpeechSynthesisContext'
+import { rubik } from '@/app/fonts'
+import { SWRProvider } from '@/app/swr-provider'
+import { Metadata, Viewport } from 'next'
+import Script from 'next/script'
 
 export const metadata: Metadata = {
   title: 'HAM Set',
@@ -79,15 +79,21 @@ export default function RootLayout({
   return (
     <html lang="en">
     <SWRProvider>
-      <body className={`${rubik.className}`}>
+      <body className={ `${ rubik.className }` }>
       <SpeechSynthesisProvider>
-        <MainDrawer nav={nav}>
-          {children}
+        <MainDrawer nav={ nav }>
+          { children }
         </MainDrawer>
       </SpeechSynthesisProvider>
-      <Analytics mode={'production'}/>
+      { (process.env.NODE_ENV || 'unknown') === 'production' && (
+        <Script
+          src={ 'https://analytics.c5r.app/script.js' }
+          data-website-id={ 'd584f2e5-9f89-46e0-82b0-a70157be1665' }
+          defer
+        />
+      ) }
       </body>
     </SWRProvider>
     </html>
-  );
+  )
 }
