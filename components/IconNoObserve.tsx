@@ -5,6 +5,7 @@ export default function IconNoObserve({
   ...props
 }: {
   icon: string;
+  // noinspection JSUnusedLocalSymbols
   [key: string]: any;
 }) {
   return (

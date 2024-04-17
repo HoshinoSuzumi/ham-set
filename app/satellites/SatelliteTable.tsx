@@ -3,7 +3,7 @@
 import './styles.scss'
 import { BaseResponse, LatestTleSet, Satellite, Transmitter } from '@/app/api/types'
 import dayjs from '@/app/utils/dayjs'
-import { CSSProperties, ReactNode, useEffect, useState } from 'react'
+import { CSSProperties, ReactNode, useState } from 'react'
 import { Icon } from '@iconify-icon/react'
 import { noto_sc, rubik } from '@/app/fonts'
 import { IconSpinner } from '@/components/Icon/IconSpinner'
@@ -708,15 +708,15 @@ export const SatelliteTable = ({
   },
   sorter?: ((a: Satellite, b: Satellite) => number)
 }) => {
-  const [timestamp, setTimestamp] = useState(dayjs().unix())
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimestamp(dayjs().unix())
-    }, 5000)
-    return () => {
-      clearInterval(timer)
-    }
-  }, [])
+  // const [timestamp, setTimestamp] = useState(dayjs().unix())
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setTimestamp(dayjs().unix())
+  //   }, 5000)
+  //   return () => {
+  //     clearInterval(timer)
+  //   }
+  // }, [])
   const filteredSatellites = satellites.filter(sat => {
     if (filteredValue && filteredValue.length > 0) {
       return (

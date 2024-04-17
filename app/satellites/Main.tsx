@@ -20,7 +20,7 @@ export const Main = () => {
     if (window.location.origin !== origin) {
       setOrigin(window.location.origin)
     }
-  }, [])
+  }, [origin])
 
   const compositionRef = useRef({ isComposition: false })
   const [filteredValue, setFilteredValue] = useState<string[]>([])
@@ -74,6 +74,7 @@ export const Main = () => {
   const [locationFromMobile, setLocationFromMobile] = useState<Exclude<ObserverLocationStore, 'pending'> | null>(null)
   const location = locationFromMobile || locationFromBrowser
 
+  // noinspection JSUnusedLocalSymbols
   const {
     data: satellitesData,
     isLoading: isSatellitesLoading,
@@ -83,6 +84,7 @@ export const Main = () => {
     refreshWhenOffline: false,
   })
 
+  // noinspection JSUnusedLocalSymbols
   const {
     data: tleData,
     isLoading: isTleLoading,
