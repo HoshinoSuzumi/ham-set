@@ -734,10 +734,7 @@ export const SatelliteTable = ({
       // @ts-ignore
       if (umami) {
         // @ts-ignore
-        umami.track('sat_filter', {
-          keyword: filteredValue,
-          result: filteredSatellites.length,
-        })
+        umami.track('sat_filter', `kw: '${ filteredValue.join(',') }', results ${ filteredSatellites.length.toFixed(0) }`)
       }
     }
   }, [filteredSatellites.length, filteredValue])
