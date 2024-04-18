@@ -85,13 +85,12 @@ export default function RootLayout({
           { children }
         </MainDrawer>
       </SpeechSynthesisProvider>
-      { (process.env.NODE_ENV || 'unknown') === 'production' && (
-        <Script
-          src={ 'https://analytics.c5r.app/script.js' }
-          data-website-id={ 'd584f2e5-9f89-46e0-82b0-a70157be1665' }
-          defer
-        />
-      ) }
+      <Script
+        src={ 'https://analytics.c5r.app/script.js' }
+        data-website-id={ 'd584f2e5-9f89-46e0-82b0-a70157be1665' }
+        data-domains={ 'ham.c5r.app,ham-dev.c5r.app' }
+        defer
+      />
       </body>
     </SWRProvider>
     </html>

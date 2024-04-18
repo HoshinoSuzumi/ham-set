@@ -3,7 +3,7 @@
 import './styles.scss'
 import { BaseResponse, LatestTleSet, Satellite, Transmitter } from '@/app/api/types'
 import dayjs from '@/app/utils/dayjs'
-import { CSSProperties, ReactNode, useState } from 'react'
+import { CSSProperties, ReactNode, useEffect, useState } from 'react'
 import { Icon } from '@iconify-icon/react'
 import { noto_sc, rubik } from '@/app/fonts'
 import { IconSpinner } from '@/components/Icon/IconSpinner'
@@ -386,7 +386,7 @@ const SatelliteTableRow = ({
             <Button
               theme={ 'borderless' }
               icon={ <IconNoObserve icon={ expanded ? 'tabler:chevron-down' : 'tabler:chevron-right' }
-                           className={ 'text-neutral-500' }/> }
+                                    className={ 'text-neutral-500' }/> }
               onClick={ () => setExpanded(!expanded) }
             />
             {/* TODO: Satellite bookmark */ }
@@ -728,6 +728,19 @@ export const SatelliteTable = ({
     }
     return true
   }).sort(sorter)
+
+  useEffect(() => {
+    if (filteredValue) {
+      // @ts-ignore
+      if (umami) {
+        // @ts-ignore
+        umami.track('sat_filter', {
+          keyword: filteredValue,
+          result: filteredSatellites.length,
+        })
+      }
+    }
+  }, [filteredSatellites.length, filteredValue])
 
   return (
     <>
