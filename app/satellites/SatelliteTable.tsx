@@ -3,7 +3,7 @@
 import './styles.scss'
 import { BaseResponse, LatestTleSet, Satellite, Transmitter } from '@/app/api/types'
 import dayjs from '@/app/utils/dayjs'
-import { CSSProperties, ReactNode, useEffect, useState } from 'react'
+import { CSSProperties, ReactNode, useState } from 'react'
 import { Icon } from '@iconify-icon/react'
 import { noto_sc, rubik } from '@/app/fonts'
 import { IconSpinner } from '@/components/Icon/IconSpinner'
@@ -728,16 +728,6 @@ export const SatelliteTable = ({
     }
     return true
   }).sort(sorter)
-
-  useEffect(() => {
-    if (filteredValue) {
-      // @ts-ignore
-      if (umami) {
-        // @ts-ignore
-        umami.track('sat_filter', `kw: '${ filteredValue.join(',') }', results ${ filteredSatellites.length.toFixed(0) }`)
-      }
-    }
-  }, [filteredSatellites.length, filteredValue])
 
   return (
     <>
