@@ -386,7 +386,7 @@ const SatelliteTableRow = ({
             <Button
               theme={ 'borderless' }
               icon={ <IconNoObserve icon={ expanded ? 'tabler:chevron-down' : 'tabler:chevron-right' }
-                           className={ 'text-neutral-500' }/> }
+                                    className={ 'text-neutral-500' }/> }
               onClick={ () => setExpanded(!expanded) }
             />
             {/* TODO: Satellite bookmark */ }
