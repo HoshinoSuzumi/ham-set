@@ -117,15 +117,13 @@ export default function MainDrawer({children, nav}: {
               ))}
             </ul>
           </div>
-          <Tooltip content={ 'GitHub Repository' }>
-            <Button
-              icon={ <Icon icon={ 'mdi:github' } className={ 'text-2xl' }/> }
-              type={ 'tertiary' }
-              size={ 'large' }
-              theme={ 'borderless' }
-              onClick={ () => window.open('https://github.com/HoshinoSuzumi/ham-set', '_blank') }
-            />
-          </Tooltip>
+          <Button
+            icon={ <Icon icon={ 'mdi:github' } className={ 'text-2xl' }/> }
+            type={ 'tertiary' }
+            size={ 'large' }
+            theme={ 'borderless' }
+            onClick={ () => window.open('https://github.com/HoshinoSuzumi/ham-set', '_blank') }
+          />
         </header>
 
         <main className={'min-h-[calc(100vh-4rem)]'}>

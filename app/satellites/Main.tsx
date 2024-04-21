@@ -26,7 +26,7 @@ export const Main = () => {
   const [filteredValue, setFilteredValue] = useState<string[]>([])
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 20,
+    pageSize: 10,
   })
 
   const [mobileLocationRefId, setMobileLocationRefId] = useState<UUID | null>(null)
@@ -196,6 +196,7 @@ export const Main = () => {
             loading={ isSatellitesLoading }
             compact={ false }
             pagination={ pagination }
+            setPagination={ setPagination }
             filteredValue={ filteredValue }
             sorter={ (a, b) => {
               return a.name.localeCompare(b.name)

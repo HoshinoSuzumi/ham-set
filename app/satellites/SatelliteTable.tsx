@@ -7,7 +7,7 @@ import { CSSProperties, ReactNode, useState } from 'react'
 import { Icon } from '@iconify-icon/react'
 import { noto_sc, rubik } from '@/app/fonts'
 import { IconSpinner } from '@/components/Icon/IconSpinner'
-import { Button, Select, SideSheet, Tooltip } from '@douyinfe/semi-ui'
+import { Button, Pagination, Select, SideSheet, Tooltip } from '@douyinfe/semi-ui'
 import useSWR, { SWRConfig } from 'swr'
 import { ObserverLocationStore, SatelliteSighting } from '@/types/types'
 import Image from 'next/image'
@@ -694,6 +694,7 @@ export const SatelliteTable = ({
   loading,
   filteredValue,
   pagination,
+  setPagination,
   sorter,
 }: {
   satellites: Satellite[]
@@ -706,6 +707,7 @@ export const SatelliteTable = ({
     current: number
     pageSize: number
   },
+  setPagination?: (pagination: { current: number, pageSize: number }) => void
   sorter?: ((a: Satellite, b: Satellite) => number)
 }) => {
   // const [timestamp, setTimestamp] = useState(dayjs().unix())
@@ -777,6 +779,27 @@ export const SatelliteTable = ({
           <caption
             className={ `text-xs py-4 text-neutral-500 dark:text-neutral-400 caption-bottom ${ noto_sc.className }` }
           >
+            <div className={ 'w-full flex justify-end' }>
+              <Pagination
+                total={ filteredSatellites.length || satellites.length }
+                pageSize={ pagination?.pageSize || 10 }
+                currentPage={ pagination?.current || 1 }
+                hideOnSinglePage
+                onPageChange={ page => {
+                  setPagination?.({
+                    pageSize: pagination?.pageSize || 10,
+                    ...pagination,
+                    current: page,
+                  })
+                  setTimeout(() => {
+                    window?.scrollTo({
+                      behavior: 'smooth',
+                      top: 0,
+                    })
+                  }, 200)
+                } }
+              />
+            </div>
             星历数据来源 <a href={ 'https://db.satnogs.org/' } target={ '_blank' }>SatNOGS DB</a> | <a
             href={ 'https://ham-api.c5r.app/docs' } target={ '_blank' }>卫星过境信息计算接口</a>
           </caption>
