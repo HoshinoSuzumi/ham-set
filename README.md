@@ -1,1 +1,1 @@
-Powerful Toolkit for Amateur Radio.
+Powerful Toolkit for Amateur Radio
