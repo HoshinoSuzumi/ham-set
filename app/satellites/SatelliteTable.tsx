@@ -26,7 +26,7 @@ const NationalFlag = ({ countries }: { countries: string }) => {
     <div className={ 'relative' }>
       <div
         title={ countries }
-        className={ 'w-6 h-[18px] rounded overflow-hidden border box-content shadow leading-none' }
+        className={ 'w-6 h-[18px] rounded overflow-hidden border dark:border-neutral-700 box-content shadow leading-none' }
       >
         <Icon
           icon={ firstCountry ? `flag:${ firstCountry.toLowerCase() }-4x3` : 'tabler:help-circle-filled' }
@@ -37,7 +37,7 @@ const NationalFlag = ({ countries }: { countries: string }) => {
       </div>
       { countriesList.length > 1 && (
         <div
-          className={ 'absolute -right-2 -bottom-2 w-4 h-4 p-0.5 bg-white border rounded flex justify-center items-center' }
+          className={ 'absolute -right-2 -bottom-2 w-4 h-4 p-0.5 bg-white dark:bg-neutral-900 border dark:border-neutral-700 rounded flex justify-center items-center' }
         >
           <span className={ `text-2xs font-medium ${ rubik.className }` }>
             { countriesList.length }
@@ -126,7 +126,7 @@ const SatelliteTableRow = ({
     loading?: boolean
     className?: string
   }) => (
-    <div className={ `w-full flex items-center gap-1 p-3 rounded-lg border ${ className }` }>
+    <div className={ `w-full flex items-center gap-1 p-3 rounded-lg border dark:border-neutral-600 ${ className }` }>
       { loading && <IconSpinner/> }
       <p>{ text }</p>
     </div>
@@ -379,7 +379,7 @@ const SatelliteTableRow = ({
   return (
     <>
       <tr
-        className={ `cursor-pointer hover:bg-neutral-50 transition border-y ${ expanded && 'border-b-transparent' }` }
+        className={ `cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 transition border-y dark:border-y-neutral-700 ${ expanded && 'border-b-transparent' }` }
       >
         <TableCell compact={ compact } className={ 'w-10' }>
           <div className={ 'flex items-center gap-1' }>

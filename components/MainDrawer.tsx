@@ -84,7 +84,7 @@ export default function MainDrawer({children, nav}: {
       />
       <div className={'drawer-content flex flex-col'}>
         <header
-          className={'sticky top-0 inset-x-0 h-16 bg-base-100 border-b dark:border-b-neutral-700 flex flex-row justify-between items-center px-2 z-50'}>
+          className={ 'sticky top-0 inset-x-0 h-16 bg-neutral-100 dark:bg-neutral-800 border-b dark:border-b-neutral-700 flex flex-row justify-between items-center px-2 z-50' }>
           <div className={'flex space-x-2'}>
             <div className={'flex-none lg:hidden'}>
               <label htmlFor={'main-drawer'} className={'btn btn-ghost drawer-button'}>
@@ -130,7 +130,8 @@ export default function MainDrawer({children, nav}: {
           {children}
         </main>
 
-        <footer className={'footer p-6 md:p-10 bg-base-300 text-base-content justify-between z-20'}>
+        <footer
+          className={ 'footer p-6 md:p-10 bg-base-300 dark:bg-neutral-800 text-base-content justify-between z-20' }>
           <aside className={'h-full flex flex-col justify-between'}>
             <div className={'space-y-2'}>
               <p className={'flex items-center gap-1 text-lg'}>

@@ -208,18 +208,25 @@ export const Main = () => {
         title="获取手机位置"
         visible={ !!mobileLocationRefId }
         hasCancel={ false }
+        width={ 400 }
         okText={ '取消' }
+        okButtonProps={ {
+          className: 'w-full !mx-0',
+        } }
         footerFill
         onOk={ () => setMobileLocationRefId(null) }
         closeOnEsc={ true }
       >
-        <div className={ 'w-full relative' }>
-          <QRCode
-            className={ 'mx-auto' }
-            value={ `${ origin }/ob-location?ref=${ mobileLocationRefId }` }
-          />
+        <div className={ 'w-full relative px-[80px]' }>
+          <div className={ 'w-full h-full p-2 bg-white rounded-lg' }>
+            <QRCode
+              className={ 'w-full h-full' }
+              value={ `${ origin }/ob-location?ref=${ mobileLocationRefId }` }
+            />
+          </div>
           { mobileScanned && (
-            <div className={ 'absolute inset-0 flex flex-col justify-center items-center gap-2 bg-white/95' }>
+            <div
+              className={ 'absolute inset-0 flex flex-col justify-center items-center gap-2 bg-white/95 dark:bg-neutral-900 rounded-lg' }>
               <Icon icon={ 'tabler:circle-check' } className={ 'text-4xl' }/>
               <p className={ 'text-center text-base font-bold' }>
                 扫码成功，请在手机上确认
