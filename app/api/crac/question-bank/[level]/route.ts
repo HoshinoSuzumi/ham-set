@@ -2232,7 +2232,7 @@ export async function GET(
   const serverSideProps = await getServerSideProps()
   const searchParams = req.nextUrl.searchParams
 
-  const questions: ExamQuestion[] = serverSideProps.props.banks[ctx.params.level]
+  const questions: ExamQuestion[] = serverSideProps.props.banks[ctx.params.level].sort((a, b) => a.id.localeCompare(b.id))
   if (searchParams.get('shuffle') === 'true') {
     questions.sort(() => Math.random() - 0.5)
   }
