@@ -2,6 +2,7 @@
   "name": "ham-set",
   "version": "0.3.7",
   "private": true,
+  "packageManager": "pnpm@9.1.0",
   "scripts": {
     "dev": "next dev -p 3000",
     "vercel-dev": "vercel dev --listen 3000",
