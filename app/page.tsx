@@ -33,6 +33,7 @@ export default function Home() {
     'D': [
       {word: 'delta', ipa: '/ˈdeltə/', tag: TAG.standard},
       {word: 'david', ipa: '/ˈdeɪvɪd/', tag: TAG.non_standard},
+      {word: 'danmark', ipa: '/ˈdænmɑ:k/', tag: TAG.non_standard},
     ],
     'E': [
       {word: 'echo', ipa: '/ˈekoʊ/', tag: TAG.standard},
@@ -47,10 +48,12 @@ export default function Home() {
     'G': [
       {word: 'golf', ipa: '/ɡɑːlf/', tag: TAG.standard},
       {word: 'germany', ipa: '/ˈdʒɜːrməni/', tag: TAG.dx},
+      {word: 'guatemala', ipa: '/ˌgwɑtəˈmɑlə/', tag: TAG.non_standard},
     ],
     'H': [
       {word: 'hotel', ipa: '/hoʊˈtel/', tag: TAG.standard},
       {word: 'henry', ipa: '/ˈhenri/', tag: TAG.non_standard},
+      {word: 'honolulu', ipa: '/ˌhɑnəˈlulu/', tag: TAG.non_standard},
     ],
     'I': [
       {word: 'india', ipa: '/ˈɪndiə/', tag: TAG.standard},
@@ -79,6 +82,7 @@ export default function Home() {
     'O': [
       {word: 'oscar', ipa: '/ˈɒskə/', tag: TAG.standard},
       {word: 'ocean', ipa: '/ˈoʊʃn/', tag: TAG.non_standard},
+      {word: 'ontario', ipa: '/ɑnˈtɛrioʊ/', tag: TAG.non_standard},
     ],
     'P': [
       {word: 'papa', ipa: '/ˈpɑːpə/', tag: TAG.standard},
@@ -122,6 +126,7 @@ export default function Home() {
     ],
     'Z': [
       {word: 'zulu', ipa: '/ˈzuːluː/', tag: TAG.standard},
+      {word: 'zanzibar', ipa: '/ˈzænzəˌbɑr/', tag: TAG.non_standard},
     ],
   }
   const number_dict: {

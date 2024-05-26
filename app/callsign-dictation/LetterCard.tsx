@@ -89,7 +89,7 @@ export default function LetterCard({
                 </CSSTransition>
               </h1>
               <div className={'inline-flex justify-between items-center'}>
-                <span className="text-xs text-neutral-400 font-ipa font-bold">
+                <span className="text-xs text-black/30 dark:text-white/30 font-ipa font-bold">
                   {phonetics[index].ipa}
                 </span>
                 {(phonetics[index].tag && phonetics.length > 1) && (
