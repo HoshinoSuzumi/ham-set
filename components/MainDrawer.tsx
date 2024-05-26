@@ -99,6 +99,11 @@ export default function MainDrawer({children, nav}: {
               <h1 className="text-lg font-bold flex items-center gap-1">
                 <Icon icon={'mdi:hamburger'}/>
                 HAM SET
+                <span
+                  className={'text-xs font-bold bg-neutral-200 dark:bg-neutral-700 px-1 border border-neutral-300 dark:border-neutral-600 rounded'}
+                >
+                  DEV
+                </span>
               </h1>
               <h2 className={`text-xs uppercase`}>
                 Toolkit for Amateur Radio
