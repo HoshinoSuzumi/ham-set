@@ -167,19 +167,16 @@ export default function MainDrawer({children, nav}: {
                   <p>
                     aka. <span className={'font-bold'}>HoshinoSuzumi</span>
                   </p>
-                  <p>
-                    no callsign yet :(
-                  </p>
                 </div>
               )}>
                 <a href={'https://uniiem.com/'} target={'_blank'}>
                   <Text
                     className={noto_sc.className}
                     type={'tertiary'}
-                    icon={ <IconNoObserve icon={ 'mdi:account-circle' }/> }
+                    icon={ <IconNoObserve icon={ 'tabler:building-broadcast-tower' }/> }
                     strong
                   >
-                    Author: 5ANK41
+                    Author: <b>BH8GA</b>
                   </Text>
                 </a>
               </Tooltip>
